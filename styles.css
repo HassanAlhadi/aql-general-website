@@ -278,6 +278,7 @@ h6 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    direction: ltr;
 }
 
 .nav-left {
@@ -332,6 +333,7 @@ h6 {
     padding: 4px;
     cursor: pointer;
     gap: 0;
+    direction: ltr;
 }
 
 .lang-option {
@@ -640,6 +642,7 @@ h6 {
     position: relative;
     z-index: 1;
     display: flex;
+    direction: ltr;
 }
 
 .marquee-container:hover .marquee-content {
