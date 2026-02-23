@@ -145,4 +145,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Marquee: auto-clone content to fill any viewport width
+    const marqueeContainer = document.querySelector('.marquee-container');
+    if (marqueeContainer) {
+        const firstContent = marqueeContainer.querySelector('.marquee-content');
+        if (firstContent) {
+            // Remove old duplicates (keep only the first)
+            const oldDupes = marqueeContainer.querySelectorAll('.marquee-content:not(:first-child)');
+            for (const dupe of oldDupes) {
+                dupe.remove();
+            }
+            // Calculate how many copies we need: at least 2, more if content is narrower than viewport
+            const contentWidth = firstContent.scrollWidth;
+            const viewportWidth = window.innerWidth;
+            const copiesNeeded = Math.max(2, Math.ceil((viewportWidth * 2) / contentWidth) + 1);
+            for (let i = 1; i < copiesNeeded; i++) {
+                const clone = firstContent.cloneNode(true);
+                clone.setAttribute('aria-hidden', 'true');
+                marqueeContainer.appendChild(clone);
+            }
+        }
+    }
+
 });
