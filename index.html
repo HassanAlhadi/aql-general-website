@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQL Technology | Intelligence Systems</title>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Abstract Tech Background Elements -->
+    <div class="background-elements">
+        <div class="grid-mesh"></div>
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="particles" id="particles-js"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <img src="assets/logo_v2.png" alt="AQL Technology" class="logo-img">
+                <span class="logo-text lang-text" data-en="AQL TECHNOLOGY" data-ar="عقل التقنية">AQL TECHNOLOGY</span>
+            </div>
+            <div class="nav-links">
+                <a href="#services" class="nav-btn lang-text" data-en="Capabilities" data-ar="القدرات">Capabilities</a>
+                <a href="#ai-products" class="nav-btn lang-text" data-en="AI Products"
+                    data-ar="منتجات الذكاء الاصطناعي">AI Products</a>
+                <a href="#approach" class="nav-btn lang-text" data-en="Methodology" data-ar="المنهجية">Methodology</a>
+                <button id="lang-toggle" class="lang-toggle-btn">عربي</button>
+                <a href="#contact" class="btn primary-btn lang-text" data-en="Engage Team" data-ar="تواصل معنا">Engage
+                    Team</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text animate-up">
+                <div class="badge-tag lang-text" data-en="Vision 2030 Inspired" data-ar="مستوحى من رؤية 2030">Vision
+                    2030 Inspired <span>//</span> KSA</div>
+                <h1 class="glitch-text lang-text" data-en="Digital Transformation &" data-ar="التحول الرقمي و">Digital
+                    Transformation &<br><span class="highlight lang-text" data-en="Enterprise Intelligence"
+                        data-ar="ذكاء المؤسسات">Enterprise Intelligence</span></h1>
+                <p class="hero-desc lang-text"
+                    data-en="Empowering Saudi Arabia's Digital Transformation with Vision 2030. We deliver advanced AI, cybersecurity, and bespoke software solutions to build sovereign, intelligent enterprises."
+                    data-ar="ندعم التحول الرقمي للمملكة العربية السعودية مع رؤية 2030. نقدم حلول الذكاء الاصطناعي المتقدمة، والأمن السيبراني، والبرمجيات المخصصة لبناء مؤسسات ذكية وذات سيادة.">
+                    Empowering Saudi Arabia's Digital Transformation with Vision 2030. We deliver advanced AI,
+                    cybersecurity, and bespoke software solutions to build sovereign, intelligent enterprises.</p>
+                <div class="hero-actions">
+                    <a href="#services" class="btn primary-btn lang-text" data-en="Explore Capabilities"
+                        data-ar="استكشف القدرات">Explore Capabilities</a>
+                    <a href="#contact" class="btn outline-btn lang-text" data-en="Request Assessment"
+                        data-ar="اطلب تقييم">Request Assessment</a>
+                </div>
+            </div>
+            <div class="hero-visual animate-in">
+                <div class="shield-container">
+                    <div class="shield-core"></div>
+                    <div class="shield-ring ring-1"></div>
+                    <div class="shield-ring ring-2"></div>
+                    <div class="shield-ring ring-3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services section">
+        <div class="container">
+            <div class="section-header animate-up">
+                <div class="badge-tag lang-text" data-en="Capability Matrix" data-ar="مصفوفة القدرات">Capability Matrix
+                </div>
+                <h2 class="lang-text" data-en="Service <span class='highlight'>Offerings</span>"
+                    data-ar="الخدمات <span class='highlight'>المقدمة</span>">Service <span
+                        class="highlight">Offerings</span></h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="service-grid">
+                <!-- New General Tech Services -->
+                <div class="service-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="service-number">01</div>
+                        <div class="service-icon"><i class="fa-solid fa-brain"></i></div>
+                        <h3 class="lang-text" data-en="Artificial Intelligence" data-ar="الذكاء الاصطناعي">Artificial
+                            Intelligence</h3>
+                        <p class="lang-text"
+                            data-en="Developing advanced AI models, language agents, and data-driven systems to automate workflows and unlock organizational intelligence."
+                            data-ar="تطوير نماذج ذكاء اصطناعي متقدمة وأنظمة مبنية على البيانات لأتمتة سير العمل وفتح آفاق الذكاء المؤسسي.">
+                            Developing advanced AI models, language agents, and data-driven systems to automate
+                            workflows and unlock organizational intelligence.</p>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="service-number">02</div>
+                        <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3 class="lang-text" data-en="Cybersecurity" data-ar="الأمن السيبراني">Cybersecurity</h3>
+                        <p class="lang-text"
+                            data-en="Comprehensive offensive and defensive security services, including penetration testing, vulnerability assessments, and secure architecture."
+                            data-ar="خدمات أمنية هجومية ودفاعية شاملة، تشمل اختبار الاختراق وتقييم الثغرات والبنية الأمنية.">
+                            Comprehensive offensive and defensive security services, including penetration testing,
+                            vulnerability assessments, and secure architecture.</p>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="service-number">03</div>
+                        <div class="service-icon"><i class="fa-solid fa-code"></i></div>
+                        <h3 class="lang-text" data-en="Software Engineering" data-ar="هندسة البرمجيات">Software
+                            Engineering</h3>
+                        <p class="lang-text"
+                            data-en="End-to-end development of robust, scalable bespoke applications, web platforms, and mobile solutions tailored to complex business needs."
+                            data-ar="تطوير متكامل لتطبيقات ومنصات ويب وحلول هواتف محمولة مخصصة وقابلة للتطوير لتلبية احتياجات الأعمال المعقدة.">
+                            End-to-end development of robust, scalable bespoke applications, web platforms, and mobile
+                            solutions tailored to complex business needs.</p>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="service-number">04</div>
+                        <div class="service-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <h3 class="lang-text" data-en="Data Analytics" data-ar="تحليل البيانات">Data Analytics</h3>
+                        <p class="lang-text"
+                            data-en="Transforming raw data into actionable insights through advanced analytics, big data processing, and dynamic visualization dashboards."
+                            data-ar="تحويل البيانات الخام إلى رؤى قابلة للتنفيذ من خلال التحليلات المتقدمة ومعالجة البيانات الضخمة ولوحات العرض الديناميكية.">
+                            Transforming raw data into actionable insights through advanced analytics, big data
+                            processing, and dynamic visualization dashboards.</p>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="service-number">05</div>
+                        <div class="service-icon"><i class="fa-solid fa-cloud"></i></div>
+                        <h3 class="lang-text" data-en="Cloud Infrastructure" data-ar="البنية التحتية السحابية">Cloud
+                            Infrastructure</h3>
+                        <p class="lang-text"
+                            data-en="Designing and managing secure, scalable, and highly available cloud environments utilizing modern DevSecOps and Kubernetes architectures."
+                            data-ar="تصميم وإدارة بيئات سحابية آمنة وقابلة للتطوير وذات توفر عالٍ باستخدام بنيات DevSecOps و Kubernetes الحديثة.">
+                            Designing and managing secure, scalable, and highly available cloud environments utilizing
+                            modern DevSecOps and Kubernetes architectures.</p>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="service-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="service-number">06</div>
+                        <div class="service-icon"><i class="fa-solid fa-network-wired"></i></div>
+                        <h3 class="lang-text" data-en="Digital Transformation" data-ar="التحول الرقمي">Digital
+                            Transformation</h3>
+                        <p class="lang-text"
+                            data-en="Guiding organizations through complete technological modernization, digitizing operational flows to match Vision 2030 standards."
+                            data-ar="توجيه المؤسسات خلال التحديث التكنولوجي الشامل، ورقمنة مسارات التشغيل لتتناسب مع معايير رؤية 2030.">
+                            Guiding organizations through complete technological modernization, digitizing operational
+                            flows to match Vision 2030 standards.</p>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core AI Products Section -->
+    <section id="ai-products" class="ai-products section">
+        <div class="container">
+            <div class="section-header animate-up">
+                <div class="badge-tag lang-text" data-en="Core Systems" data-ar="الأنظمة الأساسية">Core Systems</div>
+                <h2 class="lang-text" data-en="Core AI <span class='highlight'>Products</span>"
+                    data-ar="منتجات الذكاء الاصطناعي <span class='highlight'>الأساسية</span>">Core AI <span
+                        class="highlight">Products</span></h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="ai-products-grid">
+
+                <!-- Faiz -->
+                <div class="ai-product-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="product-header">
+                            <h3 class="gradient-text gradient-gold lang-text" data-en="Faiz" data-ar="فايز">Faiz</h3>
+                            <span class="product-subtitle lang-text" data-en="AI Employee Builder"
+                                data-ar="الموظف الذكي للتاجر">AI Employee Builder</span>
+                        </div>
+                        <p class="product-desc lang-text"
+                            data-en="An AI employee for your store that understands merchant context, proposes decisions, and executes operations directly within the platform (Salla/Shopify)."
+                            data-ar="موظف ذكاء اصطناعي للمتجر يفهم وضع التاجر، ويقترح قرارات ويقدر ينفذ داخل المتجر مبدئياً على سلة وشوبيفاي.">
+                            An AI employee for your store that understands merchant context, proposes decisions, and
+                            executes operations directly within the platform (Salla/Shopify).</p>
+
+                        <div class="modules-grid">
+                            <div class="module-item">
+                                <i class="fa-solid fa-chart-pie"></i>
+                                <span class="lang-text" data-en="Analytics & Forecasts"
+                                    data-ar="التقارير والتنبؤ">Analytics & Forecasts</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-users-viewfinder"></i>
+                                <span class="lang-text" data-en="Loyalty & Growth" data-ar="الولاء والنمو">Loyalty &
+                                    Growth</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-headset"></i>
+                                <span class="lang-text" data-en="Customer Care Automation"
+                                    data-ar="أتمتة خدمة العملاء">Customer Care Automation</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-image"></i>
+                                <span class="lang-text" data-en="Creative Studio" data-ar="الاستديو الإبداعي">Creative
+                                    Studio</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIAQ -->
+                <div class="ai-product-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="product-header">
+                            <h3 class="gradient-text gradient-cyan lang-text" data-en="SIAQ" data-ar="سياق">SIAQ</h3>
+                            <span class="product-subtitle lang-text" data-en="Model-Routing Agent"
+                                data-ar="وكيل توجيه النماذج">Model-Routing Agent</span>
+                        </div>
+                        <p class="product-desc lang-text"
+                            data-en="An intelligent agent that parses user requests and perfectly routes tasks to the best foundation model (video, audio, text), returning a unified result and mitigating subscription fatigue."
+                            data-ar="وكيل يقرأ طلب المستخدم ويوزع المهمة على أفضل نموذج (فيديو، صوت، نص) ويرجع نتيجة واحدة موحدة.">
+                            An intelligent agent that parses user requests and perfectly routes tasks to the best
+                            foundation model (video, audio, text), returning a unified result and mitigating
+                            subscription fatigue.</p>
+
+                        <div class="modules-grid">
+                            <div class="module-item">
+                                <i class="fa-solid fa-network-wired"></i>
+                                <span class="lang-text" data-en="Smart Model Routing" data-ar="توجيه ذكي للنماذج">Smart
+                                    Model Routing</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-diagram-project"></i>
+                                <span class="lang-text" data-en="Task Decomposition" data-ar="تفكيك المهام">Task
+                                    Decomposition</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <span class="lang-text" data-en="Unified Outputs" data-ar="مخرجات موحدة">Unified
+                                    Outputs</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-brain"></i>
+                                <span class="lang-text" data-en="Context Retention"
+                                    data-ar="حفظ السياق والمعرفة">Context Retention</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vision -->
+                <div class="ai-product-card tilt-card" data-tilt>
+                    <div class="card-inner">
+                        <div class="product-header">
+                            <h3 class="gradient-text gradient-purple lang-text" data-en="Vision" data-ar="فيجن">Vision
+                            </h3>
+                            <span class="product-subtitle lang-text" data-en="Data Wrapping Intelligence"
+                                data-ar="طبقة تغليف البيانات">Data Wrapping Intelligence</span>
+                        </div>
+                        <p class="product-desc lang-text"
+                            data-en="Ingests raw data (CSV, ERP exports, CRM), understands your business vertical, and automatically reorganizes it into actionable, aesthetic dashboards and pivotal KPIs."
+                            data-ar="أداة تستقبل أي بيانات وتفهم نوع البزنس ثم تنظمها وتعرضها بأفضل شكل تلقائياً وبسرعة.">
+                            Ingests raw data (CSV, ERP exports, CRM), understands your business vertical, and
+                            automatically reorganizes it into actionable, aesthetic dashboards and pivotal KPIs.</p>
+
+                        <div class="modules-grid">
+                            <div class="module-item">
+                                <i class="fa-solid fa-file-csv"></i>
+                                <span class="lang-text" data-en="Omni-Format Ingestion"
+                                    data-ar="استقبال كافة الصيغ">Omni-Format Ingestion</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-shapes"></i>
+                                <span class="lang-text" data-en="Auto-Templates"
+                                    data-ar="قوالب بناء تلقائية">Auto-Templates</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span class="lang-text" data-en="KPI Extraction" data-ar="استخراج المؤشرات">KPI
+                                    Extraction</span>
+                            </div>
+                            <div class="module-item">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span class="lang-text" data-en="Instant Dashboards" data-ar="لوحات تحكم فورية">Instant
+                                    Dashboards</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Teaser Products Section -->
+    <section class="teaser-products section">
+        <div class="container">
+            <div class="section-header animate-up">
+                <div class="badge-tag lang-text" data-en="Upcoming Horizons" data-ar="آفاق قادمة">Upcoming Horizons
+                </div>
+                <h2 class="lang-text" data-en="Future <span class='highlight'>Expansions</span>"
+                    data-ar="توسعات <span class='highlight'>مستقبلية</span>">Future <span
+                        class="highlight">Expansions</span></h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="teaser-grid">
+                <!-- Workspace -->
+                <div class="teaser-card">
+                    <div class="secret-overlay"></div>
+                    <div class="teaser-content">
+                        <i class="fa-solid fa-building-user"></i>
+                        <h4 class="lang-text" data-en="AQL Workspace" data-ar="عقل وركسبيس">AQL Workspace</h4>
+                        <span class="teaser-label lang-text" data-en="Organizational Intelligence"
+                            data-ar="ذكاء مؤسسي">Organizational Intelligence</span>
+                        <p class="lang-text"
+                            data-en="An AI operating layer mapping intelligence to job roles (CEO AI, Ops AI), persistently retaining institutional knowledge regardless of human turnover. Features a Role-Based Dashboard, Org View, and Smart Inbox."
+                            data-ar="طبقة تشغيلية ذكية تثبت الذكاء الاصطناعي للمسميات الوظيفية بدل الأشخاص لحفظ المعرفة والقرارات المؤسسية.">
+                            An AI operating layer mapping intelligence to job roles (CEO AI, Ops AI), persistently
+                            retaining institutional knowledge regardless of human turnover. Features a Role-Based
+                            Dashboard, Org View, and Smart Inbox.</p>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="teaser-card">
+                    <div class="secret-overlay"></div>
+                    <div class="teaser-content">
+                        <i class="fa-solid fa-id-card-clip"></i>
+                        <h4 class="lang-text" data-en="AQL Experience" data-ar="عقل إكسبيرينس">AQL Experience</h4>
+                        <span class="teaser-label lang-text" data-en="Digital Identity & Queues"
+                            data-ar="هوية رقمية وطابور ذكي">Digital Identity & Queues</span>
+                        <p class="lang-text"
+                            data-en="A seamless digital identity and smart service flow. Revolutionizing physical experiences like automated smart queues, gas station interactions without physical chips, and family digital wallets."
+                            data-ar="مسار تجارب ذكية يشمل الهوية الرقمية والطابور الذكي ومحفظة متكاملة لتحسين الخدمة في الميادين المادية كالوقود وغيرها.">
+                            A seamless digital identity and smart service flow. Revolutionizing physical experiences
+                            like automated smart queues, gas station interactions without physical chips, and family
+                            digital wallets.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Marquee Section -->
+    <section class="certifications">
+        <div class="cert-overlay"></div>
+        <div class="container text-center animate-up">
+            <h4 class="sub-heading lang-text" data-en="Verification & Standards" data-ar="التحقق والمعايير">Verification
+                & Standards</h4>
+            <p class="cert-desc lang-text" data-en="INDUSTRY RECOGNIZED CYBERSECURITY PROFICIENCY BADGES"
+                data-ar="شارات الكفاءة في الأمن السيبراني المعترف بها في القطاع">INDUSTRY RECOGNIZED CYBERSECURITY
+                PROFICIENCY BADGES</p>
+        </div>
+
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <img src="assets/OSCP+.svg" alt="OSCP+">
+                <img src="assets/OSCP.svg" alt="OSCP">
+                <img src="assets/OSCE3.svg" alt="OSCE3">
+                <img src="assets/OSEP.svg" alt="OSEP">
+                <img src="assets/OSED.svg" alt="OSED">
+                <img src="assets/OSWE.svg" alt="OSWE">
+                <img src="assets/OSWP.svg" alt="OSWP">
+                <img src="assets/CRTP.png" alt="CRTP" style="height: 50px;">
+                <img src="assets/CTRO.png" alt="CTRO" style="height: 50px;">
+                <img src="assets/ewptx.svg" alt="eWPTX">
+                <img src="assets/ecppt.svg" alt="eCPPT">
+                <img src="assets/emapt.svg" alt="eMAPT">
+            </div>
+            <!-- Duplicated entire content for seamless infinite scroll -->
+            <div class="marquee-content" aria-hidden="true">
+                <img src="assets/OSCP+.svg" alt="OSCP+">
+                <img src="assets/OSCP.svg" alt="OSCP">
+                <img src="assets/OSCE3.svg" alt="OSCE3">
+                <img src="assets/OSEP.svg" alt="OSEP">
+                <img src="assets/OSED.svg" alt="OSED">
+                <img src="assets/OSWE.svg" alt="OSWE">
+                <img src="assets/OSWP.svg" alt="OSWP">
+                <img src="assets/CRTP.png" alt="CRTP" style="height: 50px;">
+                <img src="assets/CTRO.png" alt="CTRO" style="height: 50px;">
+                <img src="assets/ewptx.svg" alt="eWPTX">
+                <img src="assets/ecppt.svg" alt="eCPPT">
+                <img src="assets/emapt.svg" alt="eMAPT">
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience & Approach Section -->
+    <section id="approach" class="dual-section section">
+        <div class="container dual-grid">
+
+            <!-- Experience -->
+            <div id="experience" class="info-block animate-left">
+                <div class="badge-tag lang-text" data-en="Human Intelligence" data-ar="الذكاء البشري">Human Intelligence
+                </div>
+                <h2 class="lang-text" data-en="Team <span class='highlight'>Experience</span>"
+                    data-ar="خبرة <span class='highlight'>الفريق</span>">Team <span class="highlight">Experience</span>
+                </h2>
+                <div class="node-list">
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text"
+                            data-en="<strong>5–10+ years</strong> of hands-on cybersecurity experience per team member."
+                            data-ar="<strong>٥ إلى ١٠ سنوات فأكثر</strong> من الخبرة العملية في الأمن السيبراني لكل عضو في الفريق.">
+                            <strong>5–10+ years</strong> of hands-on cybersecurity experience per team member.
+                        </p>
+                    </div>
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text"
+                            data-en="Strong background in <strong>offensive security</strong>, application security, and adversary simulation."
+                            data-ar="خلفية قوية في <strong>الأمن الهجومي</strong> وأمن التطبيقات ومحاكاة الخصوم.">Strong
+                            background in <strong>offensive security</strong>, application security, and adversary
+                            simulation.</p>
+                    </div>
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text"
+                            data-en="Practical experience across banking, government, fintech, and <strong>enterprise environments</strong>."
+                            data-ar="خبرة عملية عبر القطاعات المصرفية والحكومية والتكنولوجيا المالية و<strong>بيئات الشركات الكبرى</strong>.">
+                            Practical experience across banking, government, fintech, and <strong>enterprise
+                                environments</strong>.</p>
+                    </div>
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text"
+                            data-en="Proven ability to operate in <strong>regulated and high-risk</strong> environments."
+                            data-ar="قدرة مثبتة على العمل في <strong>بيئات شديدة التنظيم وعالية المخاطر</strong>.">
+                            Proven ability to operate in <strong>regulated and high-risk</strong> environments.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approach -->
+            <div class="info-block animate-right">
+                <div class="badge-tag lang-text" data-en="Methodology" data-ar="منهجية العمل">Methodology</div>
+                <h2 class="lang-text" data-en="Engagement <span class='highlight'>Approach</span>"
+                    data-ar="مقاربة <span class='highlight'>الارتباط</span>">Engagement <span
+                        class="highlight">Approach</span></h2>
+                <div class="node-list">
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text" data-en="Clear scope definition and <strong>agreed methodology</strong>."
+                            data-ar="تحديد واضح لنطاق العمل و<strong>منهجية متفق عليها</strong>.">Clear scope definition
+                            and <strong>agreed methodology</strong>.</p>
+                    </div>
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text" data-en="<strong>Risk-based prioritization</strong> of findings."
+                            data-ar="تحديد أولويات النتائج <strong>بناءً على المخاطر</strong>."><strong>Risk-based
+                                prioritization</strong> of findings.</p>
+                    </div>
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text"
+                            data-en="Executive-level reporting supported by <strong>technical detail</strong>."
+                            data-ar="تقارير بمستوى تنفيذي مدعومة بـ <strong>تفاصيل فنية</strong>.">Executive-level
+                            reporting supported by <strong>technical detail</strong>.</p>
+                    </div>
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text" data-en="Practical, actionable <strong>remediation guidance</strong>."
+                            data-ar="إرشادات <strong>معالجة عملية وقابلة للتنفيذ</strong>.">Practical, actionable
+                            <strong>remediation guidance</strong>.
+                        </p>
+                    </div>
+                    <div class="node-item">
+                        <div class="node-dot"></div>
+                        <p class="lang-text"
+                            data-en="Post-engagement clarification and <strong>technical support</strong>."
+                            data-ar="توضيح ما بعد الارتباط و<strong>الدعم الفني</strong>.">Post-engagement clarification
+                            and <strong>technical support</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Delivery & Reporting -->
+    <section class="delivery section">
+        <div class="container text-center animate-up">
+            <div class="badge-tag mx-auto lang-text" data-en="Intelligence Output" data-ar="مخرجات الذكاء">Intelligence
+                Output</div>
+            <h2 class="lang-text" data-en="Delivery & <span class='highlight'>Reporting</span>"
+                data-ar="التسليم و<span class='highlight'>التقارير</span>">Delivery & <span
+                    class="highlight">Reporting</span></h2>
+            <p class="delivery-desc lang-text"
+                data-en="We transform complex technical findings into actionable strategic intelligence."
+                data-ar="نحن نحول النتائج الفنية المعقدة إلى ذكاء استراتيجي قابل للتنفيذ.">We transform complex
+                technical findings into actionable strategic intelligence.</p>
+
+            <div class="delivery-grid">
+                <div class="delivery-card">
+                    <i class="fa-solid fa-file-contract"></i>
+                    <h4 class="lang-text" data-en="Structured Reports" data-ar="تقارير منظمة">Structured Reports</h4>
+                    <p class="lang-text" data-en="Technical reports and executive summaries"
+                        data-ar="تقارير فنية وملخصات تنفيذية">Technical reports and executive summaries</p>
+                </div>
+                <div class="delivery-card">
+                    <i class="fa-solid fa-ranking-star"></i>
+                    <h4 class="lang-text" data-en="Risk Ratings" data-ar="تقييم المخاطر">Risk Ratings</h4>
+                    <p class="lang-text" data-en="Clear risk ratings and remediation guidance"
+                        data-ar="تقييمات واضحة للمخاطر وتوجيهات للمعالجة">Clear risk ratings and remediation guidance
+                    </p>
+                </div>
+                <div class="delivery-card">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <h4 class="lang-text" data-en="Industry Standards" data-ar="معايير الصناعة">Industry Standards</h4>
+                    <p class="lang-text" data-en="Alignment with industry standards and best practices"
+                        data-ar="التوافق مع معايير الصناعة وأفضل الممارسات">Alignment with industry standards and best
+                        practices</p>
+                </div>
+                <div class="delivery-card">
+                    <i class="fa-solid fa-check-double"></i>
+                    <h4 class="lang-text" data-en="Validation Support" data-ar="دعم التحقق">Validation Support</h4>
+                    <p class="lang-text" data-en="Support for re-testing and validation upon request"
+                        data-ar="دعم إعادة الاختبار والتحقق عند الطلب">Support for re-testing and validation upon
+                        request</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="assets/logo_v2.png" alt="AQL Technology" class="logo-img">
+                    <div class="brand-text">
+                        <span class="logo-text lang-text" data-en="AQL TECHNOLOGY" data-ar="عقل التقنية">AQL
+                            TECHNOLOGY</span>
+                        <span class="arabic">عقل التقنية</span>
+                    </div>
+                </div>
+                <p class="lang-text" data-en="Advanced Cybersecurity Solutions & Intelligence Systems."
+                    data-ar="حلول الأمن السيبراني المتقدمة وأنظمة الذكاء.">Advanced Cybersecurity Solutions &
+                    Intelligence Systems.</p>
+            </div>
+
+            <div class="footer-contact">
+                <h4 class="lang-text" data-en="Engage With Us" data-ar="تواصل معنا">Engage With Us</h4>
+                <a href="mailto:info@aql-tech.com" class="contact-link"><i class="fa-solid fa-envelope"></i>
+                    info@aql-tech.com</a>
+                <a href="tel:+966566575579" class="contact-link"><i class="fa-solid fa-phone"
+                        style="margin-right: 10px;"></i> <bdi>+966 56 657 5579</bdi></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="lang-text" data-en="&copy; 2026 AQL Technology. Confidential Cyber Defense Protocol."
+                data-ar="&copy; 2026 عقل التقنية. بروتوكول الدفاع السيبراني السري.">&copy; 2026 AQL Technology.
+                Confidential Cyber Defense Protocol.</p>
+        </div>
+    </footer>
+
+    <!-- Particles.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
