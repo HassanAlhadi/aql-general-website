@@ -118,31 +118,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Bilingual (English/Arabic) Toggle Logic
-    const langToggleBtn = document.getElementById('lang-toggle');
+    // Bilingual (English/Arabic) Toggle Logic — Pill Switch
+    const langSwitch = document.getElementById('lang-toggle');
     let currentLang = 'en';
 
-    if (langToggleBtn) {
-        langToggleBtn.addEventListener('click', () => {
-            currentLang = currentLang === 'en' ? 'ar' : 'en';
+    if (langSwitch) {
+        const langOptions = langSwitch.querySelectorAll('.lang-option');
+        for (const option of langOptions) {
+            option.addEventListener('click', () => {
+                const selectedLang = option.dataset.lang;
+                if (selectedLang === currentLang) return;
 
-            // Update Toggle Button Text
-            langToggleBtn.textContent = currentLang === 'en' ? 'AR' : 'EN';
+                currentLang = selectedLang;
 
-            // Update Document Direction
-            document.documentElement.dir = currentLang === 'en' ? 'ltr' : 'rtl';
-            document.documentElement.lang = currentLang;
+                // Update active state
+                for (const opt of langOptions) {
+                    opt.classList.toggle('active', opt.dataset.lang === currentLang);
+                }
 
-            // Update Translatable Elements
-            const translatableElements = document.querySelectorAll('.lang-text');
-            translatableElements.forEach(el => {
-                if (currentLang === 'ar' && el.dataset.ar) {
-                    el.innerHTML = el.dataset.ar;
-                } else if (currentLang === 'en' && el.dataset.en) {
-                    el.innerHTML = el.dataset.en;
+                // Move the slider
+                if (currentLang === 'ar') {
+                    langSwitch.classList.add('ar');
+                } else {
+                    langSwitch.classList.remove('ar');
+                }
+
+                // Update Document Direction
+                document.documentElement.dir = currentLang === 'en' ? 'ltr' : 'rtl';
+                document.documentElement.lang = currentLang;
+
+                // Update Translatable Elements
+                const translatableElements = document.querySelectorAll('.lang-text');
+                for (const el of translatableElements) {
+                    if (currentLang === 'ar' && el.dataset.ar) {
+                        el.innerHTML = el.dataset.ar;
+                    } else if (currentLang === 'en' && el.dataset.en) {
+                        el.innerHTML = el.dataset.en;
+                    }
                 }
             });
-        });
+        }
     }
 
     // Marquee: auto-clone content to fill any viewport width

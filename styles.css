@@ -280,15 +280,19 @@ h6 {
     align-items: center;
 }
 
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
 .logo {
     display: flex;
     align-items: center;
-    gap: 15px;
 }
 
 .logo-img {
     height: 60px;
-    /* upscale the logo */
     border-radius: 0;
     filter: brightness(0) invert(1);
     transition: var(--transition-fast);
@@ -296,13 +300,6 @@ h6 {
 
 .logo-img:hover {
     transform: scale(1.05);
-}
-
-.logo-text {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 1.2rem;
-    letter-spacing: 2px;
 }
 
 .nav-links {
@@ -322,6 +319,54 @@ h6 {
 .nav-btn:hover {
     color: var(--text-primary);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Language Toggle — Pill Switch */
+.lang-switch {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 4px;
+    cursor: pointer;
+    gap: 0;
+}
+
+.lang-option {
+    position: relative;
+    z-index: 2;
+    padding: 6px 18px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+    user-select: none;
+    border-radius: 26px;
+}
+
+.lang-option.active {
+    color: #fff;
+}
+
+.lang-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: var(--gradient-cyber);
+    border-radius: 26px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    box-shadow: 0 0 12px rgba(0, 242, 255, 0.3);
+}
+
+.lang-switch.ar .lang-slider {
+    transform: translateX(100%);
 }
 
 /* Hero Section */
