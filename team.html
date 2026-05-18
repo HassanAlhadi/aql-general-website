@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>AQL · الداشبورد الداخلي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #C8A96E;
+      --gold-dim: rgba(200,169,110,0.15);
+      --bg: #0A0A0F;
+      --bg-card: #111118;
+      --bg-card2: #16161f;
+      --border: rgba(255,255,255,0.07);
+      --border-gold: rgba(200,169,110,0.2);
+      --text: #E8E0D4;
+      --muted: rgba(232,224,212,0.5);
+      --dim: rgba(232,224,212,0.22);
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    [hidden] { display: none !important; }
+
+    /* ── LOCK SCREEN ── */
+    #lock-screen {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,169,110,0.06) 0%, transparent 60%);
+    }
+
+    .lock-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lock-logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .lock-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .lock-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .input-wrap {
+      width: 100%;
+      position: relative;
+    }
+
+    .lock-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 44px 13px 16px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      direction: ltr;
+      text-align: center;
+      letter-spacing: 3px;
+    }
+
+    .lock-input:focus { border-color: var(--gold); }
+
+    .eye-btn {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--dim);
+      font-size: 16px;
+      padding: 4px;
+    }
+
+    .lock-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px;
+      background: var(--gold);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0A0A0F;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .lock-btn:hover { opacity: 0.88; }
+
+    .lock-error {
+      font-size: 12px;
+      color: #FF6B6B;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-7px); }
+      40%,80% { transform: translateX(7px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+
+    /* ── APP SHELL ── */
+    #app {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(10,10,15,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-logo {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--gold-dim);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .logout-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .logout-btn:hover { color: var(--text); border-color: var(--dim); }
+
+    /* ── DASHBOARD ── */
+    .dashboard {
+      flex: 1;
+      padding: 28px 20px 40px;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--card-color, var(--gold));
+      opacity: 0.7;
+    }
+
+    .project-card:hover {
+      border-color: rgba(255,255,255,0.13);
+      transform: translateY(-2px);
+    }
+
+    .project-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .project-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .project-status {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .status-active {
+      background: rgba(46,196,182,0.12);
+      color: #2EC4B6;
+      border: 1px solid rgba(46,196,182,0.25);
+    }
+
+    .status-planned {
+      background: rgba(200,169,110,0.1);
+      color: var(--gold);
+      border: 1px solid var(--border-gold);
+    }
+
+    .project-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .project-repo {
+      font-size: 10px;
+      color: var(--dim);
+      direction: ltr;
+      font-family: monospace;
+    }
+
+    .project-arrow {
+      font-size: 14px;
+      color: var(--dim);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .project-card:hover .project-arrow {
+      color: var(--gold);
+      transform: translateX(-4px);
+    }
+
+    /* ── PROJECT PANEL ── */
+    #project-panel {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(40px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,0.97);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .panel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--panel-color, var(--gold));
+      margin-left: auto;
+    }
+
+    /* ── TABS ── */
+    .tabs-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      padding: 12px 16px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--gold);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 8px; right: 8px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--gold);
+    }
+
+    /* ── TAB CONTENT ── */
+    .tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px 40px;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Preview */
+    .preview-placeholder {
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 48px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .preview-icon { font-size: 36px; }
+    .preview-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .preview-sub { font-size: 12px; color: var(--muted); }
+
+    .preview-input-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+      margin-top: 8px;
+    }
+
+    .url-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--text);
+      font-family: monospace;
+      outline: none;
+      direction: ltr;
+      transition: border-color 0.2s;
+    }
+    .url-input:focus { border-color: var(--gold); }
+    .url-input::placeholder { color: var(--dim); }
+
+    .save-url-btn {
+      background: var(--gold);
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0A0A0F;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .preview-iframe-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+
+    .preview-iframe-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card2);
+    }
+
+    .iframe-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .iframe-url-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: monospace;
+      direction: ltr;
+      flex: 1;
+      text-align: center;
+    }
+
+    .open-link-btn {
+      font-size: 11px;
+      color: var(--gold);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .preview-iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      display: block;
+    }
+
+    /* Tasks */
+    .tasks-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .tasks-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .tasks-count {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 10px;
+    }
+
+    .issue-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s;
+    }
+    .issue-item:hover { border-color: rgba(255,255,255,0.13); }
+
+    .issue-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2EC4B6;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .issue-dot.closed { background: var(--dim); }
+
+    .issue-body { flex: 1; min-width: 0; }
+
+    .issue-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .issue-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .issue-num {
+      font-size: 11px;
+      color: var(--dim);
+      direction: ltr;
+    }
+
+    .issue-label {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .issue-date {
+      font-size: 10px;
+      color: var(--dim);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--dim);
+      font-size: 13px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Activity */
+    .activity-list { display: flex; flex-direction: column; gap: 0; }
+
+    .commit-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .commit-item:last-child { border-bottom: none; }
+
+    .commit-line {
+      position: absolute;
+      right: 7px;
+      top: 32px;
+      bottom: -14px;
+      width: 1px;
+      background: var(--border);
+    }
+    .commit-item:last-child .commit-line { display: none; }
+
+    .commit-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--border-gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .commit-body { flex: 1; min-width: 0; }
+
+    .commit-msg {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.4;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .commit-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .commit-sha {
+      font-size: 10px;
+      font-family: monospace;
+      color: var(--gold);
+      background: var(--gold-dim);
+      padding: 2px 6px;
+      border-radius: 5px;
+      direction: ltr;
+    }
+
+    .commit-author {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .commit-date {
+      font-size: 10px;
+      color: var(--dim);
+    }
+
+    .api-note {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(200,169,110,0.06);
+      border: 1px solid var(--border-gold);
+      border-radius: 10px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      direction: ltr;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOCK SCREEN ── -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-logo">AQL</div>
+    <div class="lock-title">الداشبورد الداخلي</div>
+    <div class="lock-sub">للفريق فقط · Team Only</div>
+    <div class="input-wrap">
+      <input
+        id="pass-input"
+        class="lock-input"
+        type="password"
+        placeholder="كلمة السر"
+        autocomplete="current-password"
+      />
+      <button class="eye-btn" id="eye-btn" onclick="toggleEye()">👁</button>
+    </div>
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-btn" onclick="tryLogin()">دخول</button>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app" hidden>
+  <header class="app-header">
+    <span class="header-logo">AQL</span>
+    <div class="header-right">
+      <span class="header-tag">فريق داخلي</span>
+      <button class="logout-btn" onclick="logout()">خروج</button>
+    </div>
+  </header>
+
+  <div class="dashboard">
+    <div class="section-label">المشاريع</div>
+    <div class="projects-grid" id="projects-grid"></div>
+  </div>
+</div>
+
+<!-- ── PROJECT PANEL ── -->
+<div id="project-panel" hidden>
+  <div class="panel-header">
+    <button class="back-btn" onclick="closePanel()">&#8592;</button>
+    <span class="panel-title" id="panel-title"></span>
+    <div class="panel-dot" id="panel-dot"></div>
+  </div>
+
+  <div class="tabs-bar">
+    <button class="tab-btn active" data-tab="preview" onclick="switchTab('preview')">معاينة</button>
+    <button class="tab-btn" data-tab="tasks" onclick="switchTab('tasks')">المهام</button>
+    <button class="tab-btn" data-tab="activity" onclick="switchTab('activity')">السجل</button>
+  </div>
+
+  <div class="tab-content">
+    <!-- Preview -->
+    <div id="tab-preview"></div>
+    <!-- Tasks -->
+    <div id="tab-tasks" hidden></div>
+    <!-- Activity -->
+    <div id="tab-activity" hidden></div>
+  </div>
+</div>
+
+<script>
+const PASSWORD = 'aql2026';
+const STORAGE_KEY = 'aql_team_auth';
+const URL_STORAGE = 'aql_project_urls';
+
+const PROJECTS = [
+  {
+    id: 'octen',
+    name: 'Octen',
+    desc: 'منصة تقييم الترفيه · ذوقك هو هويتك',
+    repo: 'HassanAlhadi/octen',
+    color: '#7B61FF',
+    status: 'active',
+    statusLabel: 'قيد التطوير',
+  },
+];
+
+// ── AUTH ──
+function tryLogin() {
+  const val = document.getElementById('pass-input').value;
+  if (val === PASSWORD) {
+    sessionStorage.setItem(STORAGE_KEY, '1');
+    showApp();
+  } else {
+    const card = document.querySelector('.lock-card');
+    const err  = document.getElementById('lock-error');
+    err.textContent = 'كلمة السر غلط';
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+    document.getElementById('pass-input').value = '';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem(STORAGE_KEY);
+  document.getElementById('app').hidden = true;
+  document.getElementById('lock-screen').hidden = false;
+  document.getElementById('pass-input').value = '';
+  document.getElementById('lock-error').textContent = '';
+}
+
+function toggleEye() {
+  const inp = document.getElementById('pass-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+document.getElementById('pass-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') tryLogin();
+});
+
+function showApp() {
+  document.getElementById('lock-screen').hidden = true;
+  document.getElementById('app').hidden = false;
+  renderProjects();
+}
+
+// ── PROJECTS ──
+function renderProjects() {
+  const grid = document.getElementById('projects-grid');
+  grid.innerHTML = PROJECTS.map(p => `
+    <div
+      class="project-card"
+      style="--card-color: ${p.color}"
+      onclick="openProject('${p.id}')"
+    >
+      <div class="project-card-top">
+        <span class="project-name">${p.name}</span>
+        <span class="project-status status-${p.status}">${p.statusLabel}</span>
+      </div>
+      <p class="project-desc">${p.desc}</p>
+      <div class="project-meta">
+        <span class="project-repo">${p.repo}</span>
+        <span class="project-arrow">&#8592;</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── PANEL ──
+let currentProject = null;
+
+function openProject(id) {
+  currentProject = PROJECTS.find(p => p.id === id);
+  document.getElementById('panel-title').textContent = currentProject.name;
+  document.getElementById('panel-dot').style.background = currentProject.color;
+  document.getElementById('project-panel').hidden = false;
+  document.body.style.overflow = 'hidden';
+  switchTab('preview');
+}
+
+function closePanel() {
+  document.getElementById('project-panel').hidden = true;
+  document.body.style.overflow = '';
+  currentProject = null;
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  ['preview','tasks','activity'].forEach(t => {
+    document.getElementById('tab-' + t).hidden = t !== tab;
+  });
+  if (tab === 'preview')  renderPreview();
+  if (tab === 'tasks')    renderTasks();
+  if (tab === 'activity') renderActivity();
+}
+
+// ── PREVIEW ──
+function getSavedUrls() {
+  try { return JSON.parse(localStorage.getItem(URL_STORAGE) || '{}'); }
+  catch { return {}; }
+}
+
+function saveUrl(id, url) {
+  const urls = getSavedUrls();
+  urls[id] = url;
+  localStorage.setItem(URL_STORAGE, JSON.stringify(urls));
+}
+
+function renderPreview() {
+  const el  = document.getElementById('tab-preview');
+  const url = getSavedUrls()[currentProject.id];
+
+  if (url) {
+    el.innerHTML = `
+      <div class="preview-iframe-wrap">
+        <div class="preview-iframe-bar">
+          <div class="iframe-dot" style="background:#FF6B6B"></div>
+          <div class="iframe-dot" style="background:#F7A8D8"></div>
+          <div class="iframe-dot" style="background:#2EC4B6"></div>
+          <span class="iframe-url-label">${url}</span>
+          <a href="${url}" target="_blank" class="open-link-btn">فتح &#8599;</a>
+        </div>
+        <iframe src="${url}" class="preview-iframe" loading="lazy"></iframe>
+      </div>
+      <div style="margin-top:12px; text-align:center">
+        <button onclick="clearUrl('${currentProject.id}')" style="background:none;border:none;font-size:11px;color:var(--dim);cursor:pointer;font-family:Cairo,sans-serif">تغيير الرابط</button>
+      </div>
+    `;
+  } else {
+    el.innerHTML = `
+      <div class="preview-placeholder">
+        <div class="preview-icon">🔗</div>
+        <div class="preview-title">رابط المعاينة</div>
+        <div class="preview-sub">أضف رابط Vercel لتشوف التطبيق هنا مباشرة</div>
+        <div class="preview-input-row">
+          <input
+            id="url-input"
+            class="url-input"
+            type="url"
+            placeholder="https://octen.vercel.app"
+            onkeydown="if(event.key==='Enter')savePreviewUrl()"
+          />
+          <button class="save-url-btn" onclick="savePreviewUrl()">حفظ</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function savePreviewUrl() {
+  const val = document.getElementById('url-input')?.value?.trim();
+  if (!val) return;
+  let url = val;
+  if (!url.startsWith('http')) url = 'https://' + url;
+  saveUrl(currentProject.id, url);
+  renderPreview();
+}
+
+function clearUrl(id) {
+  const urls = getSavedUrls();
+  delete urls[id];
+  localStorage.setItem(URL_STORAGE, JSON.stringify(urls));
+  renderPreview();
+}
+
+// ── TASKS (GitHub Issues) ──
+async function renderTasks() {
+  const el = document.getElementById('tab-tasks');
+  el.innerHTML = `<div class="loading-state"><div class="spinner"></div><br>جاري التحميل...</div>`;
+
+  try {
+    const res  = await fetch(`https://api.github.com/repos/${currentProject.repo}/issues?state=open&per_page=20&sort=created&direction=desc`);
+    if (!res.ok) throw new Error(res.status);
+    const issues = await res.json();
+    const filtered = issues.filter(i => !i.pull_request);
+
+    if (filtered.length === 0) {
+      el.innerHTML = `<div class="empty-state">لا توجد مهام مفتوحة حالياً ✓</div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="tasks-header">
+        <span class="tasks-title">المهام المفتوحة</span>
+        <span class="tasks-count">${filtered.length} مهمة</span>
+      </div>
+      <div>
+        ${filtered.map(issue => {
+          const labels = (issue.labels || []).map(l => `
+            <span class="issue-label" style="background:${'#'+l.color}22;color:${'#'+l.color};border:1px solid ${'#'+l.color}44">${l.name}</span>
+          `).join('');
+          const date = new Date(issue.created_at).toLocaleDateString('ar-SA', { day:'numeric', month:'short' });
+          return `
+            <a class="issue-item" href="${issue.html_url}" target="_blank">
+              <div class="issue-dot"></div>
+              <div class="issue-body">
+                <div class="issue-title">${escHtml(issue.title)}</div>
+                <div class="issue-meta">
+                  <span class="issue-num">#${issue.number}</span>
+                  ${labels}
+                  <span class="issue-date">${date}</span>
+                </div>
+              </div>
+            </a>
+          `;
+        }).join('')}
+      </div>
+      <div class="api-note">المهام مسحوبة من GitHub Issues · اضغط على أي مهمة لتفتحها في GitHub</div>
+    `;
+  } catch (e) {
+    el.innerHTML = `
+      <div class="empty-state">
+        تعذّر تحميل المهام<br>
+        <span style="font-size:11px;color:var(--dim)">تأكد إن الريبو عام أو أضف GitHub Token في الكود</span>
+      </div>
+    `;
+  }
+}
+
+// ── ACTIVITY (GitHub Commits) ──
+async function renderActivity() {
+  const el = document.getElementById('tab-activity');
+  el.innerHTML = `<div class="loading-state"><div class="spinner"></div><br>جاري التحميل...</div>`;
+
+  try {
+    const res     = await fetch(`https://api.github.com/repos/${currentProject.repo}/commits?per_page=12`);
+    if (!res.ok) throw new Error(res.status);
+    const commits = await res.json();
+
+    if (commits.length === 0) {
+      el.innerHTML = `<div class="empty-state">لا توجد commits بعد</div>`;
+      return;
+    }
+
+    const items = commits.map(c => {
+      const msg    = (c.commit.message || '').split('\n')[0];
+      const sha    = c.sha.slice(0, 7);
+      const author = c.commit.author.name;
+      const date   = new Date(c.commit.author.date).toLocaleDateString('ar-SA', { day:'numeric', month:'short', year:'numeric' });
+      return `
+        <div class="commit-item">
+          <div class="commit-dot"></div>
+          <div class="commit-line"></div>
+          <div class="commit-body">
+            <div class="commit-msg">${escHtml(msg)}</div>
+            <div class="commit-meta">
+              <span class="commit-sha">${sha}</span>
+              <span class="commit-author">${escHtml(author)}</span>
+              <span class="commit-date">${date}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    el.innerHTML = `
+      <div class="activity-list">${items}</div>
+      <div class="api-note" style="margin-top:20px">آخر ${commits.length} تعديل من الريبو الرئيسي</div>
+    `;
+  } catch (e) {
+    el.innerHTML = `
+      <div class="empty-state">
+        تعذّر تحميل السجل<br>
+        <span style="font-size:11px;color:var(--dim)">تأكد إن الريبو عام أو أضف GitHub Token في الكود</span>
+      </div>
+    `;
+  }
+}
+
+// ── HELPERS ──
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──
+if (sessionStorage.getItem(STORAGE_KEY) === '1') showApp();
+</script>
+</body>
+</html>
