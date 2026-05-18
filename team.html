@@ -1,976 +1,894 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>AQL · الداشبورد الداخلي</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --gold: #C8A96E;
-      --gold-dim: rgba(200,169,110,0.15);
-      --bg: #0A0A0F;
-      --bg-card: #111118;
-      --bg-card2: #16161f;
-      --border: rgba(255,255,255,0.07);
-      --border-gold: rgba(200,169,110,0.2);
-      --text: #E8E0D4;
-      --muted: rgba(232,224,212,0.5);
-      --dim: rgba(232,224,212,0.22);
-    }
-
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100dvh;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    [hidden] { display: none !important; }
-
-    /* ── LOCK SCREEN ── */
-    #lock-screen {
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,169,110,0.06) 0%, transparent 60%);
-    }
-
-    .lock-card {
-      width: 100%;
-      max-width: 380px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-gold);
-      border-radius: 20px;
-      padding: 40px 32px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .lock-logo {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: var(--gold);
-      margin-bottom: 4px;
-    }
-
-    .lock-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .lock-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-
-    .input-wrap {
-      width: 100%;
-      position: relative;
-    }
-
-    .lock-input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 13px 44px 13px 16px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 14px;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
-      direction: ltr;
-      text-align: center;
-      letter-spacing: 3px;
-    }
-
-    .lock-input:focus { border-color: var(--gold); }
-
-    .eye-btn {
-      position: absolute;
-      left: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--dim);
-      font-size: 16px;
-      padding: 4px;
-    }
-
-    .lock-btn {
-      width: 100%;
-      margin-top: 8px;
-      padding: 13px;
-      background: var(--gold);
-      border: none;
-      border-radius: 12px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      color: #0A0A0F;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .lock-btn:hover { opacity: 0.88; }
-
-    .lock-error {
-      font-size: 12px;
-      color: #FF6B6B;
-      min-height: 18px;
-      text-align: center;
-    }
-
-    @keyframes shake {
-      0%,100% { transform: translateX(0); }
-      20%,60% { transform: translateX(-7px); }
-      40%,80% { transform: translateX(7px); }
-    }
-    .shake { animation: shake 0.4s ease; }
-
-    /* ── APP SHELL ── */
-    #app {
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ── HEADER ── */
-    .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background: rgba(10,10,15,0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 20px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .header-logo {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      color: var(--gold);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .header-tag {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--muted);
-      background: var(--gold-dim);
-      border: 1px solid var(--border-gold);
-      border-radius: 20px;
-      padding: 3px 10px;
-    }
-
-    .logout-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 5px 12px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 11px;
-      color: var(--muted);
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .logout-btn:hover { color: var(--text); border-color: var(--dim); }
-
-    /* ── DASHBOARD ── */
-    .dashboard {
-      flex: 1;
-      padding: 28px 20px 40px;
-      max-width: 760px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 14px;
-    }
-
-    .project-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.15s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--card-color, var(--gold));
-      opacity: 0.7;
-    }
-
-    .project-card:hover {
-      border-color: rgba(255,255,255,0.13);
-      transform: translateY(-2px);
-    }
-
-    .project-card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .project-name {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .project-status {
-      font-size: 10px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 20px;
-      white-space: nowrap;
-    }
-
-    .status-active {
-      background: rgba(46,196,182,0.12);
-      color: #2EC4B6;
-      border: 1px solid rgba(46,196,182,0.25);
-    }
-
-    .status-planned {
-      background: rgba(200,169,110,0.1);
-      color: var(--gold);
-      border: 1px solid var(--border-gold);
-    }
-
-    .project-desc {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 14px;
-      line-height: 1.6;
-    }
-
-    .project-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .project-repo {
-      font-size: 10px;
-      color: var(--dim);
-      direction: ltr;
-      font-family: monospace;
-    }
-
-    .project-arrow {
-      font-size: 14px;
-      color: var(--dim);
-      transition: color 0.2s, transform 0.2s;
-    }
-    .project-card:hover .project-arrow {
-      color: var(--gold);
-      transform: translateX(-4px);
-    }
-
-    /* ── PROJECT PANEL ── */
-    #project-panel {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 50;
-      display: flex;
-      flex-direction: column;
-      animation: slideIn 0.25s ease;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(40px); opacity: 0; }
-      to   { transform: translateX(0);    opacity: 1; }
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 20px;
-      height: 56px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,10,15,0.97);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      flex-shrink: 0;
-    }
-
-    .back-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 18px;
-      padding: 6px;
-      display: flex;
-      align-items: center;
-    }
-    .back-btn:hover { color: var(--text); }
-
-    .panel-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .panel-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--panel-color, var(--gold));
-      margin-left: auto;
-    }
-
-    /* ── TABS ── */
-    .tabs-bar {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      padding: 0 20px;
-      background: var(--bg);
-      flex-shrink: 0;
-    }
-
-    .tab-btn {
-      padding: 12px 16px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      background: none;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      transition: color 0.2s;
-    }
-
-    .tab-btn.active {
-      color: var(--gold);
-    }
-
-    .tab-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 8px; right: 8px;
-      height: 2px;
-      border-radius: 2px;
-      background: var(--gold);
-    }
-
-    /* ── TAB CONTENT ── */
-    .tab-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 20px 40px;
-      max-width: 760px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    /* Preview */
-    .preview-placeholder {
-      background: var(--bg-card);
-      border: 1px dashed var(--border);
-      border-radius: 16px;
-      padding: 48px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      text-align: center;
-    }
-
-    .preview-icon { font-size: 36px; }
-    .preview-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .preview-sub { font-size: 12px; color: var(--muted); }
-
-    .preview-input-row {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      max-width: 400px;
-      margin-top: 8px;
-    }
-
-    .url-input {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: var(--text);
-      font-family: monospace;
-      outline: none;
-      direction: ltr;
-      transition: border-color 0.2s;
-    }
-    .url-input:focus { border-color: var(--gold); }
-    .url-input::placeholder { color: var(--dim); }
-
-    .save-url-btn {
-      background: var(--gold);
-      border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      color: #0A0A0F;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .preview-iframe-wrap {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-    }
-
-    .preview-iframe-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-card2);
-    }
-
-    .iframe-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-    }
-
-    .iframe-url-label {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: monospace;
-      direction: ltr;
-      flex: 1;
-      text-align: center;
-    }
-
-    .open-link-btn {
-      font-size: 11px;
-      color: var(--gold);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .preview-iframe {
-      width: 100%;
-      height: 600px;
-      border: none;
-      display: block;
-    }
-
-    /* Tasks */
-    .tasks-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .tasks-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .tasks-count {
-      font-size: 11px;
-      color: var(--muted);
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2px 10px;
-    }
-
-    .issue-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 14px 16px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 8px;
-      text-decoration: none;
-      color: inherit;
-      transition: border-color 0.2s;
-    }
-    .issue-item:hover { border-color: rgba(255,255,255,0.13); }
-
-    .issue-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #2EC4B6;
-      margin-top: 5px;
-      flex-shrink: 0;
-    }
-
-    .issue-dot.closed { background: var(--dim); }
-
-    .issue-body { flex: 1; min-width: 0; }
-
-    .issue-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 4px;
-      line-height: 1.4;
-    }
-
-    .issue-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .issue-num {
-      font-size: 11px;
-      color: var(--dim);
-      direction: ltr;
-    }
-
-    .issue-label {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    .issue-date {
-      font-size: 10px;
-      color: var(--dim);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .loading-state {
-      text-align: center;
-      padding: 40px;
-      color: var(--dim);
-      font-size: 13px;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--border);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin-bottom: 10px;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Activity */
-    .activity-list { display: flex; flex-direction: column; gap: 0; }
-
-    .commit-item {
-      display: flex;
-      gap: 14px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-
-    .commit-item:last-child { border-bottom: none; }
-
-    .commit-line {
-      position: absolute;
-      right: 7px;
-      top: 32px;
-      bottom: -14px;
-      width: 1px;
-      background: var(--border);
-    }
-    .commit-item:last-child .commit-line { display: none; }
-
-    .commit-dot {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: var(--bg-card);
-      border: 2px solid var(--border-gold);
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .commit-body { flex: 1; min-width: 0; }
-
-    .commit-msg {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 4px;
-      line-height: 1.4;
-      direction: ltr;
-      text-align: right;
-    }
-
-    .commit-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .commit-sha {
-      font-size: 10px;
-      font-family: monospace;
-      color: var(--gold);
-      background: var(--gold-dim);
-      padding: 2px 6px;
-      border-radius: 5px;
-      direction: ltr;
-    }
-
-    .commit-author {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .commit-date {
-      font-size: 10px;
-      color: var(--dim);
-    }
-
-    .api-note {
-      margin-top: 16px;
-      padding: 12px 16px;
-      background: rgba(200,169,110,0.06);
-      border: 1px solid var(--border-gold);
-      border-radius: 10px;
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.6;
-      direction: ltr;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0F">
+<title>AQL · Workspace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #07070B;
+  --bg: #0A0A0F;
+  --bg-elev: #0F0F17;
+  --bg-card: #14141E;
+  --bg-card-2: #1A1A26;
+  --bg-hover: #1E1E2C;
+  --border: rgba(255,255,255,0.06);
+  --border-soft: rgba(255,255,255,0.035);
+  --border-strong: rgba(255,255,255,0.1);
+  --gold: #C8A96E;
+  --gold-2: #D4B57A;
+  --gold-soft: rgba(200,169,110,0.12);
+  --gold-border: rgba(200,169,110,0.22);
+  --text: #F2EDE2;
+  --text-2: rgba(242,237,226,0.62);
+  --text-3: rgba(242,237,226,0.38);
+  --text-dim: rgba(242,237,226,0.22);
+  --green: #4ADE80;
+  --green-soft: rgba(74,222,128,0.12);
+  --red: #FF6B6B;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+*::selection { background: var(--gold-soft); color: var(--gold-2); }
+
+html, body { height: 100%; }
+body {
+  font-family: 'Cairo', 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern", "liga";
+  overflow-x: hidden;
+}
+
+[hidden] { display: none !important; }
+button { font-family: inherit; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+#lock {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,169,110,0.06), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(200,169,110,0.04), transparent 60%),
+    var(--bg-deep);
+  z-index: 1000;
+}
+.lock-box {
+  width: 100%; max-width: 380px;
+  background: linear-gradient(180deg, var(--bg-elev), var(--bg-card));
+  border: 1px solid var(--gold-border);
+  border-radius: 24px;
+  padding: 44px 32px 32px;
+  box-shadow: 0 24px 80px -20px rgba(0,0,0,0.6);
+  text-align: center;
+}
+.lock-mark {
+  width: 56px; height: 56px;
+  margin: 0 auto 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-2));
+  display: flex; align-items: center; justify-content: center;
+  color: #0A0A0F; font-weight: 900; font-size: 19px; letter-spacing: 1px;
+  box-shadow: 0 8px 28px -6px rgba(200,169,110,0.4);
+}
+.lock-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+.lock-sub { font-size: 12px; color: var(--text-3); margin-bottom: 24px; letter-spacing: 0.3px; }
+.lock-input {
+  width: 100%; padding: 13px 16px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  color: var(--text); font-family: 'Inter', monospace; font-size: 14px;
+  text-align: center; letter-spacing: 4px;
+  outline: none; transition: border-color 0.2s, background 0.2s;
+}
+.lock-input:focus { border-color: var(--gold); background: var(--bg); }
+.lock-input::placeholder { color: var(--text-dim); letter-spacing: 0.5px; font-family: 'Cairo', sans-serif; }
+.lock-err { font-size: 12px; color: var(--red); min-height: 16px; margin: 8px 0; }
+.lock-btn {
+  width: 100%; padding: 13px; margin-top: 4px;
+  background: var(--gold); border: none; border-radius: 12px;
+  color: #0A0A0F; font-weight: 700; font-size: 14px;
+  transition: transform 0.1s, background 0.2s;
+}
+.lock-btn:hover { background: var(--gold-2); }
+.lock-btn:active { transform: scale(0.98); }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+.shake { animation: shake 0.3s ease; }
+
+#app { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 240px; flex-shrink: 0;
+  background: var(--bg-elev);
+  border-inline-start: 1px solid var(--border);
+  padding: 20px 14px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 10px 24px;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 16px;
+}
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-2));
+  display: flex; align-items: center; justify-content: center;
+  color: #0A0A0F; font-weight: 900; font-size: 13px; letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.brand-text { display: flex; flex-direction: column; min-width: 0; }
+.brand-name { font-size: 13px; font-weight: 800; color: var(--text); }
+.brand-sub { font-size: 10px; color: var(--text-3); letter-spacing: 1px; }
+.nav-section { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+.nav-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-3); padding: 8px 12px 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; color: var(--text-2);
+  transition: background 0.15s, color 0.15s; position: relative;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text); }
+.nav-item.active { background: var(--gold-soft); color: var(--gold); }
+.nav-item.active::after {
+  content: ''; position: absolute;
+  top: 8px; bottom: 8px;
+  inset-inline-start: 0; width: 2px;
+  background: var(--gold); border-radius: 2px;
+}
+.nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+.nav-item .badge {
+  margin-inline-start: auto;
+  font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px;
+  background: var(--border-strong); color: var(--text-2);
+}
+.sidebar-foot {
+  margin-top: auto; padding: 12px;
+  border-top: 1px solid var(--border-soft);
+  display: flex; align-items: center; gap: 10px;
+}
+.sf-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gold-soft); border: 1px solid var(--gold-border);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: var(--gold); font-size: 11px;
+}
+.sf-text { flex: 1; min-width: 0; }
+.sf-name { font-size: 12px; font-weight: 700; }
+.sf-role { font-size: 10px; color: var(--text-3); }
+.logout-link {
+  font-size: 10px; color: var(--text-3);
+  background: none; border: 1px solid var(--border-soft);
+  border-radius: 6px; padding: 4px 8px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.logout-link:hover { color: var(--red); border-color: rgba(255,107,107,0.3); }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.topbar {
+  height: 56px; padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,15,0.85); backdrop-filter: blur(14px);
+  position: sticky; top: 0; z-index: 20;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-3); font-weight: 500; min-width: 0;
+}
+.breadcrumb a { color: var(--text-3); transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--text-2); }
+.breadcrumb .sep { color: var(--text-dim); }
+.breadcrumb .current { color: var(--text); font-weight: 700; }
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+.tb-btn {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 12px;
+  color: var(--text-2); font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.tb-btn:hover { background: var(--bg-hover); color: var(--text); }
+.mobile-menu { display: none; background: none; border: none; color: var(--text-2); padding: 6px; border-radius: 6px; }
+.page { padding: 32px 40px 80px; max-width: 960px; width: 100%; margin: 0 auto; }
+.page-head { margin-bottom: 32px; }
+.eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 10px;
+}
+.page-title { font-size: 28px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 8px; }
+.page-desc { font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 580px; }
+.section { margin-bottom: 36px; }
+.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.2px; }
+.section-action { font-size: 12px; color: var(--gold); font-weight: 600; }
+
+.welcome-card {
+  background: linear-gradient(135deg, rgba(200,169,110,0.08), rgba(200,169,110,0.02));
+  border: 1px solid var(--gold-border); border-radius: 18px;
+  padding: 28px 32px; margin-bottom: 32px;
+  position: relative; overflow: hidden;
+}
+.welcome-card::before {
+  content: ''; position: absolute;
+  top: -40px; right: -40px; width: 160px; height: 160px;
+  background: radial-gradient(circle, var(--gold-soft), transparent 70%);
+  pointer-events: none;
+}
+.welcome-greet { font-size: 14px; color: var(--text-2); margin-bottom: 6px; }
+.welcome-h { font-size: 22px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.2px; }
+.welcome-sub { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 480px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.stat {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px 20px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.stat:hover { border-color: var(--border-strong); }
+.stat-label { font-size: 11px; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.stat-value { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.stat-meta { font-size: 11px; color: var(--text-3); }
+.feed-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.feed-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 18px; border-bottom: 1px solid var(--border-soft);
+  transition: background 0.15s;
+}
+.feed-item:last-child { border-bottom: none; }
+.feed-item:hover { background: var(--bg-card-2); }
+.feed-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); margin-top: 6px; flex-shrink: 0; }
+.feed-body { flex: 1; min-width: 0; }
+.feed-msg { font-size: 13px; color: var(--text); line-height: 1.5; margin-bottom: 3px; direction: ltr; text-align: start; }
+.feed-meta { font-size: 11px; color: var(--text-3); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.feed-sha { font-family: 'Inter', monospace; font-size: 10px; background: var(--gold-soft); color: var(--gold); padding: 1px 6px; border-radius: 4px; }
+
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.pcard {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s, background 0.15s;
+  display: block;
+}
+.pcard:hover { border-color: var(--border-strong); background: var(--bg-card-2); transform: translateY(-2px); }
+.pcard-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--p-color, var(--gold)); opacity: 0.7; }
+.pcard-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.pcard-name { font-size: 18px; font-weight: 800; letter-spacing: -0.2px; }
+.pcard-status {
+  font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
+}
+.pcard-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.status-active { color: var(--green); background: var(--green-soft); border: 1px solid rgba(74,222,128,0.2); }
+.status-planned { color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold-border); }
+.pcard-desc { font-size: 13px; color: var(--text-2); line-height: 1.55; margin-bottom: 16px; }
+.pcard-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--border-soft); }
+.pcard-repo { font-family: 'Inter', monospace; font-size: 11px; color: var(--text-3); direction: ltr; }
+.pcard-arrow { color: var(--text-3); font-size: 14px; transition: color 0.15s, transform 0.15s; }
+.pcard:hover .pcard-arrow { color: var(--gold); transform: translateX(-4px); }
+
+.proj-hero {
+  background: linear-gradient(135deg, var(--p-color-soft, rgba(200,169,110,0.08)) 0%, transparent 60%);
+  border: 1px solid var(--border); border-radius: 18px;
+  padding: 28px 32px; margin-bottom: 24px; position: relative;
+}
+.proj-hero-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.proj-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--p-color, var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  color: #0A0A0F; font-weight: 900; font-size: 17px;
+}
+.proj-hero h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 3px; }
+.proj-hero-meta { font-size: 12px; color: var(--text-3); font-family: 'Inter', monospace; direction: ltr; }
+.proj-hero-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 620px; }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 10px 16px; font-size: 13px; font-weight: 600;
+  color: var(--text-3); background: none; border: none;
+  position: relative; white-space: nowrap; transition: color 0.15s;
+}
+.tab:hover { color: var(--text-2); }
+.tab.active { color: var(--text); }
+.tab.active::after { content: ''; position: absolute; bottom: -1px; left: 8px; right: 8px; height: 2px; background: var(--gold); border-radius: 2px; }
+.tab .count { font-family: 'Inter', sans-serif; font-size: 10px; background: var(--border-strong); color: var(--text-2); padding: 1px 6px; border-radius: 10px; margin-inline-start: 6px; }
+.tab.active .count { background: var(--gold-soft); color: var(--gold); }
+
+.preview-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.preview-toolbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--bg-card-2); }
+.tl-dots { display: flex; gap: 6px; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; }
+.tl-url { flex: 1; font-family: 'Inter', monospace; font-size: 11px; color: var(--text-2); background: var(--bg-deep); border: 1px solid var(--border-soft); border-radius: 6px; padding: 4px 10px; direction: ltr; text-align: center; }
+.tl-open { font-size: 11px; font-weight: 600; color: var(--gold); display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--gold-border); transition: background 0.15s; }
+.tl-open:hover { background: var(--gold-soft); }
+.preview-frame { width: 100%; height: 640px; border: none; background: var(--bg); display: block; }
+
+.tasks-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 8px 0; }
+.tasks-header-row { padding: 14px 24px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-soft); margin-bottom: 8px; }
+.tasks-progress { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-3); }
+.tasks-bar { width: 100px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.tasks-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-2)); border-radius: 2px; transition: width 0.4s ease; }
+.tasks-pct { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--gold); font-size: 13px; }
+.task-section { padding: 16px 24px 12px; }
+.tsect-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.tsect-count { font-family: 'Inter', sans-serif; font-size: 10px; background: var(--bg-hover); color: var(--text-2); padding: 1px 7px; border-radius: 10px; letter-spacing: 0; }
+.task { display: flex; align-items: flex-start; gap: 12px; padding: 8px 10px; border-radius: 8px; transition: background 0.12s; }
+.task:hover { background: var(--bg-card-2); }
+.task-check { width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid var(--border-strong); flex-shrink: 0; margin-top: 3px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.task-check svg { opacity: 0; transition: opacity 0.15s; }
+.task.done .task-check { background: var(--gold); border-color: var(--gold); }
+.task.done .task-check svg { opacity: 1; color: #0A0A0F; }
+.task-text { font-size: 13px; line-height: 1.6; color: var(--text); flex: 1; }
+.task.done .task-text { color: var(--text-3); text-decoration: line-through; text-decoration-color: var(--text-dim); }
+
+.timeline { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 4px 0; }
+.tl-item { display: flex; gap: 14px; padding: 14px 24px; position: relative; }
+.tl-item:not(:last-child)::before { content: ''; position: absolute; inset-inline-start: 30px; top: 30px; bottom: -6px; width: 1px; background: var(--border); }
+.tl-bullet { width: 14px; height: 14px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--gold-border); flex-shrink: 0; margin-top: 4px; position: relative; z-index: 1; }
+.tl-item:first-child .tl-bullet { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-soft); }
+.tl-body { flex: 1; min-width: 0; }
+.tl-msg { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; margin-bottom: 4px; direction: ltr; text-align: start; }
+.tl-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tl-sha { font-family: 'Inter', monospace; font-size: 10px; background: var(--gold-soft); color: var(--gold); padding: 1px 7px; border-radius: 5px; }
+.tl-author { font-size: 11px; color: var(--text-2); }
+.tl-date { font-size: 10px; color: var(--text-3); }
+
+.empty { padding: 64px 24px; text-align: center; color: var(--text-3); font-size: 13px; }
+.empty-icon { font-size: 40px; opacity: 0.4; margin-bottom: 12px; }
+.empty-title { font-size: 14px; font-weight: 700; color: var(--text-2); margin-bottom: 6px; }
+.loading { padding: 40px 24px; text-align: center; color: var(--text-3); font-size: 12px; }
+.spinner { display: inline-block; width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 10px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 880px) {
+  .sidebar { position: fixed; inset-inline-end: 0; top: 0; bottom: 0; z-index: 50; transform: translateX(100%); transition: transform 0.25s ease; box-shadow: -20px 0 60px -10px rgba(0,0,0,0.5); }
+  .sidebar.open { transform: translateX(0) !important; }
+  .mobile-menu { display: inline-flex; }
+  .page { padding: 24px 20px 60px; }
+  .topbar { padding: 0 16px; }
+  .welcome-card { padding: 22px 20px; }
+  .proj-hero { padding: 22px 20px; }
+  .pcard { padding: 18px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .preview-frame { height: 480px; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .page-title { font-size: 22px; }
+  .welcome-h { font-size: 18px; }
+}
+.scrim { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 49; backdrop-filter: blur(2px); }
+.scrim.show { display: block; }
+</style>
 </head>
 <body>
 
-<!-- ── LOCK SCREEN ── -->
-<div id="lock-screen">
-  <div class="lock-card">
-    <div class="lock-logo">AQL</div>
-    <div class="lock-title">الداشبورد الداخلي</div>
-    <div class="lock-sub">للفريق فقط · Team Only</div>
-    <div class="input-wrap">
-      <input
-        id="pass-input"
-        class="lock-input"
-        type="password"
-        placeholder="كلمة السر"
-        autocomplete="current-password"
-      />
-      <button class="eye-btn" id="eye-btn" onclick="toggleEye()">👁</button>
-    </div>
-    <div class="lock-error" id="lock-error"></div>
-    <button class="lock-btn" onclick="tryLogin()">دخول</button>
+<div id="lock">
+  <div class="lock-box">
+    <div class="lock-mark">AQL</div>
+    <div class="lock-title">لوحة تحكم الفريق</div>
+    <div class="lock-sub">Team Workspace · للوصول الخاص فقط</div>
+    <input id="pass" class="lock-input" type="password" placeholder="كلمة السر" autocomplete="current-password" />
+    <div id="err" class="lock-err"></div>
+    <button class="lock-btn" id="loginBtn">دخول</button>
   </div>
 </div>
 
-<!-- ── APP ── -->
 <div id="app" hidden>
-  <header class="app-header">
-    <span class="header-logo">AQL</span>
-    <div class="header-right">
-      <span class="header-tag">فريق داخلي</span>
-      <button class="logout-btn" onclick="logout()">خروج</button>
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">AQL</div>
+      <div class="brand-text">
+        <span class="brand-name">عقل التقنية</span>
+        <span class="brand-sub">WORKSPACE</span>
+      </div>
     </div>
-  </header>
 
-  <div class="dashboard">
-    <div class="section-label">المشاريع</div>
-    <div class="projects-grid" id="projects-grid"></div>
+    <div class="nav-section">
+      <div class="nav-label">الرئيسية</div>
+      <a class="nav-item" data-route="/" href="#/">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L12 4l9 8M5 10v10h14V10"/></svg>
+        نظرة عامة
+      </a>
+      <a class="nav-item" data-route="/projects" href="#/projects">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+        المشاريع
+        <span class="badge" id="navProjectCount">1</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">المشاريع</div>
+      <div id="navProjects"></div>
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="sf-avatar">H</div>
+      <div class="sf-text">
+        <div class="sf-name">Hassan</div>
+        <div class="sf-role">Founder</div>
+      </div>
+      <button class="logout-link" onclick="logout()">خروج</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="menuBtn" aria-label="القائمة">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <nav class="breadcrumb" id="crumb"></nav>
+      <div class="topbar-actions">
+        <button class="tb-btn" onclick="refresh()" aria-label="تحديث">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+          تحديث
+        </button>
+      </div>
+    </header>
+
+    <div id="view"></div>
   </div>
-</div>
-
-<!-- ── PROJECT PANEL ── -->
-<div id="project-panel" hidden>
-  <div class="panel-header">
-    <button class="back-btn" onclick="closePanel()">&#8592;</button>
-    <span class="panel-title" id="panel-title"></span>
-    <div class="panel-dot" id="panel-dot"></div>
-  </div>
-
-  <div class="tabs-bar">
-    <button class="tab-btn active" data-tab="preview" onclick="switchTab('preview')">معاينة</button>
-    <button class="tab-btn" data-tab="tasks" onclick="switchTab('tasks')">المهام</button>
-    <button class="tab-btn" data-tab="activity" onclick="switchTab('activity')">السجل</button>
-  </div>
-
-  <div class="tab-content">
-    <div id="tab-preview"></div>
-    <div id="tab-tasks" hidden></div>
-    <div id="tab-activity" hidden></div>
-</div>
 </div>
 
 <script>
 const PASSWORD = 'aql2026';
-const STORAGE_KEY = 'aql_team_auth';
-const URL_STORAGE = 'aql_project_urls';
+const AUTH_KEY = 'aql_team_auth';
 
 const PROJECTS = [
   {
     id: 'octen',
     name: 'Octen',
-    desc: 'منصة تقييم الترفيه · ذوقك هو هويتك',
+    initial: 'O',
+    desc: 'منصة اجتماعية تركز على الترفيه · ذوقك هو هويتك. منصة عربية لمشاركة تقييمات الأفلام والمسلسلات والألعاب والسفر.',
     repo: 'HassanAlhadi/octen',
+    branch: 'main',
+    preview: 'https://octen.vercel.app',
     color: '#7B61FF',
     status: 'active',
     statusLabel: 'قيد التطوير',
+    tagline: 'منصة تقييم الترفيه',
   },
 ];
 
+const $ = id => document.getElementById(id);
+const lock = $('lock'), app = $('app');
+
+function authed() { return sessionStorage.getItem(AUTH_KEY) === '1'; }
+function unlock() { sessionStorage.setItem(AUTH_KEY, '1'); }
+function logout() {
+  sessionStorage.removeItem(AUTH_KEY);
+  app.hidden = true;
+  lock.hidden = false;
+  $('pass').value = '';
+  $('err').textContent = '';
+}
+
 function tryLogin() {
-  const val = document.getElementById('pass-input').value;
-  if (val === PASSWORD) {
-    sessionStorage.setItem(STORAGE_KEY, '1');
+  if ($('pass').value === PASSWORD) {
+    unlock();
     showApp();
   } else {
-    const card = document.querySelector('.lock-card');
-    const err  = document.getElementById('lock-error');
-    err.textContent = 'كلمة السر غلط';
-    card.classList.remove('shake');
-    void card.offsetWidth;
-    card.classList.add('shake');
-    document.getElementById('pass-input').value = '';
+    $('err').textContent = 'كلمة السر غير صحيحة';
+    const box = document.querySelector('.lock-box');
+    box.classList.remove('shake');
+    void box.offsetWidth;
+    box.classList.add('shake');
+    $('pass').value = '';
   }
 }
 
-function logout() {
-  sessionStorage.removeItem(STORAGE_KEY);
-  document.getElementById('app').hidden = true;
-  document.getElementById('lock-screen').hidden = false;
-  document.getElementById('pass-input').value = '';
-  document.getElementById('lock-error').textContent = '';
-}
-
-function toggleEye() {
-  const inp = document.getElementById('pass-input');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
-
-document.getElementById('pass-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') tryLogin();
-});
+$('loginBtn').addEventListener('click', tryLogin);
+$('pass').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
 
 function showApp() {
-  document.getElementById('lock-screen').hidden = true;
-  document.getElementById('app').hidden = false;
-  renderProjects();
+  lock.hidden = true;
+  app.hidden = false;
+  renderSidebarProjects();
+  $('navProjectCount').textContent = PROJECTS.length;
+  route();
 }
 
-function renderProjects() {
-  const grid = document.getElementById('projects-grid');
-  grid.innerHTML = PROJECTS.map(p => `
-    <div class="project-card" style="--card-color: ${p.color}" onclick="openProject('${p.id}')">
-      <div class="project-card-top">
-        <span class="project-name">${p.name}</span>
-        <span class="project-status status-${p.status}">${p.statusLabel}</span>
-      </div>
-      <p class="project-desc">${p.desc}</p>
-      <div class="project-meta">
-        <span class="project-repo">${p.repo}</span>
-        <span class="project-arrow">&#8592;</span>
-      </div>
-    </div>
-  `).join('');
+window.addEventListener('hashchange', route);
+window.addEventListener('load', () => { if (authed()) showApp(); });
+
+function route() {
+  const hash = (location.hash || '#/').slice(1);
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('data-route') === hash || el.getAttribute('data-route') === hash.split('/').slice(0,3).join('/'));
+  });
+  closeMobile();
+
+  if (hash === '/' || hash === '') return viewHome();
+  if (hash === '/projects') return viewProjectsList();
+  const m = hash.match(/^\/project\/([^/]+)(?:\/([^/]+))?\/?$/);
+  if (m) {
+    const p = PROJECTS.find(x => x.id === m[1]);
+    if (p) return viewProject(p, m[2] || 'overview');
+  }
+  viewHome();
 }
 
-let currentProject = null;
-
-function openProject(id) {
-  currentProject = PROJECTS.find(p => p.id === id);
-  document.getElementById('panel-title').textContent = currentProject.name;
-  document.getElementById('panel-dot').style.background = currentProject.color;
-  document.getElementById('project-panel').hidden = false;
-  document.body.style.overflow = 'hidden';
-  switchTab('preview');
+function setView(html) { $('view').innerHTML = html; window.scrollTo(0, 0); }
+function setCrumb(items) {
+  $('crumb').innerHTML = items.map((it, i) => {
+    const last = i === items.length - 1;
+    const node = last
+      ? '<span class="current">' + it.label + '</span>'
+      : '<a href="' + it.href + '">' + it.label + '</a>';
+    return i > 0 ? '<span class="sep">/</span>' + node : node;
+  }).join('');
 }
 
-function closePanel() {
-  document.getElementById('project-panel').hidden = true;
-  document.body.style.overflow = '';
-  currentProject = null;
+function renderSidebarProjects() {
+  $('navProjects').innerHTML = PROJECTS.map(p =>
+    '<a class="nav-item" data-route="/project/' + p.id + '" href="#/project/' + p.id + '">' +
+      '<span class="nav-icon" style="background:' + p.color + ';border-radius:4px;width:10px;height:10px;display:inline-block;margin:3px"></span>' +
+      p.name +
+    '</a>'
+  ).join('');
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  ['preview','tasks','activity'].forEach(t => { document.getElementById('tab-' + t).hidden = t !== tab; });
-  if (tab === 'preview')  renderPreview();
-  if (tab === 'tasks')    renderTasks();
-  if (tab === 'activity') renderActivity();
+async function viewHome() {
+  setCrumb([{ label: 'نظرة عامة' }]);
+
+  setView(
+    '<div class="page">' +
+      '<section class="welcome-card">' +
+        '<div class="welcome-greet">' + greeting() + ' ✦</div>' +
+        '<h1 class="welcome-h">أهلاً بك في مساحة العمل</h1>' +
+        '<p class="welcome-sub">كل مشاريعك ومهامك ونشاطك في مكان واحد. تابع التقدم ولا تفقد خيطاً.</p>' +
+      '</section>' +
+      '<section class="section">' +
+        '<div class="section-head"><span class="section-title">إحصائيات سريعة</span></div>' +
+        '<div class="stats-grid">' +
+          '<div class="stat"><div class="stat-label">المشاريع النشطة</div><div class="stat-value">' + PROJECTS.filter(p=>p.status==='active').length + '</div><div class="stat-meta">من أصل ' + PROJECTS.length + '</div></div>' +
+          '<div class="stat"><div class="stat-label">المهام المفتوحة</div><div class="stat-value" id="statOpen">—</div><div class="stat-meta" id="statOpenMeta">جاري الحساب…</div></div>' +
+          '<div class="stat"><div class="stat-label">آخر تعديل</div><div class="stat-value" id="statLast">—</div><div class="stat-meta" id="statLastMeta">جاري الحساب…</div></div>' +
+          '<div class="stat"><div class="stat-label">الأعضاء</div><div class="stat-value">2</div><div class="stat-meta">Hassan · Dev</div></div>' +
+        '</div>' +
+      '</section>' +
+      '<section class="section">' +
+        '<div class="section-head"><span class="section-title">آخر النشاطات</span><a class="section-action" href="#/projects">المشاريع ←</a></div>' +
+        '<div class="feed-card" id="recentFeed"><div class="loading"><div class="spinner"></div><div>تحميل النشاط…</div></div></div>' +
+      '</section>' +
+    '</div>'
+  );
+
+  loadHomeStats();
 }
 
-function getSavedUrls() {
-  try { return JSON.parse(localStorage.getItem(URL_STORAGE) || '{}'); } catch { return {}; }
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 5) return 'مساء النور';
+  if (h < 12) return 'صباح الخير';
+  if (h < 18) return 'مساء الخير';
+  return 'مساء النور';
 }
 
-function saveUrl(id, url) {
-  const urls = getSavedUrls(); urls[id] = url;
-  localStorage.setItem(URL_STORAGE, JSON.stringify(urls));
-}
+async function loadHomeStats() {
+  let totalOpen = 0, totalDone = 0;
+  let latestCommit = null, latestProject = null;
 
-function renderPreview() {
-  const el  = document.getElementById('tab-preview');
-  const url = getSavedUrls()[currentProject.id];
-  if (url) {
-    el.innerHTML = `
-      <div class="preview-iframe-wrap">
-        <div class="preview-iframe-bar">
-          <div class="iframe-dot" style="background:#FF6B6B"></div>
-          <div class="iframe-dot" style="background:#F7A8D8"></div>
-          <div class="iframe-dot" style="background:#2EC4B6"></div>
-          <span class="iframe-url-label">${url}</span>
-          <a href="${url}" target="_blank" class="open-link-btn">فتح &#8599;</a>
-        </div>
-        <iframe src="${url}" class="preview-iframe" loading="lazy"></iframe>
-      </div>
-      <div style="margin-top:12px;text-align:center">
-        <button onclick="clearUrl('${currentProject.id}')" style="background:none;border:none;font-size:11px;color:var(--dim);cursor:pointer;font-family:Cairo,sans-serif">تغيير الرابط</button>
-      </div>`;
+  for (const p of PROJECTS) {
+    const [tasks, commits] = await Promise.all([
+      fetchTasks(p).catch(() => null),
+      fetchCommits(p).catch(() => null),
+    ]);
+
+    if (tasks) tasks.forEach(s => s.tasks.forEach(t => t.done ? totalDone++ : totalOpen++));
+    if (commits && commits.length) {
+      const c = commits[0];
+      const date = new Date(c.commit.author.date);
+      if (!latestCommit || date > new Date(latestCommit.commit.author.date)) {
+        latestCommit = c;
+        latestProject = p;
+      }
+    }
+  }
+
+  $('statOpen').textContent = totalOpen.toString();
+  $('statOpenMeta').textContent = totalDone + ' مكتمل · ' + totalOpen + ' متبقي';
+
+  if (latestCommit) {
+    $('statLast').textContent = relTime(new Date(latestCommit.commit.author.date));
+    $('statLastMeta').textContent = latestProject.name;
   } else {
-    el.innerHTML = `
-      <div class="preview-placeholder">
-        <div class="preview-icon">🔗</div>
-        <div class="preview-title">رابط المعاينة</div>
-        <div class="preview-sub">أضف رابط Vercel لتشوف التطبيق هنا مباشرة</div>
-        <div class="preview-input-row">
-          <input id="url-input" class="url-input" type="url" placeholder="https://octen.vercel.app" onkeydown="if(event.key==='Enter')savePreviewUrl()" />
-          <button class="save-url-btn" onclick="savePreviewUrl()">حفظ</button>
-        </div>
-      </div>`;
+    $('statLast').textContent = '—';
+    $('statLastMeta').textContent = 'لا نشاط';
   }
+
+  const all = [];
+  for (const p of PROJECTS) {
+    const cs = await fetchCommits(p).catch(() => null);
+    if (cs) cs.slice(0, 5).forEach(c => all.push({ p, c }));
+  }
+  all.sort((a, b) => new Date(b.c.commit.author.date) - new Date(a.c.commit.author.date));
+
+  if (all.length === 0) {
+    $('recentFeed').innerHTML = '<div class="empty"><div class="empty-icon">⌘</div><div class="empty-title">لا نشاط بعد</div><div>سيظهر هنا آخر التعديلات من جميع المشاريع</div></div>';
+    return;
+  }
+
+  $('recentFeed').innerHTML = all.slice(0, 8).map(({ p, c }) => {
+    const msg = (c.commit.message || '').split('\n')[0];
+    return (
+      '<a class="feed-item" href="' + c.html_url + '" target="_blank" rel="noopener">' +
+        '<div class="feed-dot" style="background:' + p.color + '"></div>' +
+        '<div class="feed-body">' +
+          '<div class="feed-msg">' + escape(msg) + '</div>' +
+          '<div class="feed-meta">' +
+            '<span style="color:' + p.color + ';font-weight:600">' + p.name + '</span>' +
+            '<span class="feed-sha">' + c.sha.slice(0,7) + '</span>' +
+            '<span>' + relTime(new Date(c.commit.author.date)) + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</a>'
+    );
+  }).join('');
 }
 
-function savePreviewUrl() {
-  const val = document.getElementById('url-input')?.value?.trim();
-  if (!val) return;
-  let url = val;
-  if (!url.startsWith('http')) url = 'https://' + url;
-  saveUrl(currentProject.id, url);
-  renderPreview();
+function viewProjectsList() {
+  setCrumb([{ label: 'الرئيسية', href: '#/' }, { label: 'المشاريع' }]);
+  setView(
+    '<div class="page">' +
+      '<div class="page-head">' +
+        '<div class="eyebrow">Workspace</div>' +
+        '<h1 class="page-title">المشاريع</h1>' +
+        '<p class="page-desc">جميع مشاريع AQL النشطة والقادمة. اضغط على مشروع لمتابعة المهام والنشاط.</p>' +
+      '</div>' +
+      '<div class="projects-grid">' +
+        PROJECTS.map(p =>
+          '<a class="pcard" style="--p-color:' + p.color + '" href="#/project/' + p.id + '">' +
+            '<div class="pcard-accent"></div>' +
+            '<div class="pcard-top">' +
+              '<span class="pcard-name">' + p.name + '</span>' +
+              '<span class="pcard-status status-' + p.status + '">' + p.statusLabel + '</span>' +
+            '</div>' +
+            '<p class="pcard-desc">' + p.desc + '</p>' +
+            '<div class="pcard-foot"><span class="pcard-repo">' + p.repo + '</span><span class="pcard-arrow">←</span></div>' +
+          '</a>'
+        ).join('') +
+      '</div>' +
+    '</div>'
+  );
 }
 
-function clearUrl(id) {
-  const urls = getSavedUrls(); delete urls[id];
-  localStorage.setItem(URL_STORAGE, JSON.stringify(urls));
-  renderPreview();
+function viewProject(p, tab) {
+  setCrumb([
+    { label: 'الرئيسية', href: '#/' },
+    { label: 'المشاريع', href: '#/projects' },
+    { label: p.name }
+  ]);
+
+  setView(
+    '<div class="page" style="--p-color:' + p.color + ';--p-color-soft:' + p.color + '1A">' +
+      '<div class="proj-hero">' +
+        '<div class="proj-hero-top">' +
+          '<div class="proj-icon">' + p.initial + '</div>' +
+          '<div><h1>' + p.name + '</h1><div class="proj-hero-meta">' + p.repo + ' · ' + p.tagline + '</div></div>' +
+        '</div>' +
+        '<p class="proj-hero-desc">' + p.desc + '</p>' +
+      '</div>' +
+      '<div class="tabs" id="tabs">' +
+        '<button class="tab ' + (tab==='overview'?'active':'') + '" data-tab="overview">معاينة</button>' +
+        '<button class="tab ' + (tab==='tasks'?'active':'') + '" data-tab="tasks">المهام<span class="count" id="taskCount">—</span></button>' +
+        '<button class="tab ' + (tab==='activity'?'active':'') + '" data-tab="activity">السجل</button>' +
+      '</div>' +
+      '<div id="tabContent"></div>' +
+    '</div>'
+  );
+
+  document.querySelectorAll('#tabs .tab').forEach(t => {
+    t.addEventListener('click', () => {
+      const newTab = t.dataset.tab;
+      location.hash = '#/project/' + p.id + '/' + newTab;
+    });
+  });
+
+  if (tab === 'overview')  return renderOverview(p);
+  if (tab === 'tasks')     return renderTasks(p);
+  if (tab === 'activity')  return renderActivity(p);
+  renderOverview(p);
 }
 
-async function renderTasks() {
-  const el = document.getElementById('tab-tasks');
-  el.innerHTML = `<div class="loading-state"><div class="spinner"></div><br>جاري التحميل...</div>`;
+function renderOverview(p) {
+  $('tabContent').innerHTML =
+    '<div class="preview-wrap">' +
+      '<div class="preview-toolbar">' +
+        '<div class="tl-dots">' +
+          '<div class="tl-dot" style="background:#FF6B6B"></div>' +
+          '<div class="tl-dot" style="background:#F7A8D8"></div>' +
+          '<div class="tl-dot" style="background:#2EC4B6"></div>' +
+        '</div>' +
+        '<div class="tl-url">' + p.preview + '</div>' +
+        '<a class="tl-open" href="' + p.preview + '" target="_blank" rel="noopener">فتح ↗</a>' +
+      '</div>' +
+      '<iframe class="preview-frame" src="' + p.preview + '" loading="lazy" referrerpolicy="no-referrer"></iframe>' +
+    '</div>';
+
+  fetchTasks(p).then(sections => {
+    if (!sections) return;
+    let open = 0;
+    sections.forEach(s => s.tasks.forEach(t => { if (!t.done) open++; }));
+    const el = $('taskCount');
+    if (el) el.textContent = open;
+  }).catch(() => {});
+}
+
+async function renderTasks(p) {
+  $('tabContent').innerHTML = '<div class="loading"><div class="spinner"></div><div>تحميل المهام…</div></div>';
   try {
-    const res = await fetch(`https://api.github.com/repos/${currentProject.repo}/issues?state=open&per_page=20&sort=created&direction=desc`);
-    if (!res.ok) throw new Error(res.status);
-    const issues = (await res.json()).filter(i => !i.pull_request);
-    if (issues.length === 0) { el.innerHTML = `<div class="empty-state">لا توجد مهام مفتوحة حالياً ✓</div>`; return; }
-    el.innerHTML = `
-      <div class="tasks-header">
-        <span class="tasks-title">المهام المفتوحة</span>
-        <span class="tasks-count">${issues.length} مهمة</span>
-      </div>
-      <div>${issues.map(issue => {
-        const labels = (issue.labels||[]).map(l=>`<span class="issue-label" style="background:#${l.color}22;color:#${l.color};border:1px solid #${l.color}44">${l.name}</span>`).join('');
-        const date = new Date(issue.created_at).toLocaleDateString('ar-SA',{day:'numeric',month:'short'});
-        return `<a class="issue-item" href="${issue.html_url}" target="_blank"><div class="issue-dot"></div><div class="issue-body"><div class="issue-title">${escHtml(issue.title)}</div><div class="issue-meta"><span class="issue-num">#${issue.number}</span>${labels}<span class="issue-date">${date}</span></div></div></a>`;
-      }).join('')}</div>
-      <div class="api-note">المهام مسحوبة من GitHub Issues · اضغط على أي مهمة لتفتحها في GitHub</div>`;
-  } catch(e) {
-    el.innerHTML = `<div class="empty-state">تعذّر تحميل المهام<br><span style="font-size:11px;color:var(--dim)">تأكد إن الريبو عام أو أضف GitHub Token</span></div>`;
+    const sections = await fetchTasks(p);
+    if (!sections || sections.length === 0) {
+      $('tabContent').innerHTML =
+        '<div class="tasks-wrap"><div class="empty">' +
+          '<div class="empty-icon">✓</div>' +
+          '<div class="empty-title">لا توجد مهام بعد</div>' +
+          '<div>أضف ملف <code style="background:var(--bg-deep);padding:2px 6px;border-radius:4px;font-family:Inter,monospace;font-size:11px;color:var(--gold)">task.md</code> في جذر الريبو</div>' +
+        '</div></div>';
+      return;
+    }
+
+    let total = 0, done = 0;
+    sections.forEach(s => s.tasks.forEach(t => { total++; if (t.done) done++; }));
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    $('taskCount').textContent = total - done;
+
+    const sectionsHtml = sections.map(s =>
+      '<div class="task-section">' +
+        '<div class="tsect-title">' + escape(s.title) +
+          '<span class="tsect-count">' + s.tasks.filter(t=>t.done).length + '/' + s.tasks.length + '</span>' +
+        '</div>' +
+        s.tasks.map(t =>
+          '<div class="task ' + (t.done?'done':'') + '">' +
+            '<div class="task-check">' +
+              '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+            '</div>' +
+            '<div class="task-text">' + escape(t.text) + '</div>' +
+          '</div>'
+        ).join('') +
+      '</div>'
+    ).join('');
+
+    $('tabContent').innerHTML =
+      '<div class="tasks-wrap">' +
+        '<div class="tasks-header-row">' +
+          '<div class="tasks-progress">' +
+            '<span>' + done + ' / ' + total + ' مكتمل</span>' +
+            '<div class="tasks-bar"><div class="tasks-bar-fill" style="width:' + pct + '%"></div></div>' +
+          '</div>' +
+          '<div class="tasks-pct">' + pct + '%</div>' +
+        '</div>' +
+        sectionsHtml +
+      '</div>';
+  } catch (e) {
+    $('tabContent').innerHTML =
+      '<div class="tasks-wrap"><div class="empty">' +
+        '<div class="empty-icon">⚠</div>' +
+        '<div class="empty-title">تعذّر تحميل المهام</div>' +
+        '<div>تأكد إن ملف task.md موجود في فرع ' + p.branch + ' أو إن الريبو عام.</div>' +
+      '</div></div>';
   }
 }
 
-async function renderActivity() {
-  const el = document.getElementById('tab-activity');
-  el.innerHTML = `<div class="loading-state"><div class="spinner"></div><br>جاري التحميل...</div>`;
+async function renderActivity(p) {
+  $('tabContent').innerHTML = '<div class="loading"><div class="spinner"></div><div>تحميل السجل…</div></div>';
   try {
-    const res = await fetch(`https://api.github.com/repos/${currentProject.repo}/commits?per_page=12`);
-    if (!res.ok) throw new Error(res.status);
-    const commits = await res.json();
-    if (commits.length === 0) { el.innerHTML = `<div class="empty-state">لا توجد commits بعد</div>`; return; }
-    el.innerHTML = `
-      <div class="activity-list">${commits.map(c => {
-        const msg  = (c.commit.message||'').split('\n')[0];
-        const sha  = c.sha.slice(0,7);
-        const auth = c.commit.author.name;
-        const date = new Date(c.commit.author.date).toLocaleDateString('ar-SA',{day:'numeric',month:'short',year:'numeric'});
-        return `<div class="commit-item"><div class="commit-dot"></div><div class="commit-line"></div><div class="commit-body"><div class="commit-msg">${escHtml(msg)}</div><div class="commit-meta"><span class="commit-sha">${sha}</span><span class="commit-author">${escHtml(auth)}</span><span class="commit-date">${date}</span></div></div></div>`;
-      }).join('')}</div>
-      <div class="api-note" style="margin-top:20px">آخر ${commits.length} تعديل من الريبو الرئيسي</div>`;
-  } catch(e) {
-    el.innerHTML = `<div class="empty-state">تعذّر تحميل السجل<br><span style="font-size:11px;color:var(--dim)">تأكد إن الريبو عام</span></div>`;
+    const commits = await fetchCommits(p);
+    if (!commits || commits.length === 0) {
+      $('tabContent').innerHTML = '<div class="timeline"><div class="empty"><div class="empty-icon">∅</div><div class="empty-title">لا توجد commits بعد</div></div></div>';
+      return;
+    }
+    $('tabContent').innerHTML =
+      '<div class="timeline">' +
+        commits.slice(0, 20).map(c => {
+          const msg = (c.commit.message || '').split('\n')[0];
+          return (
+            '<a class="tl-item" href="' + c.html_url + '" target="_blank" rel="noopener" style="text-decoration:none">' +
+              '<div class="tl-bullet"></div>' +
+              '<div class="tl-body">' +
+                '<div class="tl-msg">' + escape(msg) + '</div>' +
+                '<div class="tl-meta">' +
+                  '<span class="tl-sha">' + c.sha.slice(0,7) + '</span>' +
+                  '<span class="tl-author">' + escape(c.commit.author.name) + '</span>' +
+                  '<span class="tl-date">' + relTime(new Date(c.commit.author.date)) + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</a>'
+          );
+        }).join('') +
+      '</div>';
+  } catch (e) {
+    $('tabContent').innerHTML = '<div class="timeline"><div class="empty"><div class="empty-icon">⚠</div><div class="empty-title">تعذّر تحميل السجل</div></div></div>';
   }
 }
 
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+async function fetchTasks(p) {
+  const url = 'https://raw.githubusercontent.com/' + p.repo + '/' + p.branch + '/task.md';
+  const res = await fetch(url, { cache: 'no-cache' });
+  if (!res.ok) {
+    const fb = await fetch('https://raw.githubusercontent.com/' + p.repo + '/main/task.md', { cache: 'no-cache' });
+    if (!fb.ok) return null;
+    return parseTaskMd(await fb.text());
+  }
+  return parseTaskMd(await res.text());
 }
 
-if (sessionStorage.getItem(STORAGE_KEY) === '1') showApp();
+async function fetchCommits(p) {
+  const res = await fetch('https://api.github.com/repos/' + p.repo + '/commits?per_page=20&sha=' + p.branch);
+  if (!res.ok) {
+    const fb = await fetch('https://api.github.com/repos/' + p.repo + '/commits?per_page=20');
+    if (!fb.ok) return null;
+    return fb.json();
+  }
+  return res.json();
+}
+
+function parseTaskMd(md) {
+  const lines = md.split('\n');
+  const sections = [];
+  let current = null;
+  for (const raw of lines) {
+    const line = raw.replace(/\r/g, '');
+    const heading = line.match(/^#{1,6}\s+(.+?)\s*$/);
+    const task = line.match(/^\s*[-*]\s*\[([ xX])\]\s+(.+?)\s*$/);
+
+    if (heading) {
+      current = { title: heading[1].trim(), tasks: [] };
+      sections.push(current);
+    } else if (task) {
+      if (!current) { current = { title: 'المهام', tasks: [] }; sections.push(current); }
+      current.tasks.push({ done: task[1].toLowerCase() === 'x', text: task[2].trim() });
+    }
+  }
+  return sections.filter(s => s.tasks.length > 0);
+}
+
+function escape(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function relTime(date) {
+  const s = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (s < 60)     return 'الآن';
+  if (s < 3600)   return Math.floor(s / 60) + ' د';
+  if (s < 86400)  return Math.floor(s / 3600) + ' س';
+  if (s < 604800) return Math.floor(s / 86400) + ' ي';
+  if (s < 2592000) return Math.floor(s / 604800) + ' أ';
+  return date.toLocaleDateString('ar-SA', { day: 'numeric', month: 'short' });
+}
+
+function refresh() { route(); }
+
+$('menuBtn').addEventListener('click', () => {
+  $('sidebar').classList.toggle('open');
+  $('scrim').classList.toggle('show');
+});
+$('scrim').addEventListener('click', closeMobile);
+function closeMobile() {
+  $('sidebar').classList.remove('open');
+  $('scrim').classList.remove('show');
+}
+
+if (authed()) showApp();
 </script>
 </body>
 </html>
