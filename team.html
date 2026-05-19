@@ -354,6 +354,16 @@ const PROJECTS=[
     type:'تطبيق ويب', priority:'high', started:'ديسمبر 2025',
     team:['Hassan','Dev'], links:[],
   },
+  {
+    id:'masarif', name:'Masarif', initial:'م',
+    desc:'تطبيق لإدارة المصاريف والميزانية الشخصية · تتبع إنفاقك وخطط لمستقبلك المالي.',
+    repo:'HassanAlhadi/masarif', branch:'main',
+    preview:'',
+    color:'#10B981', status:'active', statusLabel:'قيد التطوير', tagline:'إدارة المصاريف الشخصية',
+    stack:['React','TypeScript','Tailwind'],
+    type:'تطبيق ويب', priority:'medium', started:'2026',
+    team:['Hassan'], links:[],
+  },
 ];
 // ──────────────────────────────────────────────────────────────
 
@@ -622,9 +632,8 @@ function renderPreview(p){
       '<div class="nd-steps"><div class="nd-steps-title">خطوات نشر '+esc(p.name)+' على Vercel</div>'+
       '<div class="nd-step"><div class="nd-num">1</div><div>افتح <span class="nd-code">vercel.com</span> → <strong>New Project</strong></div></div>'+
       '<div class="nd-step"><div class="nd-num">2</div><div>استورد <span class="nd-code">'+esc(p.repo)+'</span> من GitHub</div></div>'+
-      '<div class="nd-step"><div class="nd-num">3</div><div>غيّر Root Directory إلى <span class="nd-code">client</span></div></div>'+
-      '<div class="nd-step"><div class="nd-num">4</div><div>اضغط Deploy وانسخ الرابط الناتج</div></div>'+
-      '<div class="nd-step"><div class="nd-num">5</div><div>ضع الرابط في <span class="nd-code">preview</span> في إعدادات المشروع</div></div>'+
+      '<div class="nd-step"><div class="nd-num">3</div><div>اضغط Deploy وانسخ الرابط الناتج</div></div>'+
+      '<div class="nd-step"><div class="nd-num">4</div><div>ضع الرابط في <span class="nd-code">preview</span> في إعدادات المشروع</div></div>'+
       '</div></div></div>';
   }else{
     $('tabContent').innerHTML='<div class="preview-wrap">'+
