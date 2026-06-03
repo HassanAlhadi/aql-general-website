@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masarif — Privacy Policy</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep: #03050a;
+            --bg-card: rgba(12, 16, 26, 0.6);
+            --accent-cyan: #00f2ff;
+            --accent-blue: #3d7eff;
+            --accent-purple: #8a2be2;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8ea8;
+            --text-muted: #565670;
+            --gradient-cyber: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --border-glow: rgba(0, 242, 255, 0.2);
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; background-color: var(--bg-deep); }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-primary);
+            line-height: 1.7;
+            background-color: var(--bg-deep);
+            min-height: 100vh;
+        }
+
+        /* Background mesh */
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,242,255,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(61,126,255,0.04) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Nav */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 5%;
+            background: rgba(3, 5, 10, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-cyber);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 14px;
+            color: #03050a;
+        }
+
+        .nav-name {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .nav-name span {
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-back {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .nav-back:hover { color: var(--accent-cyan); }
+
+        /* Main */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 64px 5% 100px;
+        }
+
+        /* Header */
+        .page-badge {
+            display: inline-block;
+            background: rgba(0, 242, 255, 0.08);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 242, 255, 0.18);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 5px 14px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .page-title span {
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-meta {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-glow), transparent);
+            margin-bottom: 48px;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 18px;
+            background: var(--gradient-cyber);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .section p,
+        .section li {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        .section ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 8px;
+        }
+
+        .section ul li {
+            padding: 4px 0 4px 18px;
+            position: relative;
+        }
+
+        .section ul li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        /* Highlight card */
+        .card-highlight {
+            background: rgba(0, 242, 255, 0.04);
+            border: 1px solid rgba(0, 242, 255, 0.12);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-top: 12px;
+        }
+
+        .card-highlight p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Contact */
+        .contact-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0,242,255,0.3);
+            transition: border-color 0.2s;
+        }
+        .contact-link:hover { border-color: var(--accent-cyan); }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 24px 5%;
+            border-top: 1px solid var(--border-glass);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+        footer a:hover { color: var(--accent-cyan); }
+    </style>
+</head>
+
+<body>
+    <div class="bg-mesh"></div>
+
+    <nav>
+        <a class="nav-brand" href="https://aql-tech.com">
+            <div class="nav-logo">A</div>
+            <span class="nav-name">AQL <span>Technology</span></span>
+        </a>
+        <a class="nav-back" href="https://aql-tech.com">&#8592; Back to AQL</a>
+    </nav>
+
+    <main>
+        <div class="page-badge">Legal</div>
+        <h1 class="page-title"><span>Masarif</span> Privacy Policy</h1>
+        <p class="page-meta">Effective date: June 3, 2026 &nbsp;·&nbsp; Last updated: June 3, 2026</p>
+        <div class="divider"></div>
+
+        <div class="section">
+            <h2>Overview</h2>
+            <div class="card-highlight">
+                <p>Masarif is a fully local expense-tracking app. <strong style="color:#fff">We collect no personal data, operate no servers, and transmit nothing off your device.</strong> Your financial information stays on your iPhone — always.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Data We Collect</h2>
+            <p>Masarif does not collect, store, or transmit any personal information. All data entered into the app — including transaction amounts, merchant names, and budget settings — is stored exclusively on your device using Apple's SwiftData framework.</p>
+        </div>
+
+        <div class="section">
+            <h2>No Network Requests</h2>
+            <p>The app makes no network requests of any kind. There are no analytics SDKs, no crash reporters, no ad networks, and no third-party libraries that phone home. You can verify this by inspecting the app in a proxy tool — you will see zero outbound connections.</p>
+        </div>
+
+        <div class="section">
+            <h2>iOS Shortcuts Integration</h2>
+            <p>Masarif integrates with the iOS Shortcuts app to allow automatic logging of bank SMS messages. This integration works entirely on-device:</p>
+            <ul>
+                <li>SMS text is passed locally from the iOS Shortcuts automation to Masarif.</li>
+                <li>No SMS content is sent to any server.</li>
+                <li>Processing happens entirely within the app's process on your device.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Data Backup</h2>
+            <p>Masarif offers an optional local backup feature that exports your data as a JSON file. This file is saved to a location you choose (e.g., Files app, iCloud Drive). We have no access to this file. iCloud Drive backup, if used, is governed by Apple's iCloud Privacy Policy.</p>
+        </div>
+
+        <div class="section">
+            <h2>Widgets</h2>
+            <p>Masarif includes a home-screen widget that displays spending totals. Widget data is shared between the app and the widget extension via an on-device App Group container — it never leaves your device.</p>
+        </div>
+
+        <div class="section">
+            <h2>Children's Privacy</h2>
+            <p>Masarif is not directed at children under 13 and does not knowingly collect information from children. Because we collect no data at all, there is nothing to delete or correct.</p>
+        </div>
+
+        <div class="section">
+            <h2>Changes to This Policy</h2>
+            <p>If we ever change this policy in a material way, we will update the effective date above and — where applicable — notify users through the App Store release notes.</p>
+        </div>
+
+        <div class="section">
+            <h2>Contact</h2>
+            <p>Questions about this privacy policy? Reach us at <a class="contact-link" href="mailto:hassan.alhadi1@hotmail.com">hassan.alhadi1@hotmail.com</a></p>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 <a href="https://aql-tech.com">AQL Technology</a> &nbsp;·&nbsp; Masarif Privacy Policy
+    </footer>
+</body>
+
+</html>
