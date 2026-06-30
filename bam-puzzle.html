@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#FF2E1F" />
+<title>BAM — ما تطلع قبل ما تاخذ كودك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --red:        oklch(0.635 0.243 27);
+    --red-deep:   oklch(0.505 0.215 28);
+    --red-soft:   oklch(0.70 0.20 25);
+    --ink:        oklch(0.245 0.045 40);
+    --pink:       oklch(0.905 0.055 350);
+    --pink-deep:  oklch(0.845 0.092 352);
+    --cream:      oklch(0.955 0.026 78);
+    --paper:      oklch(0.975 0.015 80);
+    --teal:       oklch(0.515 0.092 215);
+    --bun:        oklch(0.765 0.125 70);
+    --bun-hi:     oklch(0.855 0.105 80);
+    --bun-lo:     oklch(0.665 0.125 58);
+    --cheese:     oklch(0.805 0.165 67);
+    --cheese-lo:  oklch(0.735 0.165 58);
+    --patty:      oklch(0.405 0.078 48);
+    --patty-lo:   oklch(0.315 0.062 42);
+    --lettuce:    oklch(0.735 0.155 138);
+    --lettuce-lo: oklch(0.645 0.155 140);
+
+    --shadow-1: 0 2px 0 oklch(0.245 0.045 40 / .12);
+    --ease: cubic-bezier(.22,1,.36,1);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; height:100%; }
+  body{
+    font-family:"Tajawal", system-ui, sans-serif;
+    color:var(--ink);
+    background:var(--pink);
+    overflow:hidden;
+    position:fixed; inset:0;
+    -webkit-user-select:none; user-select:none;
+    overscroll-behavior:none;
+  }
+  .stage{
+    position:relative; height:100%; width:100%;
+    max-width:520px; margin:0 auto;
+    display:flex; flex-direction:column;
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--cream) 0%, var(--pink) 55%, var(--pink-deep) 100%);
+  }
+  /* halftone dot texture overlay */
+  .stage::before{
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+    background-image:radial-gradient(var(--red) 1.1px, transparent 1.2px);
+    background-size:16px 16px; opacity:.06;
+    mask-image:linear-gradient(180deg, transparent, #000 40%, #000 75%, transparent);
+  }
+
+  /* ============ HEADER / LOGO ============ */
+  header{
+    position:relative; z-index:5;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:calc(14px + env(safe-area-inset-top,0px)) 20px 10px;
+  }
+  .logo{ display:flex; align-items:center; gap:9px; }
+  .logo .mark{ height:56px; width:auto; display:block; object-fit:contain; filter:drop-shadow(0 2px 0 oklch(0.505 0.215 28 / .25)); }
+  .logo .word{
+    font-family:"Lalezar", cursive; font-size:30px; line-height:.8; letter-spacing:.5px;
+    color:var(--red); -webkit-text-stroke:1.5px var(--red-deep); paint-order:stroke fill;
+    transform:translateY(1px);
+  }
+  .tag{
+    font-family:"Lalezar"; font-size:11px; color:var(--red-deep);
+    border:2px solid var(--red-deep); border-radius:999px; padding:3px 10px 1px;
+    transform:rotate(-3deg); white-space:nowrap; background:var(--cream);
+  }
+
+  /* ============ SCREENS ============ */
+  main{ position:relative; z-index:2; flex:1; min-height:0; }
+  .screen{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center;
+    padding:4px 22px calc(20px + var(--safe-b));
+    opacity:0; visibility:hidden; transform:translateY(14px) scale(.99);
+    transition:opacity .5s var(--ease), transform .5s var(--ease), visibility .5s;
+  }
+  .screen.active{ opacity:1; visibility:visible; transform:none; }
+
+  /* ---- mascot ---- */
+  .mascot-wrap{ position:relative; display:flex; justify-content:center; }
+  .mascot{ display:block; width:100%; height:auto; object-fit:contain; pointer-events:none; -webkit-user-drag:none; }
+  .reveal-img{ width:100%; height:100%; object-fit:contain; padding:7%; -webkit-user-drag:none; }
+  .float{ animation:float 3.4s var(--ease) infinite; transform-origin:50% 90%; }
+  @keyframes float{ 0%,100%{transform:translateY(0) rotate(-.4deg)} 50%{transform:translateY(-10px) rotate(.5deg)} }
+
+  /* sticker badges */
+  .sticker{
+    position:absolute; font-family:"Lalezar"; color:var(--cream);
+    background:var(--red); padding:7px 13px 4px; border-radius:999px;
+    border:2.5px solid var(--ink); box-shadow:var(--shadow-1);
+    font-size:15px; z-index:4; letter-spacing:.5px;
+  }
+  .sticker.s-fresh{ top:8%; inset-inline-start:2%; transform:rotate(-13deg); background:var(--teal); }
+  .sticker.s-salty{ top:20%; inset-inline-end:0%; transform:rotate(11deg); }
+
+  /* ---- type ---- */
+  .kicker{
+    font-family:"Lalezar"; color:var(--red-deep); font-size:14px; letter-spacing:1px;
+    background:var(--cream); border:2px solid var(--red-deep); padding:5px 14px 2px;
+    border-radius:999px; transform:rotate(-1.5deg); margin-bottom:2px;
+  }
+  h1{
+    font-family:"Lalezar"; font-weight:400;
+    font-size:clamp(40px, 13vw, 62px); line-height:.92; margin:6px 0 4px;
+    color:var(--red); text-align:center;
+    -webkit-text-stroke:2px var(--red-deep); paint-order:stroke fill;
+    text-shadow:3px 4px 0 oklch(0.845 0.092 352 / .9);
+  }
+  h1 em{ font-style:normal; color:var(--ink); -webkit-text-stroke-color:var(--ink); display:inline-block; transform:rotate(-2deg); }
+  .lede{ font-size:16px; font-weight:500; text-align:center; color:var(--ink); max-width:30ch; line-height:1.5; opacity:.85; }
+  .micro{ font-family:"Lalezar"; font-size:13px; letter-spacing:2px; color:var(--red-deep); opacity:.7; margin-top:6px; }
+
+  /* ---- button ---- */
+  .btn{
+    font-family:"Lalezar"; font-size:23px; color:var(--cream);
+    background:var(--red); border:3px solid var(--ink);
+    border-radius:18px; padding:15px 34px 11px; margin-top:4px;
+    box-shadow:0 5px 0 var(--ink), 0 5px 0 3px oklch(0.245 0.045 40 / .15);
+    cursor:pointer; transition:transform .12s var(--ease), box-shadow .12s var(--ease);
+    display:inline-flex; align-items:center; gap:9px; letter-spacing:.5px;
+  }
+  .btn:active{ transform:translateY(5px); box-shadow:0 0 0 var(--ink); }
+  .btn .arr{ font-size:20px; transform:translateY(-1px) scaleX(-1); display:inline-block; }
+  .btn.ghost{ background:var(--cream); color:var(--red-deep); box-shadow:0 4px 0 var(--red-deep); font-size:17px; padding:11px 22px 8px; }
+  .btn.ghost:active{ box-shadow:0 0 0 var(--red-deep); }
+
+  /* ============ START SCREEN ============ */
+  #start{ justify-content:space-between; }
+  #start .mascot-wrap{ flex:1; align-items:center; width:100%; max-width:430px; margin-top:-4px; }
+  #start .copy{ display:flex; flex-direction:column; align-items:center; gap:9px; padding-bottom:8px; }
+
+  /* ============ GAME SCREEN ============ */
+  #game{ justify-content:center; gap:18px; }
+  .game-head{ text-align:center; }
+  .game-head .ks{ font-family:"Lalezar"; font-size:30px; color:var(--red); -webkit-text-stroke:1.5px var(--red-deep); paint-order:stroke fill; }
+  .game-head p{ margin:2px 0 0; font-weight:700; font-size:15px; opacity:.8; }
+
+  .scratch{
+    position:relative; width:min(78vw, 320px); aspect-ratio:1/1;
+    border-radius:28px; overflow:hidden;
+    border:4px solid var(--ink);
+    box-shadow:0 10px 0 oklch(0.505 0.215 28 / .25), 0 14px 30px oklch(0.245 0.045 40 / .25);
+    background:var(--cream); touch-action:none;
+  }
+  .scratch .reveal{ position:absolute; inset:0; display:grid; place-items:center; background:radial-gradient(circle at 50% 38%, var(--cream), var(--pink) 120%); }
+  .scratch .reveal svg{ width:96%; height:96%; }
+  .scratch canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .scratch .bam-pop{
+    position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+    opacity:0; transform:scale(.4) rotate(-12deg);
+  }
+  .scratch .bam-pop.show{ animation:bampop .7s var(--ease) forwards; }
+  @keyframes bampop{ 0%{opacity:0;transform:scale(.3) rotate(-14deg)} 55%{opacity:1;transform:scale(1.12) rotate(4deg)} 100%{opacity:1;transform:scale(1) rotate(-3deg)} }
+  .bam-pop .bamtxt{
+    font-family:"Lalezar"; font-size:74px; color:var(--red); line-height:.8;
+    -webkit-text-stroke:4px var(--cream); paint-order:stroke fill;
+    filter:drop-shadow(0 5px 0 var(--ink));
+  }
+  .progress{ width:min(78vw,320px); height:14px; border-radius:999px; background:var(--cream); border:2.5px solid var(--ink); overflow:hidden; }
+  .progress i{ display:block; height:100%; width:0%; background:repeating-linear-gradient(45deg, var(--red) 0 10px, var(--red-soft) 10px 20px); transition:width .25s linear; }
+  .hint{ font-size:13px; font-weight:700; opacity:.6; }
+
+  /* ============ PUZZLE ============ */
+  .puzzle{
+    position:relative; width:min(80vw,330px); aspect-ratio:1/1;
+    border-radius:24px; overflow:hidden; border:4px solid var(--ink);
+    box-shadow:0 10px 0 oklch(0.505 0.215 28 / .25), 0 14px 30px oklch(0.245 0.045 40 / .25);
+    background:var(--cream);
+    display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); gap:4px; padding:4px;
+  }
+  .tile{ background-repeat:no-repeat; border-radius:9px; cursor:pointer; outline:3px solid transparent; outline-offset:-3px; transition:transform .12s var(--ease), outline-color .12s; }
+  .tile:active{ transform:scale(.95); }
+  .tile.sel{ outline-color:var(--red); transform:scale(.92); }
+  .tile.locked{ cursor:default; }
+  .puzzle .bam-pop{ position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; opacity:0; transform:scale(.4) rotate(-12deg); z-index:5; }
+  .puzzle .bam-pop.show{ animation:bampop .7s var(--ease) forwards; }
+  .pz-meta{ display:flex; gap:14px; align-items:center; }
+  .pz-meta #moves{ font-family:"Lalezar"; font-size:19px; color:var(--red-deep); }
+  .pz-shuffle{ font-family:"Lalezar"; font-size:15px; background:var(--cream); color:var(--red-deep); border:2.5px solid var(--ink); border-radius:999px; padding:6px 15px 3px; cursor:pointer; box-shadow:0 3px 0 var(--ink); }
+  .pz-shuffle:active{ box-shadow:0 0 0 var(--ink); transform:translateY(3px); }
+
+  /* ============ REWARD SCREEN ============ */
+  #reward{ justify-content:center; gap:12px; }
+  #reward .mascot-wrap{ width:54%; max-width:205px; }
+  #reward h2{ font-family:"Lalezar"; font-weight:400; font-size:34px; margin:0; color:var(--red); -webkit-text-stroke:1.5px var(--red-deep); paint-order:stroke fill; text-align:center; }
+  #reward h2 + p{ margin:0; font-weight:600; opacity:.8; text-align:center; font-size:15px; }
+
+  .ticket{
+    position:relative; width:100%; max-width:340px; margin-top:4px;
+    background:var(--cream); border:3px solid var(--ink); border-radius:20px;
+    padding:16px 18px; box-shadow:0 6px 0 var(--red-deep);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+  }
+  .ticket::before,.ticket::after{ content:""; position:absolute; top:50%; width:22px; height:22px; background:var(--pink); border:3px solid var(--ink); border-radius:50%; transform:translateY(-50%); }
+  .ticket::before{ inset-inline-start:-14px; } .ticket::after{ inset-inline-end:-14px; }
+  .ticket .lbl{ font-size:12px; font-weight:700; letter-spacing:2px; opacity:.6; }
+  .ticket .code{ font-family:"Lalezar"; font-size:38px; letter-spacing:3px; color:var(--red); -webkit-text-stroke:1.5px var(--red-deep); paint-order:stroke fill; }
+  .ticket .disc{ font-weight:800; font-size:15px; color:var(--teal); }
+  .ticket .dash{ width:100%; border-top:2.5px dashed oklch(0.245 0.045 40 / .25); margin:6px 0 2px; }
+  .ticket .cd{ display:flex; gap:8px; }
+  .ticket .cd .u{ text-align:center; min-width:46px; }
+  .ticket .cd .u b{ font-family:"Lalezar"; font-size:26px; color:var(--ink); display:block; line-height:1; }
+  .ticket .cd .u span{ font-size:10px; font-weight:700; opacity:.6; }
+
+  .share-note{ font-size:13.5px; font-weight:600; text-align:center; opacity:.85; max-width:32ch; line-height:1.45; }
+  .row{ display:flex; gap:10px; width:100%; max-width:340px; }
+  .row .btn{ flex:1; justify-content:center; margin-top:0; }
+
+  .optin{ width:100%; max-width:340px; display:flex; flex-direction:column; gap:9px; margin-top:2px; }
+  .optin .f{ display:flex; gap:8px; }
+  .optin input[type=tel]{
+    flex:1; font-family:"Tajawal"; font-weight:700; font-size:16px; direction:ltr; text-align:right;
+    padding:13px 14px; border-radius:14px; border:3px solid var(--ink); background:var(--paper); color:var(--ink); outline:none;
+  }
+  .optin input[type=tel]:focus{ border-color:var(--red); }
+  .optin .send{ font-family:"Lalezar"; font-size:18px; background:var(--ink); color:var(--cream); border:none; border-radius:14px; padding:0 18px 3px; cursor:pointer; }
+  .consent{ display:flex; align-items:flex-start; gap:8px; font-size:11.5px; font-weight:600; opacity:.75; line-height:1.4; cursor:pointer; }
+  .consent input{ margin-top:2px; width:16px; height:16px; accent-color:var(--red); flex:none; }
+  .done-msg{ display:none; text-align:center; font-family:"Lalezar"; color:var(--teal); font-size:18px; }
+
+  /* confetti layer */
+  #fx{ position:absolute; inset:0; pointer-events:none; z-index:9; overflow:hidden; }
+  .conf{ position:absolute; width:9px; height:14px; border-radius:2px; will-change:transform; }
+
+  /* progress dots */
+  .dots{ position:relative; z-index:5; display:flex; gap:7px; justify-content:center; padding:6px 0 calc(10px + var(--safe-b)); }
+  .dots i{ width:8px; height:8px; border-radius:50%; background:oklch(0.505 0.215 28 / .25); transition:.3s var(--ease); }
+  .dots i.on{ background:var(--red); width:22px; border-radius:999px; }
+
+  .screen{ overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  @media (max-height:680px){
+    h1{ font-size:clamp(34px,11vw,50px); }
+    #start .mascot-wrap{ max-width:250px; }
+    .scratch{ width:min(62vw,250px); }
+    .progress{ width:min(62vw,250px); }
+  }
+  @media (prefers-reduced-motion:reduce){ .float,.bam-pop.show{ animation:none !important; } }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="logo">
+      <img class="mark" src="assets/bam-mascot.png" alt="BAM" draggable="false" />
+      <span class="word">BAM</span>
+    </div>
+    <span class="tag">قيد الإنشاء · قريباً</span>
+  </header>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+
+    <!-- ---- START ---- -->
+    <section class="screen active" id="start">
+      <div class="mascot-wrap">
+        <span class="sticker s-fresh">FRESH</span>
+        <span class="sticker s-salty">SALTY</span>
+        <img class="mascot float" src="assets/bam-mascot.png" alt="ماسكوت BAM" draggable="false" />
+      </div>
+      <div class="copy">
+        <span class="kicker">ما تطلع قبل ما تاخذ كودك</span>
+        <h1>وش مخبّينه <em>تحت؟</em></h1>
+        <p class="lede">ركّب صورة BAM وكمّل البزل… وكودك للافتتاح يطلع لك.</p>
+        <button class="btn" id="goPlay">يلا نركّب <span class="arr">→</span></button>
+        <span class="micro">NOT YOUR USUAL BURGER</span>
+      </div>
+    </section>
+
+    <!-- ---- GAME (PUZZLE) ---- -->
+    <section class="screen" id="game">
+      <div class="game-head">
+        <div class="ks">ركّب البرجر 🧩</div>
+        <p>اضغط قطعتين عشان تبدّلهم</p>
+      </div>
+      <div class="puzzle" id="puzzle">
+        <div class="bam-pop" id="bamPop"><span class="bamtxt">BAM!</span></div>
+      </div>
+      <div class="pz-meta"><span id="moves">0 حركة</span><button class="pz-shuffle" id="shuffleBtn">خلط 🔀</button></div>
+      <span class="hint" id="hint">رتّب الصورة كاملة</span>
+    </section>
+    <!-- ---- REWARD ---- -->
+    <section class="screen" id="reward">
+      <div class="mascot-wrap">
+        <img class="mascot float" src="assets/bam-mascot.png" alt="ماسكوت BAM" draggable="false" />
+      </div>
+      <h2>BAM! 🔥 فككت الشفرة</h2>
+      <p>هذا كودك الشخصي — يشتغل يوم الافتتاح بس.</p>
+
+      <div class="ticket">
+        <span class="lbl">كود الخصم</span>
+        <span class="code" id="codeOut">BAM-····</span>
+        <span class="disc">خصم 15% — ويصير 25% إذا شاركته 👀</span>
+        <div class="dash"></div>
+        <span class="lbl">يفتح خلال</span>
+        <div class="cd">
+          <div class="u"><b id="cdD">00</b><span>يوم</span></div>
+          <div class="u"><b id="cdH">00</b><span>ساعة</span></div>
+          <div class="u"><b id="cdM">00</b><span>دقيقة</span></div>
+          <div class="u"><b id="cdS">00</b><span>ثانية</span></div>
+        </div>
+      </div>
+
+      <p class="share-note">شارك التجربة مع صاحبك → كودكم يصير خصم أكبر 🍟</p>
+      <div class="row">
+        <button class="btn" id="shareBtn">شارك واكسب أكثر</button>
+        <button class="btn ghost" id="cardBtn">احفظ بطاقتك</button>
+      </div>
+
+      <form class="optin" id="optin">
+        <div class="f">
+          <input type="tel" id="phone" inputmode="tel" placeholder="05X XXX XXXX" maxlength="13" />
+          <button type="submit" class="send">ذكّرني</button>
+        </div>
+        <label class="consent">
+          <input type="checkbox" id="consent" />
+          <span>أوافق إني أستقبل رسالة تذكير بكودي يوم الافتتاح من BAM.</span>
+        </label>
+        <div class="done-msg" id="optDone">تم! بنذكّرك يوم نفتح 🤙</div>
+      </form>
+    </section>
+
+  </main>
+
+  <div class="dots"><i class="on" data-d="0"></i><i data-d="1"></i><i data-d="2"></i></div>
+  <div id="fx"></div>
+</div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const screens = ['start','game','reward'];
+  let idx = 0;
+  const dots = [...document.querySelectorAll('.dots i')];
+
+  function go(name){
+    idx = screens.indexOf(name);
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id===name));
+    dots.forEach((d,i)=> d.classList.toggle('on', i===idx));
+    if(name==='game') setTimeout(initPuzzle, 60);
+    if(name==='reward'){ revealReward(); }
+    if(navigator.vibrate) navigator.vibrate(8);
+  }
+  $('#goPlay').addEventListener('click', ()=> go('game'));
+
+  /* ============ PUZZLE GAME ============ */
+  let pzInit=false, pzUrl='', order=[], sel=-1, moves=0, pzDone=false, pzStarted=false;
+  const PZ='assets/bam-mascot.png', N=3;
+  const pzEl=()=>document.getElementById('puzzle');
+
+  function pop(){
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    const a=new AC(), o=a.createOscillator(), g=a.createGain();
+    o.type='triangle'; o.frequency.setValueAtTime(180,a.currentTime);
+    o.frequency.exponentialRampToValueAtTime(560,a.currentTime+.12);
+    g.gain.setValueAtTime(.001,a.currentTime); g.gain.exponentialRampToValueAtTime(.25,a.currentTime+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.35);
+    o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime+.36);
+  }
+  function buildPuzzleImage(cb){
+    const S=600, c=document.createElement('canvas'); c.width=c.height=S; const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,0,S); g.addColorStop(0,'#FBEFE0'); g.addColorStop(1,'#FBD8E8');
+    x.fillStyle=g; x.fillRect(0,0,S,S);
+    x.fillStyle='rgba(255,46,31,.07)';
+    for(let yy=14;yy<S;yy+=26){ for(let xx=14;xx<S;xx+=26){ x.beginPath(); x.arc(xx,yy,2,0,7); x.fill(); } }
+    const rr=(x0,y0,w,h,r)=>{ x.beginPath(); x.moveTo(x0+r,y0); x.arcTo(x0+w,y0,x0+w,y0+h,r); x.arcTo(x0+w,y0+h,x0,y0+h,r); x.arcTo(x0,y0+h,x0,y0,r); x.arcTo(x0,y0,x0+w,y0,r); x.closePath(); };
+    x.textAlign='center'; x.textBaseline='middle';
+    x.fillStyle='#FF2E1F'; x.font='400 128px Lalezar, cursive'; x.fillText('BAM', S/2, 92);
+    const badge=(t,cx,cy,rot,col)=>{ x.save(); x.translate(cx,cy); x.rotate(rot); x.fillStyle=col; rr(-54,-23,108,46,23); x.fill(); x.lineWidth=4; x.strokeStyle='#2A1410'; rr(-54,-23,108,46,23); x.stroke(); x.fillStyle='#FBEFE0'; x.font='400 30px Lalezar'; x.fillText(t,0,4); x.restore(); };
+    badge('FRESH',92,185,-0.22,'#0E6E80'); badge('SALTY',508,178,0.22,'#FF2E1F'); badge('15%',96,516,0.16,'#FF2E1F'); badge('BAM',512,520,-0.16,'#FF2E1F');
+    x.fillStyle='#2A1410'; x.font='700 27px Tajawal, sans-serif'; x.fillText('NOT YOUR USUAL BURGER', S/2, S-32);
+    const im=new Image();
+    im.onload=()=>{ const tw=S*0.76, th=tw*im.height/im.width; x.drawImage(im,(S-tw)/2,(S-th)/2+8,tw,th); cb(c.toDataURL('image/png')); };
+    im.onerror=()=>cb(c.toDataURL('image/png'));
+    im.src=PZ;
+  }
+  const bgPos=p=>{ const col=p%N, row=(p/N|0); return (col*50)+'% '+(row*50)+'%'; };
+  function renderTiles(){
+    const el=pzEl();
+    [...el.querySelectorAll('.tile')].forEach(t=>t.remove());
+    for(let i=0;i<N*N;i++){
+      const t=document.createElement('div'); t.className='tile'; t.dataset.cell=i;
+      t.style.backgroundImage='url('+pzUrl+')'; t.style.backgroundSize=(N*100)+'% '+(N*100)+'%';
+      t.style.backgroundPosition=bgPos(order[i]);
+      t.addEventListener('click',()=>tap(i));
+      el.appendChild(t);
+    }
+  }
+  const paint=i=>{ const t=pzEl().querySelector('.tile[data-cell="'+i+'"]'); if(t) t.style.backgroundPosition=bgPos(order[i]); };
+  const setMoves=()=>{ const m=document.getElementById('moves'); if(m) m.textContent=moves+' حركة'; };
+  function shuffle(){
+    pzDone=false; sel=-1; moves=0; setMoves();
+    do{ for(let i=order.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; const tmp=order[i]; order[i]=order[j]; order[j]=tmp; } }
+    while(order.every((v,i)=>v===i));
+    [...pzEl().querySelectorAll('.tile')].forEach(t=>{ t.classList.remove('sel','locked'); paint(+t.dataset.cell); });
+    const h=document.getElementById('hint'); if(h) h.textContent='رتّب الصورة كاملة';
+  }
+  function tap(i){
+    if(pzDone) return;
+    const el=pzEl(), cur=el.querySelector('.tile[data-cell="'+i+'"]');
+    if(sel<0){ sel=i; cur.classList.add('sel'); return; }
+    if(sel===i){ cur.classList.remove('sel'); sel=-1; return; }
+    const tmp=order[sel]; order[sel]=order[i]; order[i]=tmp;
+    paint(sel); paint(i);
+    el.querySelector('.tile[data-cell="'+sel+'"]').classList.remove('sel');
+    sel=-1; moves++; setMoves();
+    if(navigator.vibrate) navigator.vibrate(6);
+    if(order.every((v,idx)=>v===idx)) win();
+  }
+  function win(){
+    pzDone=true;
+    [...pzEl().querySelectorAll('.tile')].forEach(t=>t.classList.add('locked'));
+    const bp=document.getElementById('bamPop'); if(bp) bp.classList.add('show');
+    if(navigator.vibrate) navigator.vibrate([14,30,40]);
+    try{ pop(); }catch(e){}
+    setTimeout(()=>go('reward'), 1200);
+  }
+  function initPuzzle(){
+    if(pzInit) return; pzInit=true;
+    order=[...Array(N*N).keys()];
+    const start=()=>{ if(pzStarted) return; pzStarted=true;
+      buildPuzzleImage(url=>{ pzUrl=url; renderTiles(); shuffle(); });
+      const sb=document.getElementById('shuffleBtn'); if(sb) sb.addEventListener('click',shuffle);
+    };
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(start); setTimeout(start,700); } else { start(); }
+  }
+
+  /* ============ REWARD ============ */
+  let rewardDone=false;
+  function genCode(){
+    const s='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let c='';
+    for(let i=0;i<4;i++) c+=s[Math.floor(Math.random()*s.length)];
+    return 'BAM-'+c;
+  }
+  let theCode='';
+  function revealReward(){
+    if(rewardDone) return; rewardDone=true;
+    theCode = genCode();
+    $('#codeOut').textContent = theCode;
+    confetti();
+  }
+
+  // countdown to opening (≈ 18 days out from first load)
+  const OPEN = (()=>{ const d=new Date(); d.setDate(d.getDate()+18); d.setHours(12,0,0,0); return d.getTime(); })();
+  function tick(){
+    let t = Math.max(0, OPEN - Date.now());
+    const dd=Math.floor(t/86400000); t-=dd*86400000;
+    const hh=Math.floor(t/3600000); t-=hh*3600000;
+    const mm=Math.floor(t/60000); t-=mm*60000;
+    const ss=Math.floor(t/1000);
+    const z=n=>String(n).padStart(2,'0');
+    $('#cdD').textContent=z(dd); $('#cdH').textContent=z(hh); $('#cdM').textContent=z(mm); $('#cdS').textContent=z(ss);
+  }
+  setInterval(tick,1000); tick();
+
+  /* share */
+  $('#shareBtn').addEventListener('click', async ()=>{
+    const text = `فككت شفرة BAM وطلع لي كود خصم 🔥 جرّبها انت بعد وخذ كودك للافتتاح:`;
+    const url = location.href;
+    if(navigator.share){ try{ await navigator.share({title:'BAM Burger', text, url}); }catch(e){} }
+    else { try{ await navigator.clipboard.writeText(text+' '+url); toast('اننسخ الرابط ✅ ارسله لصاحبك'); }catch(e){ toast('انسخ الرابط وارسله 👆'); } }
+  });
+
+  /* shareable story card (canvas → download) */
+  $('#cardBtn').addEventListener('click', ()=>{
+    const c=document.createElement('canvas'); c.width=1080; c.height=1920; const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,0,1920); g.addColorStop(0,'#FBEFE0'); g.addColorStop(1,'#FBD8E8');
+    x.fillStyle=g; x.fillRect(0,0,1080,1920);
+    x.fillStyle='#FF2E1F'; x.textAlign='center';
+    x.font='400 240px Lalezar, cursive'; x.fillText('BAM', 540, 560);
+    x.fillStyle='#2A1410'; x.font='700 56px Tajawal, sans-serif'; x.fillText('NOT YOUR USUAL BURGER', 540, 640);
+    // ticket
+    x.fillStyle='#FBEFE0'; rr(x,180,820,720,420,48); x.fill();
+    x.lineWidth=10; x.strokeStyle='#2A1410'; rr(x,180,820,720,420,48); x.stroke();
+    x.fillStyle='#2A1410'; x.font='700 44px Tajawal'; x.fillText('كود الخصم', 540, 940);
+    x.fillStyle='#FF2E1F'; x.font='400 150px Lalezar'; x.fillText(theCode||'BAM-XXXX', 540, 1090);
+    x.fillStyle='#0E6E80'; x.font='700 46px Tajawal'; x.fillText('خصم 15% يوم الافتتاح', 540, 1180);
+    x.fillStyle='#2A1410'; x.font='700 50px Tajawal'; x.fillText('صمّم تجربتك على الرابط 👆', 540, 1480);
+    x.font='400 70px Lalezar'; x.fillStyle='#FF2E1F'; x.fillText('ما تطلع قبل ما تاخذ كودك', 540, 1600);
+    const a=document.createElement('a'); a.download='BAM-card.png'; a.href=c.toDataURL('image/png'); a.click();
+    toast('تم حفظ بطاقتك — حطّها في الستوري 🔥');
+    function rr(c,x0,y0,w,h,r){ c.beginPath(); c.moveTo(x0+r,y0); c.arcTo(x0+w,y0,x0+w,y0+h,r); c.arcTo(x0+w,y0+h,x0,y0+h,r); c.arcTo(x0,y0+h,x0,y0,r); c.arcTo(x0,y0,x0+w,y0,r); c.closePath(); }
+  });
+
+  /* opt-in */
+  $('#phone').addEventListener('input', e=>{
+    let v=e.target.value.replace(/[^\d]/g,'').slice(0,10);
+    if(v.length>3 && v.length<=6) v=v.slice(0,3)+' '+v.slice(3);
+    else if(v.length>6) v=v.slice(0,3)+' '+v.slice(3,6)+' '+v.slice(6);
+    e.target.value=v;
+  });
+  $('#optin').addEventListener('submit', e=>{
+    e.preventDefault();
+    const ph=$('#phone').value.replace(/\s/g,'');
+    if(!/^05\d{8}$/.test(ph)){ toast('اكتب رقم جوال صحيح يبدأ بـ 05'); $('#phone').focus(); return; }
+    if(!$('#consent').checked){ toast('وافق على التذكير عشان نرسل لك 🙏'); return; }
+    $('#optin .f').style.display='none'; $('.consent').style.display='none';
+    $('#optDone').style.display='block';
+    // (demo) here you'd POST {phone, code:theCode, ts} to backend
+  });
+
+  /* ============ FX ============ */
+  function confetti(){
+    const fx=$('#fx'); const cols=['var(--red)','var(--teal)','var(--cheese)','var(--cream)','var(--lettuce)'];
+    for(let i=0;i<70;i++){
+      const c=document.createElement('div'); c.className='conf';
+      c.style.background=cols[i%cols.length];
+      c.style.left=Math.random()*100+'%'; c.style.top='-20px';
+      const dx=(Math.random()*2-1)*180, dy=window.innerHeight+60, rot=Math.random()*720-360, dur=1100+Math.random()*1100;
+      c.style.borderRadius = Math.random()>.5?'2px':'50%';
+      fx.appendChild(c);
+      c.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:`translate(${dx}px,${dy}px) rotate(${rot}deg)`,opacity:.9}],
+        {duration:dur,easing:'cubic-bezier(.2,.6,.3,1)',delay:Math.random()*250,fill:'forwards'});
+      setTimeout(()=>c.remove(), dur+400);
+    }
+  }
+  let toastEl;
+  function toast(msg){
+    clearTimeout(toastEl&&toastEl._t);
+    if(!toastEl){ toastEl=document.createElement('div'); toastEl.style.cssText=
+      'position:fixed;left:50%;bottom:calc(22px + var(--safe-b));transform:translateX(-50%);z-index:50;'+
+      'background:var(--ink);color:var(--cream);font-family:Tajawal;font-weight:700;font-size:14px;'+
+      'padding:11px 18px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:86vw;text-align:center;transition:.3s';
+      document.body.appendChild(toastEl); }
+    toastEl.textContent=msg; toastEl.style.opacity='1'; toastEl.style.transform='translateX(-50%) translateY(0)';
+    toastEl._t=setTimeout(()=>{ toastEl.style.opacity='0'; toastEl.style.transform='translateX(-50%) translateY(8px)'; },2600);
+  }
+
+  /* arm wave + spark idle via CSS-in-JS keyframes */
+})();
+</script>
+</body>
+</html>
