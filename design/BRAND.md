@@ -85,8 +85,11 @@ Menu descriptions & small print use a **light monospaced / typewriter** style, u
 - Horizontal red-outlined **oval** (cream fill) across the middle row with `BURGER` inside, letters slightly arched to follow the ellipse.
 - **TODO:** rebuild as clean SVG. AI generation was rejected (uneven letters, mushy wave).
 
-### 5.2 Mascot — "walking BAM"
-- The oval BAM body with arms/legs + peace sign; used on menus, signage, merch.
+### 5.2 Mascot — "walking BAM" (the UFO burger)
+- A **horizontal red oval body** (reads as a flying saucer / UFO — ties to the "UFO-style burger" concept) with `BAM` lettered across it in cream, same wavy style.
+- Thin line-art **arms** (one raised with a ✌️ peace sign) + **legs** in cream trousers with chunky **red sneakers**, mid-walk stride.
+- Style: minimal red line-art, single red color, playful.
+- Used on: menus, signage, storefront, merch, packaging.
 - ⚠️ **Not used on the puzzle teaser** (product must stay hidden pre-reveal).
 
 ### 5.3 Single wavy `BAM`
@@ -102,6 +105,21 @@ Menu descriptions & small print use a **light monospaced / typewriter** style, u
 - **Streetwear + deli energy:** subjects in tracksuits; supermarket/deli backdrops; teal studio skies.
 - **Signature props:** menu card on a **red string with a wooden clothespin**; tomatoes; cream tees with red `FRESH` print.
 - **Packaging:** plain **white sealed takeaway box** with small red BAM logo (the "UFO-style, fully sealed" burger).
+
+---
+
+## 6b. Patterns & Motifs
+
+### `FRESH` repeat (outline warp)
+- The word **`FRESH`** stacked in ~6 rows, filling the frame edge-to-edge on **cream**.
+- **Red outline only** (no fill), same heavy rounded display face.
+- Rows are **warped / arched** (subtle "puff/arc" wave) so the block ripples.
+- The **walking BAM mascot** (filled red) sits centered on top of the pattern.
+- Used on: merch (tee backs), posters, backgrounds.
+- **Web use idea:** subtle looping `FRESH` outline strip as a section divider or reward-screen backdrop (low opacity so it doesn't fight the content).
+
+### `NO MORE BORING BURGERS` band
+- Red caps line repeated top & bottom of the hero poster, framing the subject.
 
 ---
 
