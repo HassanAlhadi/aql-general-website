@@ -302,6 +302,11 @@
   .consent input{ margin-top:2px; width:16px; height:16px; accent-color:var(--red); flex:none; }
   .done-msg{ display:none; text-align:center; font-family:"Lalezar"; color:var(--teal); font-size:18px; }
   /* ---- HTML menu (editable) ---- */
+  .reward-inner{ position:relative; z-index:1; width:100%; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .reward-inner::before{ content:""; position:absolute; inset:-34px -26px; z-index:-1; pointer-events:none;
+    background:url("assets/bam-fresh-bg.png") top center / 100% auto repeat-y; opacity:.55;
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image:linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent); }
   .menu-wrap{ position:relative; width:calc(100% + 44px); margin-inline:-22px; margin-top:30px; padding-top:24px; }
   .menu-string{ position:absolute; top:20px; left:0; right:0; height:3px; background:var(--red); box-shadow:0 1px 0 var(--red-deep); }
   .menu-card{ direction:ltr; position:relative; width:88%; max-width:360px; margin:0 auto; background:#F1E7D0;
@@ -378,6 +383,7 @@
     </section>
     <!-- ---- REWARD ---- -->
     <section class="screen" id="reward">
+      <div class="reward-inner">
       <h2>BAM! 🔥 فككت الشفرة</h2>
       <p>هذا كودك الشخصي — يشتغل يوم الافتتاح بس.</p>
 
@@ -435,6 +441,7 @@
         </label>
         <div class="done-msg" id="optDone">تم! بنذكّرك يوم نفتح 🤙</div>
       </form>
+          </div>
     </section>
 
   </main>
