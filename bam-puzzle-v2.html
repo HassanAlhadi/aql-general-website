@@ -95,9 +95,18 @@
   .mascot-wrap{ position:relative; display:flex; justify-content:center; }
   .mascot{ display:block; width:100%; height:auto; object-fit:contain; pointer-events:none; -webkit-user-drag:none; }
   .reveal-img{ width:100%; height:100%; object-fit:contain; padding:7%; -webkit-user-drag:none; }
-  .poster-hero{ display:block; width:100%; max-width:330px; height:auto; margin:0 auto;
-    border-radius:20px; border:4px solid var(--ink);
-    box-shadow:0 10px 0 oklch(0.505 0.215 28 / .22), 0 14px 30px oklch(0.245 0.045 40 / .25); }
+  /* ---- full hero + blinds-in reveal ---- */
+  .hero{ position:relative; flex:1; min-height:0; width:100%; max-width:520px; margin:0 auto;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .hero-img{ display:block; width:100%; height:100%; object-fit:contain; }
+  .blinds{ position:absolute; inset:0; display:flex; flex-direction:column; pointer-events:none; z-index:3; }
+  .blinds span{ flex:1 0 12.5%; background:var(--pink); transform-origin:top center; will-change:transform;
+    animation:blindOpen .55s var(--ease) forwards; }
+  .blinds span:nth-child(1){ animation-delay:.05s } .blinds span:nth-child(2){ animation-delay:.13s }
+  .blinds span:nth-child(3){ animation-delay:.21s } .blinds span:nth-child(4){ animation-delay:.29s }
+  .blinds span:nth-child(5){ animation-delay:.37s } .blinds span:nth-child(6){ animation-delay:.45s }
+  .blinds span:nth-child(7){ animation-delay:.53s } .blinds span:nth-child(8){ animation-delay:.61s }
+  @keyframes blindOpen{ from{ transform:scaleY(1) } to{ transform:scaleY(0) } }
   .float{ animation:float 3.4s var(--ease) infinite; transform-origin:50% 90%; }
   @keyframes float{ 0%,100%{transform:translateY(0) rotate(-.4deg)} 50%{transform:translateY(-10px) rotate(.5deg)} }
 
@@ -202,9 +211,8 @@
   .btn.ghost:active{ box-shadow:0 0 0 var(--red-deep); }
 
   /* ============ START SCREEN ============ */
-  #start{ justify-content:space-between; }
-  #start .mascot-wrap{ flex:1; align-items:center; width:100%; max-width:430px; margin-top:-4px; }
-  #start .copy{ display:flex; flex-direction:column; align-items:center; gap:9px; padding-bottom:8px; }
+  #start{ justify-content:space-between; gap:10px; padding-top:6px; }
+  #start .copy{ display:flex; flex-direction:column; align-items:center; gap:11px; padding-bottom:10px; }
 
   /* ============ GAME SCREEN ============ */
   #game{ justify-content:center; gap:18px; }
@@ -323,11 +331,11 @@
   .screen{ overflow-y:auto; -webkit-overflow-scrolling:touch; }
   @media (max-height:680px){
     h1{ font-size:clamp(34px,11vw,50px); }
-    #start .mascot-wrap{ max-width:250px; }
+    .hero{ max-height:56vh; }
     .scratch{ width:min(62vw,250px); }
     .progress{ width:min(62vw,250px); }
   }
-  @media (prefers-reduced-motion:reduce){ .float,.bam-pop.show{ animation:none !important; } }
+  @media (prefers-reduced-motion:reduce){ .float,.bam-pop.show{ animation:none !important; } .blinds span{ transform:scaleY(0); animation:none !important; } }
 </style>
 </head>
 <body>
@@ -346,15 +354,13 @@
 
     <!-- ---- START ---- -->
     <section class="screen active" id="start">
-      <div class="mascot-wrap">
-        <img class="poster-hero float" src="https://d8j0ntlcm91z4.cloudfront.net/user_38X96OSF6PnWvzKrTq58yrFl5Rq/hf_20260702_082020_b9da6239-fa54-4be4-9bc0-646d3109bfb4.png" alt="BAM" draggable="false" />
+      <div class="hero">
+        <img class="hero-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_38X96OSF6PnWvzKrTq58yrFl5Rq/hf_20260702_083609_7a59a042-064e-44e8-91cb-3b0081198e61.png" alt="BAM" draggable="false" />
+        <div class="blinds" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
       </div>
       <div class="copy">
-        <span class="kicker">شي جديد… قريب</span>
-        <h1>وش <em>السر؟</em></h1>
-        <p class="lede">ركّب الصورة كاملة وبتكشف وش نقدّم — وكودك للافتتاح يطلع لك.</p>
         <button class="btn" id="goPlay">فك الشفرة <span class="arr">→</span></button>
-        <span class="micro">لا أحد يعرف… إلا اللي يركّبها</span>
+        <span class="micro">ركّبها كاملة… وكودك للافتتاح يطلع لك</span>
       </div>
     </section>
 
