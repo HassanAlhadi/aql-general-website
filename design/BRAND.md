@@ -173,10 +173,12 @@ Two menu formats exist:
 
 | File | What |
 |---|---|
+| `assets/bam-lockup.png` | **primary lockup** — `BAM/BAM/BAM` + `BURGER` oval, cream square (extracted from the deck, 100% faithful) |
+| `assets/bam-lockup-red.png` | same lockup, **red on transparent** (flexible placement) |
 | `assets/bam-poster.jpg` | "NO MORE BORING BURGERS" hero poster (used as puzzle art) |
 | `assets/bam-mascot.png` | walking BAM mascot |
-| _todo_ | clean SVG of the primary `BAM/BAM/BAM` lockup |
-| _todo_ | transparent PNG/SVG of single wavy `BAM` |
+| _todo_ | vector (SVG) trace of the lockup for infinite scaling |
+| _todo_ | mascot-free `FRESH` pattern tile |
 
 ---
 

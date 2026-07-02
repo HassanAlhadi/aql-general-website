@@ -45,6 +45,7 @@
     background:var(--bam-cream); border:3px solid var(--bam-red); border-radius:999px;
     padding:2px 20px 0; font-family:var(--bam-font-display); color:var(--bam-red); font-size:26px; letter-spacing:.5px;
   }
+  .lockup-img{ width:190px; height:auto; display:block; margin:0 auto; filter:drop-shadow(0 8px 0 var(--bam-ink)); border-radius:16px; }
   .mast h1{ font-family:var(--bam-font-display); color:var(--bam-red); font-weight:400; font-size:clamp(32px,7vw,52px); margin:22px 0 4px; letter-spacing:.5px; }
   .mast p{ margin:0; color:var(--bam-ink-60); font-size:13px; letter-spacing:1px; text-transform:uppercase; }
 
@@ -143,10 +144,7 @@
 
   <!-- MASTHEAD -->
   <div class="mast">
-    <div class="lockup">
-      <div class="rows">BAM<br>BAM<br>BAM</div>
-      <span class="oval">BURGER</span>
-    </div>
+    <img class="lockup-img" src="/assets/bam-lockup.png" alt="BAM Burger logo" />
     <h1>Design System</h1>
     <p>Not your usual burger — v0.1 · living document</p>
   </div>
@@ -198,19 +196,19 @@
 
   <!-- 03 LOGO -->
   <section>
-    <div class="sec-head"><span class="n">3</span><h2>Logo &amp; Lockups</h2><span class="note">CSS approximations — final = SVG</span></div>
+    <div class="sec-head"><span class="n">3</span><h2>Logo &amp; Lockups</h2><span class="note">real asset — extracted from the brand deck</span></div>
     <div class="grid cols-3">
       <div class="card" style="display:grid;place-items:center;background:var(--bam-teal)">
-        <div class="lockup" style="box-shadow:0 6px 0 var(--bam-ink)"><div class="rows" style="font-size:44px">BAM<br>BAM<br>BAM</div><span class="oval" style="font-size:18px">BURGER</span></div>
+        <img src="/assets/bam-lockup.png" alt="BAM lockup on teal" style="width:150px;height:auto;border-radius:12px" />
       </div>
       <div class="card" style="display:grid;place-items:center;">
-        <div style="font-family:var(--bam-font-display);color:var(--bam-red);font-size:72px;line-height:1">BAM</div>
+        <img src="/assets/bam-lockup-red.png" alt="BAM lockup, red on transparent" style="width:150px;height:auto" />
       </div>
       <div class="card" style="display:grid;place-items:center;background:var(--bam-pink)">
         <div style="font-family:var(--bam-font-display);color:var(--bam-red);text-align:center;font-size:26px;line-height:1.05">NOT YOUR<br>USUAL BURGER.</div>
       </div>
     </div>
-    <p style="font-size:12px;color:var(--bam-ink-60);margin-top:10px">⚠︎ The wavy/melting letterforms need a real display font or a hand-tuned SVG. Lalezar here is a rounded stand-in. Never ship the mushy AI version. Mascot is intentionally excluded from the teaser.</p>
+    <p style="font-size:12px;color:var(--bam-ink-60);margin-top:10px">✔︎ Logo is the <b>real asset extracted from the brand deck</b> (cream-square + transparent red-on-clear), not an AI recreation. Files: <code>/assets/bam-lockup.png</code>, <code>/assets/bam-lockup-red.png</code>. Mascot is intentionally excluded from the teaser.</p>
   </section>
 
   <!-- 04 BUTTONS -->
