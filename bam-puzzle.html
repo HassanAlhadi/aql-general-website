@@ -594,6 +594,9 @@
       ]);
       await document.fonts.ready;
     }catch(e){}
+    // load the REAL logo (same-origin, so it composites without tainting the canvas)
+    const logo=new Image(); let logoOk=false;
+    try{ logo.src='assets/bam-lockup.png'; await logo.decode(); logoOk=true; }catch(e){}
 
     const W=1080,H=1920, cx=W/2;
     const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
@@ -610,22 +613,12 @@
     // inner frame
     x.strokeStyle=RED; x.lineWidth=6; rr(x,44,44,W-88,H-88,40); x.stroke();
 
-    // ---- BAM stacked lockup on a cream card ----
-    const bx=232, by=150, bw=616, bh=560;
-    x.save(); x.shadowColor='rgba(42,20,16,.22)'; x.shadowBlur=40; x.shadowOffsetY=22;
-    x.fillStyle=CREAM; rr(x,bx,by,bw,bh,34); x.fill(); x.restore();
-    x.strokeStyle=INK; x.lineWidth=7; rr(x,bx,by,bw,bh,34); x.stroke();
-    // three stacked BAM rows (the brand lockup)
-    x.font='400 170px "Lalezar", sans-serif'; x.fillStyle=RED;
-    x.fillText('BAM', cx, by+185);
-    x.fillText('BAM', cx, by+340);
-    x.fillText('BAM', cx, by+495);
-    // BURGER oval across the middle row
-    x.save(); x.translate(cx, by+295);
-    x.fillStyle=CREAM; x.beginPath(); x.ellipse(0,0,196,58,0,0,7); x.fill();
-    x.lineWidth=8; x.strokeStyle=RED; x.beginPath(); x.ellipse(0,0,196,58,0,0,7); x.stroke();
-    x.font='400 78px "Lalezar", sans-serif'; x.fillStyle=RED; x.fillText('BURGER',0,27);
-    x.restore();
+    // ---- REAL BAM lockup image (100% the brand asset) ----
+    const bw=548, bh=logoOk ? Math.round(bw*logo.height/logo.width) : 620, by=132, bx=Math.round((W-bw)/2);
+    if(logoOk){
+      x.save(); x.shadowColor='rgba(42,20,16,.26)'; x.shadowBlur=34; x.shadowOffsetY=18;
+      x.drawImage(logo, bx, by, bw, bh); x.restore();
+    }
 
     // tagline
     x.font='400 58px "Lalezar", sans-serif';
