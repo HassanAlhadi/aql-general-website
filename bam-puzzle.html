@@ -380,6 +380,7 @@
       </div>
       <div class="pz-meta"><span id="moves">0 حركة</span><button class="pz-shuffle" id="shuffleBtn">خلط 🔀</button></div>
       <span class="hint" id="hint">رتّب الصورة كاملة</span>
+      <button class="btn" id="pzNext" style="display:none; margin-top:6px;">شوف كودك <span class="arr">→</span></button>
     </section>
     <!-- ---- REWARD ---- -->
     <section class="screen" id="reward">
@@ -515,6 +516,7 @@
   const markCorrect=()=>{ const el=pzEl(); for(let i=0;i<N*N;i++){ const t=el.querySelector('.tile[data-cell="'+i+'"]'); if(t) t.classList.toggle('ok', order[i]===i); } };
   function shuffle(){
     pzDone=false; sel=-1; moves=0; setMoves();
+    { const nx=document.getElementById('pzNext'); if(nx) nx.style.display='none'; const sb=document.getElementById('shuffleBtn'); if(sb) sb.style.display=''; }
     do{ for(let i=order.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; const tmp=order[i]; order[i]=order[j]; order[j]=tmp; } }
     while(order.every((v,i)=>v===i));
     [...pzEl().querySelectorAll('.tile')].forEach(t=>{ t.classList.remove('sel','locked'); paint(+t.dataset.cell); });
@@ -539,7 +541,11 @@
     const bp=document.getElementById('bamPop'); if(bp) bp.classList.add('show');
     if(navigator.vibrate) navigator.vibrate([14,30,40]);
     try{ pop(); }catch(e){}
-    setTimeout(()=>go('reward'), 1200);
+    // don't auto-advance: keep the finished picture on screen, let the user continue with a button
+    setTimeout(()=>{ if(bp) bp.classList.remove('show'); }, 1150);
+    const nx=document.getElementById('pzNext'); if(nx) nx.style.display='inline-flex';
+    const sb=document.getElementById('shuffleBtn'); if(sb) sb.style.display='none';
+    const h=document.getElementById('hint'); if(h) h.textContent='رتّبتها! 🎉 شوف الصورة، وبعدها كمّل';
   }
   function initPuzzle(){
     if(pzInit) return; pzInit=true;
@@ -547,6 +553,7 @@
     const start=()=>{ if(pzStarted) return; pzStarted=true;
       pzUrl=PZ; renderTiles(); shuffle();
       const sb=document.getElementById('shuffleBtn'); if(sb) sb.addEventListener('click',shuffle);
+      const nx=document.getElementById('pzNext'); if(nx) nx.addEventListener('click',()=>go('reward'));
     };
     if(document.fonts && document.fonts.ready){ document.fonts.ready.then(start); setTimeout(start,700); } else { start(); }
   }
