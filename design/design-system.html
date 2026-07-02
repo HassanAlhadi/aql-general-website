@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BAM Burger — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Space+Mono:wght@400;700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bam-red:#E62D1A; --bam-red-deep:#B21D10; --bam-red-soft:#F2503C;
+    --bam-cream:#F4EBD8; --bam-paper:#FBF5E8; --bam-pink:#F6D8E4; --bam-pink-deep:#F1C2D5;
+    --bam-teal:#1E7C8C; --bam-teal-deep:#135A68; --bam-ink:#2A1410;
+    --bam-ink-60:rgba(42,20,16,.6); --bam-ink-25:rgba(42,20,16,.25);
+    --bam-font-display:"Lalezar",system-ui,sans-serif;
+    --bam-font-mono:"Space Mono",ui-monospace,monospace;
+    --bam-font-ar:"Tajawal",system-ui,sans-serif;
+    --bam-ease:cubic-bezier(.22,1,.36,1);
+    --bam-border:3px solid var(--bam-ink);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{
+    font-family:var(--bam-font-mono); color:var(--bam-ink); background:var(--bam-paper);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  /* halftone texture */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:radial-gradient(var(--bam-red) 1.1px, transparent 1.3px);
+    background-size:18px 18px; opacity:.05;
+  }
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 20px 100px; }
+
+  /* ---- masthead ---- */
+  .mast{ text-align:center; padding:56px 0 30px; }
+  .lockup{
+    display:inline-block; background:var(--bam-cream); border:var(--bam-border); border-radius:16px;
+    padding:14px 26px 6px; box-shadow:0 8px 0 var(--bam-ink); position:relative;
+  }
+  .lockup .rows{ font-family:var(--bam-font-display); color:var(--bam-red); font-size:64px; line-height:.82; letter-spacing:1px; }
+  .lockup .oval{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-46%);
+    background:var(--bam-cream); border:3px solid var(--bam-red); border-radius:999px;
+    padding:2px 20px 0; font-family:var(--bam-font-display); color:var(--bam-red); font-size:26px; letter-spacing:.5px;
+  }
+  .lockup-img{ width:190px; height:auto; display:block; margin:0 auto; filter:drop-shadow(0 8px 0 var(--bam-ink)); border-radius:16px; }
+  .mast h1{ font-family:var(--bam-font-display); color:var(--bam-red); font-weight:400; font-size:clamp(32px,7vw,52px); margin:22px 0 4px; letter-spacing:.5px; }
+  .mast p{ margin:0; color:var(--bam-ink-60); font-size:13px; letter-spacing:1px; text-transform:uppercase; }
+
+  /* ---- section ---- */
+  section{ margin-top:52px; }
+  .sec-head{ display:flex; align-items:baseline; gap:12px; border-bottom:var(--bam-border); padding-bottom:8px; margin-bottom:24px; }
+  .sec-head .n{ font-family:var(--bam-font-display); color:var(--bam-red); font-size:20px; background:var(--bam-cream); border:2.5px solid var(--bam-ink); border-radius:999px; width:38px; height:38px; display:grid; place-items:center; flex:none; }
+  .sec-head h2{ font-family:var(--bam-font-display); font-weight:400; font-size:30px; margin:0; letter-spacing:.5px; }
+  .sec-head .note{ margin-left:auto; font-size:12px; color:var(--bam-ink-60); }
+
+  .grid{ display:grid; gap:16px; }
+  .cols-2{ grid-template-columns:repeat(2,1fr); }
+  .cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cols-4{ grid-template-columns:repeat(4,1fr); }
+  @media (max-width:720px){ .cols-3,.cols-4{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:460px){ .cols-2,.cols-3,.cols-4{ grid-template-columns:1fr; } }
+
+  /* ---- swatches ---- */
+  .sw{ border:var(--bam-border); border-radius:14px; overflow:hidden; background:#fff; }
+  .sw .chip{ height:96px; }
+  .sw .meta{ padding:10px 12px; font-size:12px; }
+  .sw .meta b{ display:block; font-family:var(--bam-font-display); font-size:16px; letter-spacing:.5px; margin-bottom:2px; }
+  .sw .meta code{ font-size:11px; color:var(--bam-ink-60); }
+
+  /* ---- type specimens ---- */
+  .card{ border:var(--bam-border); border-radius:16px; background:#fff; padding:20px; }
+  .spec-display{ font-family:var(--bam-font-display); color:var(--bam-red); font-size:56px; line-height:.9; }
+  .spec-mono{ font-family:var(--bam-font-mono); text-transform:uppercase; letter-spacing:1px; color:var(--bam-red); }
+  .spec-ar{ font-family:var(--bam-font-ar); font-weight:800; direction:rtl; font-size:26px; }
+  .lbl{ font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--bam-ink-60); margin-bottom:8px; }
+  .scale div{ font-family:var(--bam-font-display); color:var(--bam-ink); line-height:1.05; }
+
+  /* ---- buttons ---- */
+  .btn{
+    font-family:var(--bam-font-display); font-size:22px; color:var(--bam-cream);
+    background:var(--bam-red); border:3px solid var(--bam-ink); border-radius:16px;
+    padding:13px 28px 9px; box-shadow:0 5px 0 var(--bam-ink); cursor:pointer;
+    display:inline-flex; align-items:center; gap:9px; letter-spacing:.5px; transition:transform .12s var(--bam-ease), box-shadow .12s var(--bam-ease);
+  }
+  .btn:active{ transform:translateY(5px); box-shadow:0 0 0 var(--bam-ink); }
+  .btn.ghost{ background:var(--bam-cream); color:var(--bam-red-deep); box-shadow:0 5px 0 var(--bam-red-deep); }
+  .btn.ghost:active{ box-shadow:0 0 0 var(--bam-red-deep); }
+  .btn.teal{ background:var(--bam-teal); box-shadow:0 5px 0 var(--bam-teal-deep); }
+  .btn .arr{ transform:scaleX(-1); }
+
+  /* ---- badges / tags ---- */
+  .sticker{ font-family:var(--bam-font-display); color:var(--bam-cream); background:var(--bam-red); padding:7px 14px 4px; border-radius:999px; border:2.5px solid var(--bam-ink); box-shadow:0 2px 0 var(--bam-ink-25); font-size:16px; display:inline-block; }
+  .sticker.teal{ background:var(--bam-teal); }
+  .tag{ font-family:var(--bam-font-display); font-size:12px; color:var(--bam-red-deep); border:2px solid var(--bam-red-deep); border-radius:999px; padding:4px 12px 1px; background:var(--bam-cream); display:inline-block; transform:rotate(-3deg); }
+
+  /* ---- ticket ---- */
+  .ticket{ position:relative; background:var(--bam-cream); border:var(--bam-border); border-radius:18px; padding:18px 20px; box-shadow:0 6px 0 var(--bam-red-deep); text-align:center; }
+  .ticket::before,.ticket::after{ content:""; position:absolute; top:50%; width:22px; height:22px; background:var(--bam-paper); border:3px solid var(--bam-ink); border-radius:50%; transform:translateY(-50%); }
+  .ticket::before{ left:-13px; } .ticket::after{ right:-13px; }
+  .ticket .k{ font-size:11px; letter-spacing:2px; color:var(--bam-ink-60); text-transform:uppercase; }
+  .ticket .code{ font-family:var(--bam-font-display); font-size:40px; color:var(--bam-red); letter-spacing:3px; margin:2px 0; }
+  .ticket .disc{ color:var(--bam-teal); font-weight:700; font-size:13px; }
+
+  /* ---- menu row ---- */
+  .menu{ background:var(--bam-cream); border:var(--bam-border); border-radius:16px; padding:22px; }
+  .menu h3{ font-family:var(--bam-font-display); color:var(--bam-red); font-size:38px; margin:0 0 14px; font-weight:400; }
+  .m-item{ margin-bottom:14px; }
+  .m-item .row{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; border-bottom:1.5px solid rgba(230,45,26,.4); padding-bottom:2px; }
+  .m-item .name{ font-family:var(--bam-font-mono); font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--bam-red); font-size:14px; }
+  .m-item .price{ font-family:var(--bam-font-mono); font-weight:700; color:var(--bam-red); }
+  .m-item .desc{ font-family:var(--bam-font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--bam-ink-60); margin-top:4px; }
+
+  /* ---- formula icons ---- */
+  .formula{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; border:2.5px solid var(--bam-red); border-radius:14px; padding:16px; background:var(--bam-pink); }
+  .formula .it{ text-align:center; color:var(--bam-red); }
+  .formula .it svg{ display:block; margin:0 auto 4px; }
+  .formula .it span{ font-family:var(--bam-font-mono); font-size:11px; font-weight:700; letter-spacing:.5px; }
+  .formula .plus{ font-family:var(--bam-font-display); color:var(--bam-red); font-size:26px; }
+
+  /* ---- FRESH pattern ---- */
+  .fresh{ border:var(--bam-border); border-radius:16px; overflow:hidden; background:var(--bam-cream); height:150px; display:flex; flex-direction:column; justify-content:center; }
+  .fresh div{ font-family:var(--bam-font-display); font-size:34px; letter-spacing:6px; line-height:.92; text-align:center; color:transparent; -webkit-text-stroke:1.5px var(--bam-red); }
+
+  /* ---- string + clothespin ---- */
+  .string{ position:relative; height:120px; background:linear-gradient(180deg,var(--bam-teal-deep),var(--bam-teal)); border:var(--bam-border); border-radius:16px; overflow:hidden; }
+  .string::before{ content:""; position:absolute; top:34px; left:0; right:0; height:3px; background:var(--bam-red); }
+  .string .card2{ position:absolute; top:26px; left:50%; transform:translateX(-50%) rotate(-2deg); width:120px; height:78px; background:var(--bam-cream); border:2px solid var(--bam-ink); border-radius:4px; }
+  .string .pin{ position:absolute; top:16px; left:50%; transform:translateX(-50%); width:14px; height:30px; background:linear-gradient(#cda670,#a9803f); border-radius:3px; box-shadow:inset 0 0 0 1.5px #875c2c; }
+
+  .foot{ margin-top:60px; text-align:center; color:var(--bam-ink-60); font-size:12px; }
+  .foot a{ color:var(--bam-red); }
+  .tokentbl{ width:100%; border-collapse:collapse; font-size:12px; }
+  .tokentbl td{ border-bottom:1px solid var(--bam-ink-25); padding:8px 6px; }
+  .tokentbl td:first-child{ font-family:var(--bam-font-mono); color:var(--bam-red); font-weight:700; }
+  .box-demo{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .radbox{ background:var(--bam-cream); border:var(--bam-border); display:grid; place-items:center; width:84px; height:84px; font-family:var(--bam-font-mono); font-size:11px; color:var(--bam-ink-60); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- MASTHEAD -->
+  <div class="mast">
+    <img class="lockup-img" src="/assets/bam-lockup.png" alt="BAM Burger logo" />
+    <h1>Design System</h1>
+    <p>Not your usual burger — v0.1 · living document</p>
+  </div>
+
+  <!-- 01 COLOR -->
+  <section>
+    <div class="sec-head"><span class="n">1</span><h2>Color</h2><span class="note">red + cream core · pink &amp; teal support</span></div>
+    <div class="grid cols-4">
+      <div class="sw"><div class="chip" style="background:#E62D1A"></div><div class="meta"><b>Red</b><code>#E62D1A</code><br><code>primary · type · buttons</code></div></div>
+      <div class="sw"><div class="chip" style="background:#B21D10"></div><div class="meta"><b>Red Deep</b><code>#B21D10</code><br><code>stroke · pressed</code></div></div>
+      <div class="sw"><div class="chip" style="background:#F4EBD8"></div><div class="meta"><b>Cream</b><code>#F4EBD8</code><br><code>panels · logo bg</code></div></div>
+      <div class="sw"><div class="chip" style="background:#FBF5E8"></div><div class="meta"><b>Paper</b><code>#FBF5E8</code><br><code>lightest surface</code></div></div>
+      <div class="sw"><div class="chip" style="background:#F6D8E4"></div><div class="meta"><b>Pink</b><code>#F6D8E4</code><br><code>soft background</code></div></div>
+      <div class="sw"><div class="chip" style="background:#F1C2D5"></div><div class="meta"><b>Pink Deep</b><code>#F1C2D5</code><br><code>gradient end</code></div></div>
+      <div class="sw"><div class="chip" style="background:#1E7C8C"></div><div class="meta"><b>Teal</b><code>#1E7C8C</code><br><code>accent · skies</code></div></div>
+      <div class="sw"><div class="chip" style="background:#2A1410"></div><div class="meta"><b>Ink</b><code>#2A1410</code><br><code>outlines · text</code></div></div>
+    </div>
+  </section>
+
+  <!-- 02 TYPE -->
+  <section>
+    <div class="sec-head"><span class="n">2</span><h2>Typography</h2><span class="note">wavy display ↔ mono caps body</span></div>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="lbl">Display — the wavy face (placeholder: Lalezar)</div>
+        <div class="spec-display">BAM BURGER</div>
+        <div class="spec-display" style="font-size:34px;color:var(--bam-ink)">NO MORE BORING</div>
+      </div>
+      <div class="card">
+        <div class="lbl">Mono — body / menu (Space Mono)</div>
+        <div class="spec-mono" style="font-weight:700">THE BAM EFFECT — 10€</div>
+        <div class="spec-mono" style="font-size:12px;color:var(--bam-ink-60)">ANGUS BEEF, MATURATED CHEDDAR, PICKLED ONIONS, TOMATO, BAM SECRET SAUCE.</div>
+      </div>
+      <div class="card">
+        <div class="lbl">Arabic — UI copy (Tajawal)</div>
+        <div class="spec-ar">ما تطلع قبل ما تاخذ كودك</div>
+        <div class="spec-ar" style="font-size:16px;font-weight:500;color:var(--bam-ink-60)">ركّب الصورة كاملة وبتكشف السر</div>
+      </div>
+      <div class="card">
+        <div class="lbl">Scale</div>
+        <div class="scale">
+          <div style="font-size:52px;color:var(--bam-red)">Display 96/58</div>
+          <div style="font-size:34px">Heading 40</div>
+          <div style="font-family:var(--bam-font-mono);font-size:16px;text-transform:none">Body 16 · Mono 13 · Micro 11</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 LOGO -->
+  <section>
+    <div class="sec-head"><span class="n">3</span><h2>Logo &amp; Lockups</h2><span class="note">real asset — extracted from the brand deck</span></div>
+    <div class="grid cols-3">
+      <div class="card" style="display:grid;place-items:center;background:var(--bam-teal)">
+        <img src="/assets/bam-lockup.png" alt="BAM lockup on teal" style="width:150px;height:auto;border-radius:12px" />
+      </div>
+      <div class="card" style="display:grid;place-items:center;">
+        <img src="/assets/bam-lockup-red.png" alt="BAM lockup, red on transparent" style="width:150px;height:auto" />
+      </div>
+      <div class="card" style="display:grid;place-items:center;background:var(--bam-pink)">
+        <div style="font-family:var(--bam-font-display);color:var(--bam-red);text-align:center;font-size:26px;line-height:1.05">NOT YOUR<br>USUAL BURGER.</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--bam-ink-60);margin-top:10px">✔︎ Logo is the <b>real asset extracted from the brand deck</b> (cream-square + transparent red-on-clear), not an AI recreation. Files: <code>/assets/bam-lockup.png</code>, <code>/assets/bam-lockup-red.png</code>. Mascot is intentionally excluded from the teaser.</p>
+  </section>
+
+  <!-- 04 BUTTONS -->
+  <section>
+    <div class="sec-head"><span class="n">4</span><h2>Buttons</h2><span class="note">chunky offset shadow · press = sink</span></div>
+    <div class="box-demo">
+      <button class="btn">فك الشفرة <span class="arr">→</span></button>
+      <button class="btn ghost">احفظ بطاقتك</button>
+      <button class="btn teal">SHARE</button>
+    </div>
+  </section>
+
+  <!-- 05 BADGES -->
+  <section>
+    <div class="sec-head"><span class="n">5</span><h2>Badges &amp; Tags</h2></div>
+    <div class="box-demo">
+      <span class="sticker">FRESH</span>
+      <span class="sticker teal">SALTY</span>
+      <span class="sticker">15%</span>
+      <span class="tag">قيد الإنشاء · قريباً</span>
+    </div>
+  </section>
+
+  <!-- 06 CARDS -->
+  <section>
+    <div class="sec-head"><span class="n">6</span><h2>Cards</h2><span class="note">ticket · menu · combo formula</span></div>
+    <div class="grid cols-2">
+      <div class="ticket">
+        <div class="k">كودك الخاص</div>
+        <div class="code">BAM-7K2Q</div>
+        <div class="disc">خصم 15% — ويصير 25% إذا شاركته</div>
+      </div>
+      <div class="formula">
+        <div class="it"><svg width="42" height="42" viewBox="0 0 42 42" fill="none" stroke="#E62D1A" stroke-width="2.4"><ellipse cx="21" cy="20" rx="15" ry="9"/><line x1="12" y1="26" x2="12" y2="36"/><line x1="30" y1="26" x2="30" y2="36"/></svg><span>BAM</span></div>
+        <span class="plus">+</span>
+        <div class="it"><svg width="42" height="42" viewBox="0 0 42 42" fill="none" stroke="#E62D1A" stroke-width="2.4"><path d="M8 20h26l-3 14H11z"/><path d="M12 20c2-8 16-8 18 0"/></svg><span>SIDE</span></div>
+        <span class="plus">+</span>
+        <div class="it"><svg width="42" height="42" viewBox="0 0 42 42" fill="none" stroke="#E62D1A" stroke-width="2.4"><path d="M12 14h18l-2 22H14z"/><line x1="22" y1="6" x2="26" y2="14"/></svg><span>BOISSON</span></div>
+        <span class="plus">+</span>
+        <div class="it"><svg width="42" height="42" viewBox="0 0 42 42" fill="none" stroke="#E62D1A" stroke-width="2.4"><path d="M10 22c0-6 5-10 11-10s11 4 11 10z"/><rect x="9" y="22" width="24" height="8" rx="2"/></svg><span>SAUCE</span></div>
+      </div>
+    </div>
+    <div class="menu" style="margin-top:16px">
+      <h3>MENU</h3>
+      <div class="m-item"><div class="row"><span class="name">The Bam Effect</span><span class="price">10€</span></div><div class="desc">Angus beef, maturated cheddar, pickled onions, tomato, BAM secret sauce</div></div>
+      <div class="m-item"><div class="row"><span class="name">The Oslo Trip</span><span class="price">12€</span></div><div class="desc">Fresh salmon, cream cheese, red onions, fresh herbs</div></div>
+      <div class="m-item"><div class="row"><span class="name">The Bam Truffle</span><span class="price">15€</span></div><div class="desc">Angus beef, 10-months Comté, pickles, arugula, red onions, truffle sauce</div></div>
+    </div>
+  </section>
+
+  <!-- 07 PATTERNS -->
+  <section>
+    <div class="sec-head"><span class="n">7</span><h2>Patterns &amp; Motifs</h2></div>
+    <div class="grid cols-3">
+      <div class="fresh" style="background-image:url('/assets/bam-fresh.png');background-size:cover;background-position:center;"></div>
+      <div class="string"><span class="pin"></span><span class="card2"></span></div>
+      <div class="card" style="background:var(--bam-cream);display:grid;place-items:center;background-image:radial-gradient(var(--bam-red) 1.4px, transparent 1.6px);background-size:14px 14px;"><span style="font-family:var(--bam-font-mono);font-size:11px;color:var(--bam-ink-60);background:var(--bam-cream);padding:4px 8px;border-radius:6px">halftone dots · 6% opacity</span></div>
+    </div>
+  </section>
+
+  <!-- 08 TOKENS -->
+  <section>
+    <div class="sec-head"><span class="n">8</span><h2>Tokens</h2><span class="note">import <code>/design/tokens.css</code></span></div>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="lbl">Radius &amp; surfaces</div>
+        <div class="box-demo">
+          <div class="radbox" style="border-radius:12px">12</div>
+          <div class="radbox" style="border-radius:18px">18</div>
+          <div class="radbox" style="border-radius:24px">24</div>
+          <div class="radbox" style="border-radius:999px">pill</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="lbl">Named tokens</div>
+        <table class="tokentbl">
+          <tr><td>--bam-red</td><td>#E62D1A</td></tr>
+          <tr><td>--bam-cream</td><td>#F4EBD8</td></tr>
+          <tr><td>--bam-font-display</td><td>wavy (Lalezar)</td></tr>
+          <tr><td>--bam-font-mono</td><td>Space Mono</td></tr>
+          <tr><td>--bam-shadow-pop</td><td>0 5px 0 ink</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 VOICE -->
+  <section>
+    <div class="sec-head"><span class="n">9</span><h2>Voice</h2></div>
+    <div class="card">
+      <div style="font-family:var(--bam-font-display);color:var(--bam-red);font-size:30px;line-height:1.05">Loud · playful · retro · confident</div>
+      <p style="font-family:var(--bam-font-mono);text-transform:uppercase;font-size:12px;letter-spacing:1px;color:var(--bam-ink-60)">Short punchy all-caps · wordplay · never corporate.<br>NOT YOUR USUAL BURGER — NO MORE BORING BURGERS — FRESH FRESH FRESH</p>
+    </div>
+  </section>
+
+  <div class="foot">BAM Burger design system · built from the identity deck · see <a href="./BRAND.md">design/BRAND.md</a></div>
+</div>
+</body>
+</html>

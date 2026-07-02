@@ -68,7 +68,7 @@
     padding:calc(14px + env(safe-area-inset-top,0px)) 20px 10px;
   }
   .logo{ display:flex; align-items:center; gap:9px; }
-  .logo .mark{ height:56px; width:auto; display:block; object-fit:contain; filter:drop-shadow(0 2px 0 oklch(0.505 0.215 28 / .25)); }
+  .logo .mark{ height:60px; width:auto; display:block; object-fit:contain; filter:drop-shadow(0 2px 3px oklch(0.245 0.045 40 / .2)); }
   .logo .word{
     font-family:"Lalezar", cursive; font-size:30px; line-height:.8; letter-spacing:.5px;
     color:var(--red); -webkit-text-stroke:1.5px var(--red-deep); paint-order:stroke fill;
@@ -344,7 +344,7 @@
   <!-- ============ HEADER ============ -->
   <header>
     <div class="logo">
-      <span class="word">BAM</span>
+      <img class="mark" src="assets/bam-lockup-red.png" alt="BAM Burger" draggable="false" />
     </div>
     <span class="tag">قيد الإنشاء · قريباً</span>
   </header>
@@ -580,25 +580,97 @@
     else { try{ await navigator.clipboard.writeText(text+' '+url); toast('اننسخ الرابط ✅ ارسله لصاحبك'); }catch(e){ toast('انسخ الرابط وارسله 👆'); } }
   });
 
-  /* shareable story card (canvas → download) */
-  $('#cardBtn').addEventListener('click', ()=>{
-    const c=document.createElement('canvas'); c.width=1080; c.height=1920; const x=c.getContext('2d');
-    const g=x.createLinearGradient(0,0,0,1920); g.addColorStop(0,'#FBEFE0'); g.addColorStop(1,'#FBD8E8');
-    x.fillStyle=g; x.fillRect(0,0,1080,1920);
-    x.fillStyle='#FF2E1F'; x.textAlign='center';
-    x.font='400 240px Lalezar, cursive'; x.fillText('BAM', 540, 560);
-    x.fillStyle='#2A1410'; x.font='700 56px Tajawal, sans-serif'; x.fillText('NOT YOUR USUAL BURGER', 540, 640);
-    // ticket
-    x.fillStyle='#FBEFE0'; rr(x,180,820,720,420,48); x.fill();
-    x.lineWidth=10; x.strokeStyle='#2A1410'; rr(x,180,820,720,420,48); x.stroke();
-    x.fillStyle='#2A1410'; x.font='700 44px Tajawal'; x.fillText('كود الخصم', 540, 940);
-    x.fillStyle='#FF2E1F'; x.font='400 150px Lalezar'; x.fillText(theCode||'BAM-XXXX', 540, 1090);
-    x.fillStyle='#0E6E80'; x.font='700 46px Tajawal'; x.fillText('خصم 15% يوم الافتتاح', 540, 1180);
-    x.fillStyle='#2A1410'; x.font='700 50px Tajawal'; x.fillText('صمّم تجربتك على الرابط 👆', 540, 1480);
-    x.font='400 70px Lalezar'; x.fillStyle='#FF2E1F'; x.fillText('ما تطلع قبل ما تاخذ كودك', 540, 1600);
-    const a=document.createElement('a'); a.download='BAM-card.png'; a.href=c.toDataURL('image/png'); a.click();
-    toast('تم حفظ بطاقتك — حطّها في الستوري 🔥');
-    function rr(c,x0,y0,w,h,r){ c.beginPath(); c.moveTo(x0+r,y0); c.arcTo(x0+w,y0,x0+w,y0+h,r); c.arcTo(x0+w,y0+h,x0,y0+h,r); c.arcTo(x0,y0+h,x0,y0,r); c.arcTo(x0,y0,x0+w,y0,r); c.closePath(); }
+  /* shareable story card (canvas → download) — brand-styled */
+  const RED='#E63220', REDD='#B21D10', INK='#2A1410', CREAM='#F6ECD9', PINK='#F7D9E4', PINKD='#F3C4D6', TEAL='#0E6E80';
+  function rr(c,x0,y0,w,h,r){ c.beginPath(); c.moveTo(x0+r,y0); c.arcTo(x0+w,y0,x0+w,y0+h,r); c.arcTo(x0+w,y0+h,x0,y0+h,r); c.arcTo(x0,y0+h,x0,y0,r); c.arcTo(x0,y0,x0+w,y0,r); c.closePath(); }
+  function strokeText(x,t,cx,cy,lw,fill,stroke){ x.lineJoin='round'; x.lineWidth=lw; x.strokeStyle=stroke; x.strokeText(t,cx,cy); x.fillStyle=fill; x.fillText(t,cx,cy); }
+  async function buildCard(){
+    // make sure brand fonts are ready BEFORE drawing (the old card fell back to a default font -> looked bad)
+    try{
+      await Promise.all([
+        document.fonts.load('400 320px "Lalezar"'),
+        document.fonts.load('700 56px "Tajawal"'),
+        document.fonts.load('800 56px "Tajawal"')
+      ]);
+      await document.fonts.ready;
+    }catch(e){}
+
+    const W=1080,H=1920, cx=W/2;
+    const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
+    x.textAlign='center'; x.textBaseline='alphabetic';
+
+    // bg
+    const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,CREAM); g.addColorStop(.55,PINK); g.addColorStop(1,PINKD);
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    const rg=x.createRadialGradient(cx,-120,80,cx,-120,900); rg.addColorStop(0,'rgba(246,236,217,.9)'); rg.addColorStop(1,'rgba(246,236,217,0)');
+    x.fillStyle=rg; x.fillRect(0,0,W,H);
+    // halftone dots
+    x.fillStyle='rgba(230,50,32,.06)';
+    for(let yy=40;yy<H;yy+=42){ for(let xx=40;xx<W;xx+=42){ x.beginPath(); x.arc(xx,yy,4,0,7); x.fill(); } }
+    // inner frame
+    x.strokeStyle=RED; x.lineWidth=6; rr(x,44,44,W-88,H-88,40); x.stroke();
+
+    // ---- BAM stacked lockup on a cream card ----
+    const bx=232, by=150, bw=616, bh=560;
+    x.save(); x.shadowColor='rgba(42,20,16,.22)'; x.shadowBlur=40; x.shadowOffsetY=22;
+    x.fillStyle=CREAM; rr(x,bx,by,bw,bh,34); x.fill(); x.restore();
+    x.strokeStyle=INK; x.lineWidth=7; rr(x,bx,by,bw,bh,34); x.stroke();
+    // three stacked BAM rows (the brand lockup)
+    x.font='400 170px "Lalezar", sans-serif'; x.fillStyle=RED;
+    x.fillText('BAM', cx, by+185);
+    x.fillText('BAM', cx, by+340);
+    x.fillText('BAM', cx, by+495);
+    // BURGER oval across the middle row
+    x.save(); x.translate(cx, by+295);
+    x.fillStyle=CREAM; x.beginPath(); x.ellipse(0,0,196,58,0,0,7); x.fill();
+    x.lineWidth=8; x.strokeStyle=RED; x.beginPath(); x.ellipse(0,0,196,58,0,0,7); x.stroke();
+    x.font='400 78px "Lalezar", sans-serif'; x.fillStyle=RED; x.fillText('BURGER',0,27);
+    x.restore();
+
+    // tagline
+    x.font='400 58px "Lalezar", sans-serif';
+    strokeText(x,'NOT YOUR USUAL BURGER.',cx,by+bh+96,2,RED,REDD);
+
+    // ---- ticket ----
+    const tx=150, ty=960, tw=780, th=560;
+    x.save(); x.shadowColor='rgba(178,29,16,.35)'; x.shadowBlur=0; x.shadowOffsetY=16;
+    x.fillStyle=CREAM; rr(x,tx,ty,tw,th,42); x.fill(); x.restore();
+    x.strokeStyle=INK; x.lineWidth=7; rr(x,tx,ty,tw,th,42); x.stroke();
+    // side notches
+    const notch=(nx)=>{ x.fillStyle=PINK; x.beginPath(); x.arc(nx,ty+th*0.5,34,0,7); x.fill(); x.strokeStyle=INK; x.lineWidth=7; x.stroke(); };
+    notch(tx); notch(tx+tw);
+    // label
+    x.font='800 38px "Tajawal", sans-serif'; x.fillStyle=INK; x.globalAlpha=.6; x.fillText('كودك الخاص', cx, ty+92); x.globalAlpha=1;
+    // code
+    x.font='400 146px "Lalezar", sans-serif';
+    strokeText(x,(theCode||'BAM-XXXX'),cx,ty+238,3,RED,REDD);
+    // discount
+    x.font='800 37px "Tajawal", sans-serif'; x.fillStyle=TEAL;
+    x.fillText('خصم ١٥٪ — ويصير ٢٥٪ لو شاركته', cx, ty+312);
+    // dashed
+    x.setLineDash([16,14]); x.strokeStyle='rgba(42,20,16,.30)'; x.lineWidth=4;
+    x.beginPath(); x.moveTo(tx+50,ty+362); x.lineTo(tx+tw-50,ty+362); x.stroke(); x.setLineDash([]);
+    // opening in (one RTL line with Arabic-Indic digits)
+    const days=Math.max(0, Math.ceil((OPEN-Date.now())/86400000));
+    const arDays=String(days).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+    x.font='800 36px "Tajawal", sans-serif'; x.fillStyle=INK; x.globalAlpha=.65; x.fillText('يفتح خلال', cx, ty+430); x.globalAlpha=1;
+    x.font='400 92px "Lalezar", sans-serif'; strokeText(x, arDays+' يوم', cx, ty+520, 2, RED, REDD);
+
+    // footer
+    x.font='400 58px "Lalezar", sans-serif';
+    strokeText(x,'ما تطلع قبل ما تاخذ كودك',cx,1690,2,RED,REDD);
+    x.font='800 40px "Tajawal", sans-serif'; x.fillStyle=INK; x.globalAlpha=.8;
+    x.fillText('aql-tech.com/bam-puzzle', cx, 1758); x.globalAlpha=1;
+
+    return c;
+  }
+  $('#cardBtn').addEventListener('click', async ()=>{
+    try{
+      toast('نجهّز بطاقتك… ثانية 🔥');
+      const c=await buildCard();
+      const a=document.createElement('a'); a.download='BAM-'+(theCode||'card')+'.png'; a.href=c.toDataURL('image/png'); a.click();
+      toast('تم حفظ بطاقتك — حطّها في الستوري 🔥');
+    }catch(e){ toast('تعذّر حفظ البطاقة، جرّب مرة ثانية'); }
   });
 
   /* opt-in */

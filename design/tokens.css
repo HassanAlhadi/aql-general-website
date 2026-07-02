@@ -1,0 +1,50 @@
+/* ============================================================
+   BAM BURGER — Design Tokens
+   Single source of truth for color, type, space, radius, shadow.
+   Import in any page:  <link rel="stylesheet" href="/design/tokens.css">
+   ============================================================ */
+:root{
+  /* ---- Color ---- */
+  --bam-red:        #E62D1A;   /* primary — type, logo, buttons */
+  --bam-red-deep:   #B21D10;   /* stroke / pressed / shadow */
+  --bam-red-soft:   #F2503C;   /* hover / highlights */
+  --bam-cream:      #F4EBD8;   /* panels / logo bg */
+  --bam-paper:      #FBF5E8;   /* lightest surface */
+  --bam-pink:       #F6D8E4;   /* soft background */
+  --bam-pink-deep:  #F1C2D5;   /* gradient end */
+  --bam-teal:       #1E7C8C;   /* accent */
+  --bam-teal-deep:  #135A68;   /* photo sky top */
+  --bam-ink:        #2A1410;   /* outlines / body text */
+  --bam-ink-60:     rgba(42,20,16,.6);
+  --bam-ink-25:     rgba(42,20,16,.25);
+
+  /* ---- Type families ---- */
+  --bam-font-display: "Lalezar", system-ui, sans-serif; /* placeholder for the wavy face */
+  --bam-font-mono:    "Space Mono", ui-monospace, monospace;
+  --bam-font-ar:      "Tajawal", system-ui, sans-serif;
+
+  /* ---- Type scale (fluid) ---- */
+  --bam-fs-display: clamp(48px, 12vw, 96px);
+  --bam-fs-h1:      clamp(34px, 8vw, 58px);
+  --bam-fs-h2:      clamp(26px, 6vw, 40px);
+  --bam-fs-lead:    18px;
+  --bam-fs-body:    16px;
+  --bam-fs-mono:    13px;   /* menu descriptions */
+  --bam-fs-micro:   11px;
+
+  /* ---- Space (8pt-ish) ---- */
+  --bam-s-1: 4px;  --bam-s-2: 8px;  --bam-s-3: 12px; --bam-s-4: 16px;
+  --bam-s-5: 24px; --bam-s-6: 32px; --bam-s-7: 48px; --bam-s-8: 64px;
+
+  /* ---- Radius ---- */
+  --bam-r-sm: 12px; --bam-r-md: 18px; --bam-r-lg: 24px; --bam-r-pill: 999px;
+
+  /* ---- Border / shadow ---- */
+  --bam-border: 3px solid var(--bam-ink);
+  --bam-shadow-pop: 0 5px 0 var(--bam-ink);            /* chunky offset (buttons/cards) */
+  --bam-shadow-soft: 0 12px 24px rgba(42,20,16,.22);
+  --bam-shadow-red: 0 6px 0 var(--bam-red-deep);
+
+  /* ---- Motion ---- */
+  --bam-ease: cubic-bezier(.22,1,.36,1);
+}
