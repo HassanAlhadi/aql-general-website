@@ -594,35 +594,44 @@
       ]);
       await document.fonts.ready;
     }catch(e){}
-    // load the REAL logo (same-origin, so it composites without tainting the canvas)
-    const logo=new Image(); let logoOk=false;
-    try{ logo.src='assets/bam-lockup.png'; await logo.decode(); logoOk=true; }catch(e){}
+    // load brand assets (same-origin -> canvas stays exportable)
+    async function loadImg(src){ const im=new Image(); try{ im.src=src; await im.decode(); return im; }catch(e){ return null; } }
+    const logoRed   = await loadImg('assets/bam-lockup-red.png');
+    const freshWord = await loadImg('assets/bam-fresh-word.png');
 
     const W=1080,H=1920, cx=W/2;
     const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
     x.textAlign='center'; x.textBaseline='alphabetic';
 
-    // bg
-    const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,CREAM); g.addColorStop(.55,PINK); g.addColorStop(1,PINKD);
-    x.fillStyle=g; x.fillRect(0,0,W,H);
-    const rg=x.createRadialGradient(cx,-120,80,cx,-120,900); rg.addColorStop(0,'rgba(246,236,217,.9)'); rg.addColorStop(1,'rgba(246,236,217,0)');
-    x.fillStyle=rg; x.fillRect(0,0,W,H);
-    // halftone dots
-    x.fillStyle='rgba(230,50,32,.06)';
-    for(let yy=40;yy<H;yy+=42){ for(let xx=40;xx<W;xx+=42){ x.beginPath(); x.arc(xx,yy,4,0,7); x.fill(); } }
+    // bg: cream + FRESH repeated across the whole card, each row offset (brick/staggered)
+    x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+    if(freshWord){
+      const ww=430, wh=Math.round(ww*freshWord.height/freshWord.width); // ~2.5 words per row
+      const gap=ww*0.14, adv=ww+gap, rowH=wh*0.98;
+      x.globalAlpha=.85;
+      let row=0;
+      for(let y=-wh*0.3; y<H; y+=rowH, row++){
+        const off = -((row*0.5)%1)*adv;   // alternate rows start off the left edge
+        for(let xx=off - adv; xx<W+adv; xx+=adv){
+          x.drawImage(freshWord, xx, y, ww, wh);
+        }
+      }
+      x.globalAlpha=1;
+    }
     // inner frame
     x.strokeStyle=RED; x.lineWidth=6; rr(x,44,44,W-88,H-88,40); x.stroke();
 
-    // ---- REAL BAM lockup image (100% the brand asset) ----
-    const bw=548, bh=logoOk ? Math.round(bw*logo.height/logo.width) : 620, by=132, bx=Math.round((W-bw)/2);
-    if(logoOk){
-      x.save(); x.shadowColor='rgba(42,20,16,.26)'; x.shadowBlur=34; x.shadowOffsetY=18;
-      x.drawImage(logo, bx, by, bw, bh); x.restore();
-    }
+    // centerpiece: red wavy BAM logo (replaces the mascot), on a soft cream halo
+    const lw=560, lh=logoRed?Math.round(lw*logoRed.height/logoRed.width):642, ly=150;
+    const lx=Math.round((W-lw)/2), lcy=ly+lh/2;
+    const halo=x.createRadialGradient(cx,lcy,60,cx,lcy,lw*0.66);
+    halo.addColorStop(0,'rgba(244,235,216,.97)'); halo.addColorStop(.72,'rgba(244,235,216,.92)'); halo.addColorStop(1,'rgba(244,235,216,0)');
+    x.fillStyle=halo; x.fillRect(0,ly-70,W,lh+150);
+    if(logoRed){ x.save(); x.shadowColor='rgba(42,20,16,.18)'; x.shadowBlur=18; x.shadowOffsetY=10; x.drawImage(logoRed,lx,ly,lw,lh); x.restore(); }
 
     // tagline
     x.font='400 58px "Lalezar", sans-serif';
-    strokeText(x,'NOT YOUR USUAL BURGER.',cx,by+bh+96,2,RED,REDD);
+    strokeText(x,'NOT YOUR USUAL BURGER.',cx,ly+lh+64,2,RED,REDD);
 
     // ---- ticket ----
     const tx=150, ty=960, tw=780, th=560;
