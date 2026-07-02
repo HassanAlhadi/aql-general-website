@@ -69,9 +69,10 @@ The signature face: **ultra-bold, rounded, groovy 1970s display lettering with a
 **Candidates to test for the wave:** `Bagel Fat One`, `Shrikhand` (Google Fonts).
 **Best fix:** rebuild the primary lockup as a **hand-tuned SVG** (see §5).
 
-### 4.2 Secondary / body — mono
-Menu descriptions & small print use a **light monospaced / typewriter** style, uppercase, letter-spaced.
+### 4.2 Secondary / body — mono (confirmed)
+Menu descriptions, the French formula line, and small print are all set in a **light monospaced / typewriter** face, **red, UPPERCASE, letter-spaced**. Headings (`MENU`, `SIDES`, `SAUCES`) stay in the wavy display face — the mono is only for supporting copy.
 - **Candidate:** `Space Mono`, `JetBrains Mono`, or similar.
+- **Contrast rule:** big wavy display heading ↔ small mono caps body. Never set headings in mono or body in the display face.
 
 ### 4.3 Arabic (web)
 - **Tajawal** (400/500/700/800/900) for all Arabic UI copy.
@@ -145,6 +146,17 @@ FRESH FRIES · CORN · MIXED SALAD
 
 ### Sauces — 0.80€
 KETJEP · DALLAS · COW-BOY · MAYO · 16-20 · BRAVA
+
+### Menu layout & icon system
+Two menu formats exist:
+- **À la carte** — cream card, huge red wavy `MENU` heading, items with a **thin red rule under each name spanning to the right-aligned price**, mono description beneath. Mascot sits **bottom-right**. Presented pinned to a **red string with a wooden clothespin** on a teal sky.
+- **Combo (pink card)** — centered `MENU` heading, a **rounded-rect box with a pictographic formula row**: `BAM (mascot) ➕ SIDE (bowl) ➕ BOISSON (cup w/ straw) ➕ SAUCE (sauce cup)`, French mono line under it, the `MENU BAM …` list with right-aligned prices, then a bordered **`SAUCES`** box.
+
+**Recurring layout habits:**
+- Generous **negative space**; content anchored, not crowded.
+- **Mascot almost always bottom-right** as a signature sign-off.
+- Simple **red line-art icons** (side bowl, drink, sauce cup) — thin, single-color, playful.
+- Prices **right-aligned**, item names left, thin red leader rule between.
 
 ---
 
