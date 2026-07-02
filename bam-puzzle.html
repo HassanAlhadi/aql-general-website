@@ -608,7 +608,7 @@
     if(freshWord){
       const ww=430, wh=Math.round(ww*freshWord.height/freshWord.width); // ~2.5 words per row
       const gap=ww*0.14, adv=ww+gap, rowH=wh*0.98;
-      x.globalAlpha=.85;
+      x.globalAlpha=1;
       let row=0;
       for(let y=-wh*0.3; y<H; y+=rowH, row++){
         const off = -((row*0.5)%1)*adv;   // alternate rows start off the left edge
