@@ -98,18 +98,64 @@
   .float{ animation:float 3.4s var(--ease) infinite; transform-origin:50% 90%; }
   @keyframes float{ 0%,100%{transform:translateY(0) rotate(-.4deg)} 50%{transform:translateY(-10px) rotate(.5deg)} }
 
-  /* ---- mystery teaser (replaces mascot) ---- */
-  .mystery{
-    width:64%; max-width:230px; aspect-ratio:1/1; margin:0 auto;
-    border-radius:32px; border:4px dashed var(--red-deep);
-    background:radial-gradient(120% 120% at 50% 30%, var(--cream), var(--pink-deep));
+  /* ---- sealed mystery frame (replaces mascot) ---- */
+  .sealed{
+    position:relative; width:min(72vw,300px); aspect-ratio:3/4; margin:0 auto;
+    border-radius:24px; overflow:hidden; border:4px solid var(--ink);
+    box-shadow:0 10px 0 oklch(0.505 0.215 28 / .25), 0 14px 30px oklch(0.245 0.045 40 / .28);
+    background:var(--cream); isolation:isolate;
+  }
+  /* the hidden picture — scrambled + blurred beyond recognition */
+  .sealed-img{
+    position:absolute; inset:-14%;
+    background:url('assets/bam-poster.jpg') center/220% 220%;
+    filter:blur(26px) saturate(.7) brightness(.92); transform:scale(1.15);
+  }
+  /* brand wash so it reads on-brand, not like a photo */
+  .sealed-wash{
+    position:absolute; inset:0; z-index:1; mix-blend-mode:multiply;
+    background:radial-gradient(120% 90% at 50% 20%, oklch(0.905 0.055 350 / .35), oklch(0.845 0.092 352 / .8) 90%);
+  }
+  .sealed-scrim{
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, oklch(0.245 0.045 40 / .06), oklch(0.245 0.045 40 / .28));
+  }
+  /* faint 3x3 grid to promise "pieces" */
+  .sealed-grid{
+    position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:
+      linear-gradient(90deg, transparent calc(33.33% - 1px), oklch(0.975 0.015 80 / .35) 33.33%, transparent calc(33.33% + 1px)),
+      linear-gradient(90deg, transparent calc(66.66% - 1px), oklch(0.975 0.015 80 / .35) 66.66%, transparent calc(66.66% + 1px)),
+      linear-gradient(0deg,  transparent calc(33.33% - 1px), oklch(0.975 0.015 80 / .35) 33.33%, transparent calc(33.33% + 1px)),
+      linear-gradient(0deg,  transparent calc(66.66% - 1px), oklch(0.975 0.015 80 / .35) 66.66%, transparent calc(66.66% + 1px));
+  }
+  /* moving shine sweep */
+  .sealed-shine{
+    position:absolute; inset:0; z-index:3; pointer-events:none;
+    background:linear-gradient(105deg, transparent 30%, oklch(0.975 0.015 80 / .55) 47%, oklch(1 0 0 / .75) 50%, oklch(0.975 0.015 80 / .55) 53%, transparent 70%);
+    background-size:260% 100%; background-position:180% 0;
+    animation:shine 3.6s var(--ease) infinite;
+  }
+  @keyframes shine{ 0%{background-position:180% 0} 55%,100%{background-position:-80% 0} }
+  /* wax seal */
+  .sealed-seal{
+    position:absolute; z-index:4; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-6deg);
+    width:88px; height:88px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 8px 0 oklch(0.505 0.215 28 / .18);
+    background:radial-gradient(circle at 35% 30%, var(--red-soft), var(--red) 55%, var(--red-deep));
+    border:3px solid var(--red-deep);
+    box-shadow:0 6px 16px oklch(0.245 0.045 40 / .4), inset 0 2px 6px oklch(1 0 0 / .25);
   }
-  .mystery span{
-    font-family:"Lalezar"; font-size:96px; line-height:1; color:var(--red);
-    -webkit-text-stroke:3px var(--red-deep); paint-order:stroke fill;
+  .sealed-seal::before{ content:""; position:absolute; inset:8px; border-radius:50%; border:2px dashed oklch(0.975 0.015 80 / .55); }
+  .sealed-seal b{ font-family:"Lalezar"; font-size:44px; line-height:1; color:var(--cream); transform:translateY(2px); }
+  /* corner chip: number of pieces */
+  .sealed-chip{
+    position:absolute; z-index:4; inset-block-start:10px; inset-inline-start:10px;
+    font-family:"Lalezar"; font-size:13px; color:var(--red-deep); letter-spacing:.5px;
+    background:var(--cream); border:2.5px solid var(--ink); border-radius:999px; padding:4px 11px 2px;
+    box-shadow:var(--shadow-1); transform:rotate(-4deg);
   }
+  @media (prefers-reduced-motion:reduce){ .sealed-shine{ animation:none; } }
 
   /* sticker badges */
   .sticker{
@@ -298,16 +344,22 @@
     <!-- ---- START ---- -->
     <section class="screen active" id="start">
       <div class="mascot-wrap">
-        <span class="sticker s-fresh">FRESH</span>
-        <span class="sticker s-salty">SALTY</span>
-        <div class="mystery float"><span>?</span></div>
+        <div class="sealed float">
+          <div class="sealed-img"></div>
+          <div class="sealed-wash"></div>
+          <div class="sealed-scrim"></div>
+          <div class="sealed-grid"></div>
+          <div class="sealed-shine"></div>
+          <span class="sealed-chip">٩ قطع</span>
+          <div class="sealed-seal"><b>؟</b></div>
+        </div>
       </div>
       <div class="copy">
-        <span class="kicker">ما تطلع قبل ما تاخذ كودك</span>
-        <h1>وش مخبّينه <em>تحت؟</em></h1>
-        <p class="lede">ركّب الصورة وكمّل البزل… وكودك للافتتاح يطلع لك.</p>
-        <button class="btn" id="goPlay">يلا نركّب <span class="arr">→</span></button>
-        <span class="micro">SHH... IT'S A SURPRISE</span>
+        <span class="kicker">شي جديد… قريب</span>
+        <h1>وش <em>ورا</em> الزجاج؟</h1>
+        <p class="lede">الصورة مغلّطة ومغبّشة… ركّبها صح وبتكشف السر — وكودك للافتتاح يطلع لك.</p>
+        <button class="btn" id="goPlay">فك الشفرة <span class="arr">→</span></button>
+        <span class="micro">لا أحد يعرف… إلا اللي يركّبها</span>
       </div>
     </section>
 
