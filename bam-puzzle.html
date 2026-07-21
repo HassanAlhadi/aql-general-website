@@ -112,7 +112,7 @@
 
   /* ---- sealed mystery frame (replaces mascot) ---- */
   .sealed{
-    position:relative; width:min(72vw,300px); aspect-ratio:3/4; margin:0 auto;
+    position:relative; flex-shrink:0; width:min(72vw,300px); aspect-ratio:3/4; margin:0 auto;
     border-radius:24px; overflow:hidden; border:4px solid var(--ink);
     box-shadow:0 10px 0 oklch(0.505 0.215 28 / .25), 0 14px 30px oklch(0.245 0.045 40 / .28);
     background:var(--cream); isolation:isolate;
@@ -247,7 +247,7 @@
 
   /* ============ PUZZLE ============ */
   .puzzle{
-    position:relative; width:min(72vw,300px); aspect-ratio:3/4;
+    position:relative; flex-shrink:0; width:min(72vw,300px); aspect-ratio:3/4;
     border-radius:24px; overflow:hidden; border:4px solid var(--ink);
     box-shadow:0 10px 0 oklch(0.505 0.215 28 / .25), 0 14px 30px oklch(0.245 0.045 40 / .25);
     background:var(--cream);
@@ -302,6 +302,11 @@
   .consent input{ margin-top:2px; width:16px; height:16px; accent-color:var(--red); flex:none; }
   .done-msg{ display:none; text-align:center; font-family:"Lalezar"; color:var(--teal); font-size:18px; }
   /* ---- HTML menu (editable) ---- */
+  .reward-inner{ position:relative; z-index:1; width:100%; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .reward-inner::before{ content:""; position:absolute; inset:-34px -26px; z-index:-1; pointer-events:none;
+    background:url("assets/bam-fresh-bg.png") top center / 100% auto repeat-y; opacity:.55;
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image:linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent); }
   .menu-wrap{ position:relative; width:calc(100% + 44px); margin-inline:-22px; margin-top:30px; padding-top:24px; }
   .menu-string{ position:absolute; top:20px; left:0; right:0; height:3px; background:var(--red); box-shadow:0 1px 0 var(--red-deep); }
   .menu-card{ direction:ltr; position:relative; width:88%; max-width:360px; margin:0 auto; background:#F1E7D0;
@@ -355,7 +360,7 @@
     <!-- ---- START ---- -->
     <section class="screen active" id="start">
       <div class="hero">
-        <img class="hero-img" src="https://d8j0ntlcm91z4.cloudfront.net/user_38X96OSF6PnWvzKrTq58yrFl5Rq/hf_20260702_083604_125c7840-190c-4a64-9399-341cc914fdd7.png" alt="BAM" draggable="false" />
+        <img class="hero-img" src="assets/bam-hero-v2.jpg" alt="BAM" draggable="false" />
         <div class="blinds" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
       </div>
       <div class="copy">
@@ -375,9 +380,11 @@
       </div>
       <div class="pz-meta"><span id="moves">0 حركة</span><button class="pz-shuffle" id="shuffleBtn">خلط 🔀</button></div>
       <span class="hint" id="hint">رتّب الصورة كاملة</span>
+      <button class="btn" id="pzNext" style="display:none; margin-top:6px;">شوف كودك <span class="arr">→</span></button>
     </section>
     <!-- ---- REWARD ---- -->
     <section class="screen" id="reward">
+      <div class="reward-inner">
       <h2>BAM! 🔥 فككت الشفرة</h2>
       <p>هذا كودك الشخصي — يشتغل يوم الافتتاح بس.</p>
 
@@ -435,6 +442,7 @@
         </label>
         <div class="done-msg" id="optDone">تم! بنذكّرك يوم نفتح 🤙</div>
       </form>
+          </div>
     </section>
 
   </main>
@@ -508,6 +516,7 @@
   const markCorrect=()=>{ const el=pzEl(); for(let i=0;i<N*N;i++){ const t=el.querySelector('.tile[data-cell="'+i+'"]'); if(t) t.classList.toggle('ok', order[i]===i); } };
   function shuffle(){
     pzDone=false; sel=-1; moves=0; setMoves();
+    { const nx=document.getElementById('pzNext'); if(nx) nx.style.display='none'; const sb=document.getElementById('shuffleBtn'); if(sb) sb.style.display=''; }
     do{ for(let i=order.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; const tmp=order[i]; order[i]=order[j]; order[j]=tmp; } }
     while(order.every((v,i)=>v===i));
     [...pzEl().querySelectorAll('.tile')].forEach(t=>{ t.classList.remove('sel','locked'); paint(+t.dataset.cell); });
@@ -532,7 +541,11 @@
     const bp=document.getElementById('bamPop'); if(bp) bp.classList.add('show');
     if(navigator.vibrate) navigator.vibrate([14,30,40]);
     try{ pop(); }catch(e){}
-    setTimeout(()=>go('reward'), 1200);
+    // don't auto-advance: keep the finished picture on screen, let the user continue with a button
+    setTimeout(()=>{ if(bp) bp.classList.remove('show'); }, 1150);
+    const nx=document.getElementById('pzNext'); if(nx) nx.style.display='inline-flex';
+    const sb=document.getElementById('shuffleBtn'); if(sb) sb.style.display='none';
+    const h=document.getElementById('hint'); if(h) h.textContent='رتّبتها! 🎉 شوف الصورة، وبعدها كمّل';
   }
   function initPuzzle(){
     if(pzInit) return; pzInit=true;
@@ -540,6 +553,7 @@
     const start=()=>{ if(pzStarted) return; pzStarted=true;
       pzUrl=PZ; renderTiles(); shuffle();
       const sb=document.getElementById('shuffleBtn'); if(sb) sb.addEventListener('click',shuffle);
+      const nx=document.getElementById('pzNext'); if(nx) nx.addEventListener('click',()=>go('reward'));
     };
     if(document.fonts && document.fonts.ready){ document.fonts.ready.then(start); setTimeout(start,700); } else { start(); }
   }
