@@ -1,0 +1,492 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kufam:wght@400..900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; background: #E9EAE6; }
+    a { color: #9E2B1E; text-decoration: none; }
+    a:hover { color: #7E2117; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; direction: rtl; text-align: right; color: #101112; background: #E9EAE6; overflow: hidden;">
+
+  <!-- ═══════════ NIGHT BAND: nav + hero ═══════════ -->
+  <div style="background: {{night}}; color: #E9EAE6; position: relative; overflow: hidden;">
+
+    <!-- the cut: single 45° hairline, the only ornament in the first screen -->
+    <div style="position: absolute; left: 96px; bottom: -120px; width: 1px; height: 460px; background: rgba(233,234,230,0.24); transform: rotate(45deg); transform-origin: bottom center;"></div>
+
+    <!-- nav -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px; height: 88px; display: flex; align-items: center; justify-content: space-between; gap: 40px; border-bottom: 1px solid rgba(233,234,230,0.14);">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <svg width="70" height="26" viewBox="0 0 268 100" fill="none" aria-label="عقل">
+          <path d="M46 4 L60 4 L100 96 L82 96 L53 26 L24 96 L6 96 Z" fill="#E9EAE6"/>
+          <path d="M158 4 C185 4 205 25 205 50 C205 75 185 96 158 96 C131 96 111 75 111 50 C111 25 131 4 158 4 Z M158 24 C143 24 131 35 131 50 C131 65 143 76 158 76 C173 76 185 65 185 50 C185 35 173 24 158 24 Z" fill="#E9EAE6"/>
+          <path d="M172 42 L186 56 L156 86 L142 72 Z" fill="#8A8C86"/>
+          <path d="M196 66 L210 80 L192 98 L178 84 Z" fill="#8A8C86"/>
+          <path d="M226 4 L244 4 L244 78 L262 78 L262 96 L226 96 Z" fill="#E9EAE6"/>
+        </svg>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: rgba(233,234,230,0.42);">عقل لتقنية المعلومات</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 30px;">
+        <sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+          <a href="{{n.href}}" style="font-size: 14.5px; font-weight: 500; color: rgba(233,234,230,0.74); padding: 12px 0; min-height: 44px; display: flex; align-items: center;">{{n.label}}</a>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <a href="/en" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: rgba(233,234,230,0.5); padding: 12px 8px; min-height: 44px; display: flex; align-items: center;">EN</a>
+        <a href="#contact" style="background: {{seal}}; color: #F6F2EF; font-size: 14.5px; font-weight: 600; padding: 13px 22px; min-height: 44px; display: flex; align-items: center;">اطلب نطاق عمل</a>
+      </div>
+    </div>
+
+    <!-- hero -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 132px 40px 120px; position: relative;">
+      <h1 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 76px; line-height: 1.1; margin: 0 0 30px; max-width: 17ch; text-wrap: balance;">
+        نختبر الأنظمة التي<br><span style="color: {{sealOnNight}};">لا تحتمل الفشل.</span>
+      </h1>
+      <p style="font-size: 19px; line-height: 1.75; color: rgba(233,234,230,0.7); margin: 0 0 44px; max-width: 46ch;">
+        فريق سعودي متخصص في الأمن الهجومي. اثنتا عشرة شهادة هجومية معتمدة، وخبرة تنفيذية في البنوك والجهات الحكومية والتقنية المالية.
+      </p>
+      <div style="display: flex; gap: 14px; align-items: center;">
+        <a href="#contact" style="background: {{seal}}; color: #F6F2EF; font-size: 16px; font-weight: 600; padding: 17px 32px; min-height: 44px; display: flex; align-items: center;">اطلب نطاق عمل</a>
+        <a href="#method" style="border: 1px solid rgba(233,234,230,0.32); color: #E9EAE6; font-size: 16px; font-weight: 500; padding: 17px 32px; min-height: 44px; display: flex; align-items: center;">كيف نعمل</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PROOF BAR — static, immediately under the hero ═══════════ -->
+  <div style="background: #E9EAE6; border-bottom: 1px solid #C6C8C2;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 44px 40px 40px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 12px 30px; align-items: center; margin-bottom: 26px;">
+        <sc-for list="{{certs}}" as="c" hint-placeholder-count="12">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; font-weight: 500; color: #101112;">{{c}}</span>
+        </sc-for>
+      </div>
+      <div style="border-top: 1px solid #C6C8C2; padding-top: 18px; display: flex; flex-wrap: wrap; gap: 8px 26px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13.5px; color: #666862;">
+        <span>١٢ شهادة هجومية</span>
+        <span>·</span>
+        <span>‏[٥–١٠+] سنوات لكل فرد</span>
+        <span>·</span>
+        <span>بنوك · حكومة · تقنية مالية</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ OFFENSIVE SECURITY ═══════════ -->
+  <div id="security" style="max-width: 1200px; margin: 0 auto; padding: 104px 40px 0;">
+    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{seal}}; display: block; margin-bottom: 14px;">٠١</span>
+    <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 42px; line-height: 1.2; margin: 0 0 18px; text-wrap: balance;">الأمن الهجومي</h2>
+    <p style="font-size: 18px; line-height: 1.8; color: #5B5D59; margin: 0 0 48px; max-width: 56ch;">
+      لا نبيع «تقييم أمني» مبهماً. كل ارتباط له نطاق مكتوب، ومنهجية متفق عليها، ومخرَج واحد: تقرير تستطيع فرقك التنفيذ منه.
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: #C6C8C2; border: 1px solid #C6C8C2;">
+      <sc-for list="{{capabilities}}" as="cap" hint-placeholder-count="4">
+        <div style="background: #F5F6F3; padding: 30px 32px;">
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #666862; margin-bottom: 12px;">{{cap.certs}}</div>
+          <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 10px; line-height: 1.4;">{{cap.title}}</h3>
+          <p style="font-size: 15.5px; line-height: 1.75; color: #5B5D59; margin: 0;">{{cap.body}}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ═══════════ ENGAGEMENT LEDGER — the signature ═══════════ -->
+  <div style="max-width: 1200px; margin: 0 auto; padding: 104px 40px 0;">
+    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{seal}}; display: block; margin-bottom: 14px;">٠٢</span>
+    <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 42px; line-height: 1.2; margin: 0 0 18px; text-wrap: balance;">سجل الارتباطات</h2>
+    <p style="font-size: 18px; line-height: 1.8; color: #5B5D59; margin: 0 0 36px; max-width: 56ch;">
+      عملاؤنا تحت اتفاقيات سرية، فلا نسمّيهم — ولا نختلق شعارات بديلة. القطاع والنطاق والسنة دقيقة، والاسم وحده محجوب.
+    </p>
+
+    <div style="border: 1px solid #C6C8C2; background: #F5F6F3;">
+      <div style="display: grid; grid-template-columns: 150px 1fr 260px 110px 120px; gap: 0; padding: 16px 28px; border-bottom: 1px solid #101112; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #666862;">
+        <span>القطاع</span><span>العميل</span><span>النطاق</span><span>السنة</span><span>الحالة</span>
+      </div>
+      <sc-for list="{{ledger}}" as="row" hint-placeholder-count="3">
+        <div style="display: grid; grid-template-columns: 150px 1fr 260px 110px 120px; gap: 0; padding: 18px 28px; border-bottom: 1px solid #C6C8C2; font-size: 15.5px; align-items: center;">
+          <span style="font-weight: 500;">{{row.sector}}</span>
+          <span><span style="display: inline-block; height: 15px; background: #101112; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%); width: {{row.w}};"></span></span>
+          <span style="color: #5B5D59;">{{row.scope}}</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; color: #5B5D59;">{{row.year}}</span>
+          <span style="font-weight: 500;">مُغلق <span style="color: {{seal}};">✓</span></span>
+        </div>
+      </sc-for>
+      <div style="padding: 16px 28px; font-size: 14px; color: #5B5D59;">
+        الأسماء محجوبة بموجب اتفاقيات السرية. القطاع والنطاق دقيقان.
+      </div>
+    </div>
+    <p style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: {{seal}}; margin: 14px 0 0;">
+      [يُنشر فقط بأرقام قابلة للشهادة — بانتظار تأكيد ما تسمح به الاتفاقيات]
+    </p>
+  </div>
+
+  <!-- ═══════════ DESIGN — the flip: full-bleed illustrated night ═══════════ -->
+  <div id="design" style="margin-top: 104px; background: {{night}}; position: relative; overflow: hidden;">
+    <svg viewBox="0 0 1440 560" width="1440" height="560" style="display: block;" aria-label="مشهد معماري نجدي">
+      <rect width="1440" height="560" fill="{{night}}"/>
+
+      <!-- stars, sparse -->
+      <sc-for list="{{stars}}" as="s" hint-placeholder-count="14">
+        <circle cx="{{s.x}}" cy="{{s.y}}" r="{{s.r}}" fill="#E9EAE6" opacity="{{s.o}}"/>
+      </sc-for>
+
+      <!-- massing: flat orthographic blocks, parapets stepped at 45° -->
+      <g>
+        <!-- block A -->
+        <path d="M150 300 L150 470 L330 470 L330 300 L318 300 L306 282 L294 300 L282 300 L270 282 L258 300 L246 300 L234 282 L222 300 L210 300 L198 282 L186 300 L174 300 L162 282 Z" fill="#DAD6CB"/>
+        <path d="M330 300 L330 470 L370 470 L370 288 L358 288 L346 270 L334 288 Z" fill="#B4AFA2"/>
+
+        <!-- block B, tallest -->
+        <path d="M470 200 L470 470 L690 470 L690 200 L678 200 L666 180 L654 200 L642 200 L630 180 L618 200 L606 200 L594 180 L582 200 L570 200 L558 180 L546 200 L534 200 L522 180 L510 200 L498 200 L486 180 Z" fill="#E4E0D6"/>
+        <path d="M690 200 L690 470 L742 470 L742 186 L730 186 L718 166 L706 186 Z" fill="#BAB5A8"/>
+
+        <!-- block C -->
+        <path d="M840 340 L840 470 L1010 470 L1010 340 L998 340 L986 322 L974 340 L962 340 L950 322 L938 340 L926 340 L914 322 L902 340 L890 340 L878 322 L866 340 L854 340 Z" fill="#D5D1C6"/>
+
+        <!-- block D, low and far -->
+        <path d="M1120 390 L1120 470 L1290 470 L1290 390 L1278 390 L1266 374 L1254 390 L1242 390 L1230 374 L1218 390 L1206 390 L1194 374 L1182 390 L1170 390 L1158 374 L1146 390 Z" fill="#C9C5BA"/>
+      </g>
+
+      <!-- triangular apertures — the 45° cut, lit and unlit -->
+      <g>
+        <sc-for list="{{windows}}" as="w" hint-placeholder-count="18">
+          <path d="{{w.d}}" fill="{{w.fill}}"/>
+        </sc-for>
+      </g>
+
+      <!-- palms, minimal -->
+      <g stroke="#8A8C86" stroke-width="2" fill="none" opacity="0.55">
+        <path d="M1360 470 L1358 396"/>
+        <path d="M1358 396 C1340 384 1326 386 1316 396"/>
+        <path d="M1358 396 C1376 384 1390 386 1400 396"/>
+        <path d="M1358 396 C1348 378 1350 366 1358 358"/>
+        <path d="M1358 396 C1368 380 1380 374 1390 374"/>
+        <path d="M92 470 L94 414"/>
+        <path d="M94 414 C80 404 68 406 60 414"/>
+        <path d="M94 414 C108 404 120 406 128 414"/>
+        <path d="M94 414 C86 400 88 390 94 384"/>
+      </g>
+
+      <!-- horizon -->
+      <rect x="0" y="470" width="1440" height="1" fill="rgba(233,234,230,0.22)"/>
+      <rect x="0" y="471" width="1440" height="89" fill="#0C0D0B"/>
+    </svg>
+
+    <!-- the floating card: made of the sober section's own tokens -->
+    <div style="position: absolute; top: 96px; right: 120px; width: 430px; background: #F5F6F3; color: #101112; padding: 34px 36px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%); box-shadow: 0 24px 48px rgba(0,0,0,0.35);">
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{seal}}; display: block; margin-bottom: 14px;">٠٣</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 38px; line-height: 1.16; margin: 0 0 16px;">التصميم</h2>
+      <p style="font-size: 16.5px; line-height: 1.8; color: #5B5D59; margin: 0 0 22px;">
+        نصمّم ونبني الواجهة التي سيراها عميلك — بنفس دقّة التقرير الذي نسلّمه. هذا القسم نفسه هو العيّنة.
+      </p>
+      <div style="border-top: 1px solid #C6C8C2; padding-top: 16px; display: flex; align-items: center; gap: 10px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #666862;">
+        <span style="width: 7px; height: 7px; background: {{seal}}; display: inline-block;"></span>
+        <span>الرياض {{clock}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ SOFTWARE ENGINEERING — hard cut back to paper ═══════════ -->
+  <div id="software" style="max-width: 1200px; margin: 0 auto; padding: 104px 40px 0;">
+    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{seal}}; display: block; margin-bottom: 14px;">٠٤</span>
+    <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 42px; line-height: 1.2; margin: 0 0 18px; text-wrap: balance;">هندسة البرمجيات</h2>
+    <p style="font-size: 18px; line-height: 1.8; color: #5B5D59; margin: 0 0 40px; max-width: 56ch;">
+      نبني ما نستطيع اختباره. كل ما نسلّمه يمرّ على نفس الفريق الذي يكسر أنظمة الآخرين.
+    </p>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #C6C8C2; border: 1px solid #C6C8C2;">
+      <sc-for list="{{engineering}}" as="e" hint-placeholder-count="3">
+        <div style="background: #F5F6F3; padding: 28px 30px;">
+          <h3 style="font-size: 18.5px; font-weight: 600; margin: 0 0 10px;">{{e.title}}</h3>
+          <p style="font-size: 15.5px; line-height: 1.75; color: #5B5D59; margin: 0;">{{e.body}}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ═══════════ WHAT WE BUILT — evidence, not products ═══════════ -->
+  <div id="built" style="max-width: 1200px; margin: 0 auto; padding: 104px 40px 0;">
+    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{seal}}; display: block; margin-bottom: 14px;">٠٥</span>
+    <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 42px; line-height: 1.2; margin: 0 0 18px; text-wrap: balance;">ما بنيناه</h2>
+    <p style="font-size: 18px; line-height: 1.8; color: #5B5D59; margin: 0 0 36px; max-width: 56ch;">
+      لا نعرض ما لم يُشحن.
+    </p>
+
+    <div style="border: 1px solid #C6C8C2;">
+      <sc-for list="{{built}}" as="b" hint-placeholder-count="3">
+        <div style="display: grid; grid-template-columns: 260px 1fr 150px; gap: 32px; padding: 26px 30px; border-bottom: 1px solid #C6C8C2; background: #F5F6F3; align-items: start;">
+          <div>
+            <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 6px;">{{b.name}}</h3>
+            <span style="font-size: 14.5px; color: #5B5D59;">{{b.kind}}</span>
+          </div>
+          <div>
+            <p style="font-size: 15.5px; line-height: 1.75; color: #5B5D59; margin: 0 0 8px;">{{b.proves}}</p>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: #666862; direction: ltr; display: block; text-align: right;">{{b.repo}}</span>
+          </div>
+          <div style="text-align: left;">
+            <sc-if value="{{b.shipped}}" hint-placeholder-val="{{true}}">
+              <span style="display: inline-block; background: #101112; color: #E9EAE6; border: 1px solid #101112; padding: 3px 12px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;">شُحن</span>
+            </sc-if>
+            <sc-if value="{{b.pending}}" hint-placeholder-val="{{true}}">
+              <span style="display: inline-block; border: 1px solid #101112; padding: 3px 12px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; background: repeating-linear-gradient(45deg, transparent, transparent 3px, #101112 3px, #101112 4px);">تحت الإنشاء</span>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ═══════════ HOW WE WORK + THE REPORT ═══════════ -->
+  <div id="method" style="max-width: 1200px; margin: 0 auto; padding: 104px 40px 0;">
+    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{seal}}; display: block; margin-bottom: 14px;">٠٦</span>
+    <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 42px; line-height: 1.2; margin: 0 0 18px; text-wrap: balance;">كيف نعمل، وماذا تستلم</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 40px; align-items: start;">
+      <div>
+        <sc-for list="{{steps}}" as="s" hint-placeholder-count="5">
+          <div style="display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid #C6C8C2;">
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: {{seal}};">{{s.n}}</span>
+            <div>
+              <h3 style="font-size: 17.5px; font-weight: 600; margin: 0 0 5px;">{{s.title}}</h3>
+              <p style="font-size: 15px; line-height: 1.7; color: #5B5D59; margin: 0;">{{s.body}}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- report page anatomy -->
+      <div style="border: 1px solid #C6C8C2; background: #F5F6F3; padding: 30px 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #101112; padding-bottom: 12px; margin-bottom: 20px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #666862;">عيّنة صفحة نتيجة</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #666862;">F-04</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <span style="background: {{seal}}; color: #F6F2EF; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11.5px; padding: 3px 10px;">حرجة</span>
+          <h3 style="font-size: 19px; font-weight: 600; margin: 0;">تجاوز التحقق على مسار الاسترجاع</h3>
+        </div>
+        <sc-for list="{{finding}}" as="f" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 92px 1fr; gap: 14px; padding: 11px 0; border-bottom: 1px solid #C6C8C2; font-size: 14.5px;">
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #666862;">{{f.k}}</span>
+            <span style="color: #5B5D59; line-height: 1.65;">{{f.v}}</span>
+          </div>
+        </sc-for>
+        <p style="font-size: 13.5px; color: #666862; margin: 16px 0 0; line-height: 1.7;">
+          كل نتيجة لها دليل، وخطوات إعادة إنتاج، ومعالجة قابلة للتنفيذ — لا «درجة خطورة» بلا سند.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TEAM ═══════════ -->
+  <div id="team" style="max-width: 1200px; margin: 0 auto; padding: 104px 40px 0;">
+    <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{seal}}; display: block; margin-bottom: 14px;">٠٧</span>
+    <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 42px; line-height: 1.2; margin: 0 0 18px; text-wrap: balance;">الفريق</h2>
+    <p style="font-size: 18px; line-height: 1.8; color: #5B5D59; margin: 0 0 36px; max-width: 56ch;">
+      لا صور مركّبة ولا مسمّيات منتفخة. ما يهمّ المُقيِّم: من يشتغل على ارتباطك، وما الذي يثبت أهليّته.
+    </p>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #C6C8C2; border: 1px solid #C6C8C2;">
+      <sc-for list="{{team}}" as="t" hint-placeholder-count="3">
+        <div style="background: #F5F6F3; padding: 28px 30px;">
+          <div style="font-family: 'Kufam', Georgia, serif; font-size: 34px; font-weight: 600; margin-bottom: 8px;">{{t.stat}}</div>
+          <p style="font-size: 15.5px; line-height: 1.7; color: #5B5D59; margin: 0;">{{t.label}}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ═══════════ CONTACT ═══════════ -->
+  <div id="contact" style="margin-top: 104px; background: {{night}}; color: #E9EAE6;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 96px 40px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;">
+        <div>
+          <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 600; font-size: 46px; line-height: 1.18; margin: 0 0 20px; text-wrap: balance;">
+            اطلب نطاق عمل
+          </h2>
+          <p style="font-size: 18px; line-height: 1.8; color: rgba(233,234,230,0.7); margin: 0 0 32px; max-width: 44ch;">
+            نرجع لك بنطاق مكتوب ومدّة وسعر — لا عرضاً عاماً. أخبرنا بثلاثة أشياء فقط.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ask}}" as="a" hint-placeholder-count="3">
+              <div style="display: flex; align-items: baseline; gap: 12px; font-size: 16px; color: rgba(233,234,230,0.86);">
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: {{sealOnNight}};">{{a.n}}</span>
+                <span>{{a.t}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid rgba(233,234,230,0.18); padding-top: 28px;">
+          <div style="display: flex; flex-direction: column; gap: 18px;">
+            <div>
+              <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: rgba(233,234,230,0.42); margin-bottom: 5px;">البريد</div>
+              <a href="mailto:[البريد]" style="font-size: 17px; color: #E9EAE6;">[البريد الرسمي]</a>
+            </div>
+            <div>
+              <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: rgba(233,234,230,0.42); margin-bottom: 5px;">الهاتف</div>
+              <a href="tel:[الهاتف]" style="font-size: 17px; color: #E9EAE6; direction: ltr; display: inline-block;">[الهاتف]</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(233,234,230,0.14); margin-top: 72px; padding-top: 26px; display: flex; justify-content: space-between; align-items: center; gap: 24px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; color: rgba(233,234,230,0.4);">
+        <span>عقل لتقنية المعلومات · AQL Technology</span>
+        <span>الرياض، المملكة العربية السعودية</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{
+  "seal": {"editor": "color", "default": "#9E2B1E", "section": "اللون", "options": ["#9E2B1E", "#8A3A1C", "#7A4B22", "#6B2F3A"]},
+  "sealOnNight": {"editor": "color", "default": "#E4736A", "section": "اللون", "options": ["#E4736A", "#DE8760", "#D9A05F", "#D97385"]},
+  "night": {"editor": "color", "default": "#131412", "section": "اللون", "options": ["#131412", "#14171A", "#171412", "#101210"]}
+}'>
+class Component extends DCLogic {
+  componentDidMount() {
+    this.tick();
+    this.timer = setInterval(() => this.tick(), 30000);
+  }
+  componentWillUnmount() {
+    if (this.timer) clearInterval(this.timer);
+  }
+  tick() {
+    try {
+      const t = new Intl.DateTimeFormat('ar-SA-u-nu-arab', {
+        timeZone: 'Asia/Riyadh', hour: '2-digit', minute: '2-digit'
+      }).format(new Date());
+      this.setState({ clock: t });
+    } catch (e) {
+      this.setState({ clock: '—' });
+    }
+  }
+
+  windows() {
+    // triangular apertures: the 45-degree cut, lit and unlit
+    const lit = '#E0A45E';
+    const dim = '#1B1A17';
+    const spec = [
+      // block A
+      [186, 340, 1], [222, 340, 0], [258, 340, 1], [294, 340, 0],
+      [186, 400, 0], [222, 400, 1], [258, 400, 0], [294, 400, 1],
+      // block B
+      [506, 246, 1], [546, 246, 0], [586, 246, 1], [626, 246, 0], [666, 246, 1],
+      [506, 322, 0], [546, 322, 1], [586, 322, 0], [626, 322, 1], [666, 322, 0],
+      [506, 398, 1], [546, 398, 0], [586, 398, 1], [626, 398, 0], [666, 398, 1],
+      // block C
+      [874, 382, 0], [910, 382, 1], [946, 382, 0], [982, 382, 1],
+      // block D
+      [1152, 422, 1], [1194, 422, 0], [1236, 422, 1]
+    ];
+    return spec.map(([x, y, on]) => ({
+      d: 'M' + x + ' ' + (y + 26) + ' L' + (x + 13) + ' ' + y + ' L' + (x + 26) + ' ' + (y + 26) + ' Z',
+      fill: on ? lit : dim
+    }));
+  }
+
+  stars() {
+    const s = [
+      [140, 84, 1.5, 0.7], [268, 140, 1.1, 0.5], [402, 72, 1.7, 0.8], [520, 126, 1.2, 0.45],
+      [648, 64, 1.4, 0.65], [790, 118, 1.6, 0.55], [880, 58, 1.2, 0.7], [1006, 132, 1.5, 0.5],
+      [1128, 76, 1.3, 0.6], [1252, 146, 1.6, 0.45], [1348, 88, 1.2, 0.65], [332, 196, 1.1, 0.35],
+      [1064, 208, 1.3, 0.4], [712, 182, 1.2, 0.38]
+    ];
+    return s.map(([x, y, r, o]) => ({ x, y, r, o }));
+  }
+
+  renderVals() {
+    return {
+      seal: this.props.seal ?? '#9E2B1E',
+      sealOnNight: this.props.sealOnNight ?? '#E4736A',
+      night: this.props.night ?? '#131412',
+      clock: this.state && this.state.clock ? this.state.clock : '—',
+      stars: this.stars(),
+      windows: this.windows(),
+
+      nav: [
+        { label: 'الأمن الهجومي', href: '#security' },
+        { label: 'التصميم', href: '#design' },
+        { label: 'البرمجيات', href: '#software' },
+        { label: 'ما بنيناه', href: '#built' },
+        { label: 'كيف نعمل', href: '#method' }
+      ],
+
+      certs: ['OSCP+', 'OSCP', 'OSCE3', 'OSEP', 'OSED', 'OSWE', 'OSWP', 'CRTP', 'CRTO', 'eWPTX', 'eCPPT', 'eMAPT'],
+
+      capabilities: [
+        { certs: 'OSWE · eWPTX', title: 'تطبيقات الويب والـ API',
+          body: 'اختبار مصادقة وصلاحيات ومنطق أعمال، وصولاً إلى تنفيذ التعليمات عن بُعد — لا مسح آلي.' },
+        { certs: 'OSEP · CRTP · CRTO', title: 'الشبكات الداخلية وActive Directory',
+          body: 'محاكاة خصم من موطئ قدم واحد إلى صلاحيات النطاق الكاملة، مع توثيق كل خطوة.' },
+        { certs: 'eMAPT', title: 'تطبيقات الجوال',
+          body: 'تحليل ثابت وديناميكي لتطبيقات iOS وAndroid، وقنوات الاتصال بالخوادم.' },
+        { certs: 'OSED · OSCE3', title: 'تطوير الاستغلال',
+          body: 'تحليل ثنائيات وكتابة استغلال مخصّص حين لا تكفي الأدوات الجاهزة.' }
+      ],
+
+      ledger: [
+        { sector: 'مصرفي', w: '104px', scope: 'تطبيق ويب', year: '٢٠xx' },
+        { sector: 'حكومي', w: '82px', scope: 'شبكة داخلية + Active Directory', year: '٢٠xx' },
+        { sector: 'تقنية مالية', w: '126px', scope: 'واجهات برمجية + تطبيق جوال', year: '٢٠xx' }
+      ],
+
+      engineering: [
+        { title: 'منصات ويب', body: 'تطبيقات ولوحات تحكّم تُبنى للتشغيل الطويل، لا للعرض.' },
+        { title: 'تطبيقات الجوال', body: 'تطبيقات كاملة من التصميم إلى النشر على المتاجر.' },
+        { title: 'بنية آمنة', body: 'نشر ومراجعة بنية على مبدأ أن يُختبر ما نبنيه قبل أن يُسلَّم.' }
+      ],
+
+      built: [
+        { name: 'مصاريف', kind: 'تطبيق مصروفات وميزانية شخصية',
+          proves: 'منتج مستهلك كامل عبر ثلاثة إصدارات، مع صفحة خصوصية منشورة.',
+          repo: 'masarif · masarifApp · masarifv2', shipped: true, pending: false },
+        { name: 'مرصاد', kind: '[الوصف — بانتظارك]',
+          proves: 'لم يكتمل بعد.', repo: 'mirsad', shipped: false, pending: true },
+        { name: 'فايز', kind: 'موظف ذكاء اصطناعي لتجار سلة وشوبيفاي',
+          proves: 'تحت الإنشاء.', repo: '—', shipped: false, pending: true }
+      ],
+
+      steps: [
+        { n: '٠١', title: 'نطاق مكتوب', body: 'ما الذي سيُختبر بالضبط، وما الذي لن يُختبر، ومتى.' },
+        { n: '٠٢', title: 'منهجية متفق عليها', body: 'صندوق أسود أو رمادي أو أبيض — تُختار قبل البدء لا أثناءه.' },
+        { n: '٠٣', title: 'إبلاغ فوري للحرج', body: 'ما يهدّد الإنتاج لا ينتظر التقرير النهائي.' },
+        { n: '٠٤', title: 'تقرير بمستويين', body: 'ملخّص تنفيذي لمن يقرّر، وتفصيل تقني لمن ينفّذ.' },
+        { n: '٠٥', title: 'إعادة اختبار', body: 'نتحقق من المعالجة بعد إصلاحكم، ونوثّق الإغلاق.' }
+      ],
+
+      finding: [
+        { k: 'الأثر', v: 'استيلاء على حساب أي مستخدم دون تفاعل منه.' },
+        { k: 'الدليل', v: 'طلب وردّ كاملان + تسجيل شاشة للمسار.' },
+        { k: 'إعادة الإنتاج', v: 'أربع خطوات مرقّمة على بيئة الاختبار.' },
+        { k: 'المعالجة', v: 'ربط رمز الاسترجاع بالجلسة وإبطاله بعد الاستعمال.' }
+      ],
+
+      team: [
+        { stat: '[٥–١٠+]', label: 'سنوات خبرة عملية لكل فرد في الفريق' },
+        { stat: '١٢', label: 'شهادة هجومية معتمدة يحملها الفريق' },
+        { stat: '[العدد]', label: 'مختص أمن هجومي بدوام كامل' }
+      ],
+
+      ask: [
+        { n: '٠١', t: 'ما الذي تريد اختباره أو بناءه؟' },
+        { n: '٠٢', t: 'ما حجمه تقريباً — كم تطبيقاً، كم مستخدماً، كم نطاقاً؟' },
+        { n: '٠٣', t: 'متى تحتاج النتيجة؟' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
