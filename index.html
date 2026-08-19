@@ -71,14 +71,23 @@
   .navlink{
     height:var(--nav-h); padding:0 20px; border-radius:999px;
     display:inline-flex; align-items:center; justify-content:center;
-    border:1px solid rgba(255,255,255,.22); color:#e9e9e9; background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.22); color:#e9e9e9;
+    background:linear-gradient(105deg, #050505 0%, #141210 55%, rgba(224,164,74,.16) 100%);
     font-size:14.5px; font-weight:500; letter-spacing:-0.01em; white-space:nowrap;
-    position:relative; overflow:hidden;
+    position:relative; overflow:hidden; isolation:isolate;
     transition:border-color .3s ease, color .3s ease, background-color .3s ease, box-shadow .3s ease;
   }
-  @media (hover:hover) and (pointer:fine){
-    .navlink:hover{ border-color:var(--accent); color:#fff; background:rgba(224,164,74,.1); box-shadow:0 0 22px rgba(224,164,74,.22); }
+  .navlink::before{
+    content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.16) 50%, transparent 70%);
+    transform:translateX(-120%); transition:transform .6s ease;
   }
+  .navlink > *{ position:relative; z-index:2; }
+  @media (hover:hover) and (pointer:fine){
+    .navlink:hover{ border-color:var(--accent); color:#fff; box-shadow:0 0 22px rgba(224,164,74,.24); }
+    .navlink:hover::before{ transform:translateX(120%); }
+  }
+  .navlink:active{ transform:scale(.97); }
 
   .header-right{ display:flex; align-items:center; gap:14px; justify-self:end; }
 
@@ -104,13 +113,21 @@
     transition:background-color .3s ease, border-color .3s ease, box-shadow .3s ease, color .3s ease, transform .15s ease;
   }
   .btn:active{ transform:scale(.97); }
-  .btn-solid{ background:#fff; color:#000; border:1px solid #fff; box-shadow:0 0 0 rgba(224,164,74,0); }
+  .btn::after{
+    content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,.5) 48%, transparent 76%);
+    transform:translateX(-130%); transition:transform .65s ease;
+  }
+  .btn > *{ position:relative; z-index:2; }
+  .btn-solid{ background:linear-gradient(180deg,#ffffff 0%,#fff8ec 60%,#f3e2c2 100%); color:#000; border:1px solid #fff; box-shadow:0 0 0 rgba(224,164,74,0); }
   @media (hover:hover) and (pointer:fine){
     .btn-solid:hover{ box-shadow:0 0 30px rgba(224,164,74,.45), 0 8px 22px rgba(0,0,0,.45); }
+    .btn-solid:hover::after{ transform:translateX(130%); }
   }
-  .btn-ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.4); }
+  .btn-ghost{ background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.5) 55%, rgba(224,164,74,.1)); color:#fff; border:1.5px solid rgba(255,255,255,.4); }
   @media (hover:hover) and (pointer:fine){
-    .btn-ghost:hover{ border-color:var(--accent); background:rgba(224,164,74,.08); box-shadow:0 0 24px rgba(224,164,74,.28); }
+    .btn-ghost:hover{ border-color:var(--accent); box-shadow:0 0 24px rgba(224,164,74,.28); }
+    .btn-ghost:hover::after{ transform:translateX(130%); }
   }
   .hero-actions .btn{ height:var(--hero-btn-h); padding:0 30px; font-size:15px; }
 
@@ -313,8 +330,7 @@
 
 <header class="header">
   <a class="logo appear appear--scale" style="--d:.08s" href="#top" aria-label="AQL Technology">
-    <img src="assets/logo_mark_white.png" alt="" aria-hidden="true" style="height:20px;width:auto;">
-    <span>AQL<span class="logo-suffix">.tech</span></span>
+    <img src="assets/logo_mark_white.png" alt="AQL Technology" style="height:26px;width:auto;">
   </a>
 
   <nav id="site-nav" aria-label="Primary">
@@ -424,7 +440,7 @@
           </svg>
         </div>
       </div>
-      <span class="scene-hint">move your cursor over the skyline</span>
+      <span class="scene-hint" id="sceneHint">move your cursor over the skyline</span>
       <div class="scene-card">
         <span class="section-ref">02</span>
         <h2>Design</h2>
@@ -519,10 +535,10 @@
         <div class="ask-item"><span class="n">01</span><span>What do you want tested or built?</span></div>
         <div class="ask-item"><span class="n">02</span><span>Roughly how big: how many apps, users, domains?</span></div>
         <div class="ask-item"><span class="n">03</span><span>When do you need the result?</span></div>
-        <a class="btn btn-solid" style="margin-top:32px" href="mailto:[email]">Start the Conversation</a>
+        <a class="btn btn-solid" style="margin-top:32px" href="mailto:info@aql-tech.com">Start the Conversation</a>
       </div>
       <div class="contact-side">
-        <div><div class="label">Email</div><a href="mailto:[email]">[official email]</a></div>
+        <div><div class="label">Email</div><a href="mailto:info@aql-tech.com">info@aql-tech.com</a></div>
         <div><div class="label">Phone</div><a href="tel:[phone]">[phone]</a></div>
         <div><div class="label">Location</div><span>Riyadh, Saudi Arabia</span></div>
       </div>
@@ -589,6 +605,10 @@
   /* mouse morph-reveal trail over the Najdi scene */
   var scene = document.getElementById("sceneMorph");
   var revealLayer = document.getElementById("sceneReveal");
+  var sceneHint = document.getElementById("sceneHint");
+  if(sceneHint && ("ontouchstart" in window || navigator.maxTouchPoints > 0)){
+    sceneHint.textContent = "touch and drag over the skyline";
+  }
   if(scene && revealLayer){
     var TRAIL_MAX_POINTS = 60, TRAIL_HEAD_R = 140, TRAIL_NOISE_AMP = 44,
         TRAIL_BLOB_PTS = 24, TRAIL_FADE_SPEED = 0.92, TRAIL_SAMPLE_DIST = 8;
@@ -617,6 +637,20 @@
       var p = sceneToCanvas(e.clientX, e.clientY);
       head.x = p.x; head.y = p.y;
     });
+
+    /* touch: drag across the scene drives the same trail */
+    scene.addEventListener("touchstart", function(e){
+      hovering = true; scene.classList.add("hovering");
+      var t = e.touches[0];
+      var p = sceneToCanvas(t.clientX, t.clientY);
+      head.x = p.x; head.y = p.y;
+    }, { passive:true });
+    scene.addEventListener("touchmove", function(e){
+      var t = e.touches[0];
+      var p = sceneToCanvas(t.clientX, t.clientY);
+      head.x = p.x; head.y = p.y;
+    }, { passive:true });
+    scene.addEventListener("touchend", function(){ hovering = false; scene.classList.remove("hovering"); });
 
     function drawMorphBlob(ctx, cx, cy, r, t, seed){
       if(r < 2) return;
