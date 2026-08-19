@@ -1,598 +1,704 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>عقل لتقنية المعلومات</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQL Technology | Intelligence Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kufam:wght@400..900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; background: #0D0D0C; }
+    * { box-sizing: border-box; }
+    a { color: #E0A44A; text-decoration: none; }
 
-    <!-- Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap"
-        rel="stylesheet">
+    /* §1 response — feedback lands on the press, never on release */
+    .btn, .navlink { transition: transform 120ms cubic-bezier(.23,1,.32,1), background-color 140ms ease, color 140ms ease, border-color 140ms ease; }
+    .btn:active { transform: scale(0.98); }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-solid:hover { background: #EBB865; }
+      .btn-ghost:hover { border-color: #F4F3F0; }
+      .navlink:hover { color: #F4F3F0; }
+      .row-link:hover { background: #131312; }
+    }
+    :focus-visible { outline: 2px solid #E0A44A; outline-offset: 3px; }
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    /* §15 typography — tracking is size-specific, and Arabic never takes any */
+    .lat { letter-spacing: -0.02em; }
+    [lang="ar"], .ar { letter-spacing: 0; }
 
-    <link rel="stylesheet" href="styles.css">
-</head>
+    /* §14 accessibility — three independent signals, not one */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      .chrome { background: #0D0D0C !important; backdrop-filter: none !important; }
+    }
+    @media (prefers-contrast: more) {
+      .chrome { background: #0D0D0C !important; border-bottom: 1px solid #F4F3F0 !important; }
+      .card { border-color: #F4F3F0 !important; }
+    }
+  </style>
 
-<body>
-    <!-- Abstract Tech Background Elements -->
-    <div class="background-elements">
-        <div class="grid-mesh"></div>
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="particles" id="particles-js"></div>
+</head><body>
+
+<div style="width: 1440px; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; direction: rtl; text-align: right; background: #0D0D0C; color: #F4F3F0; overflow: hidden;">
+
+  <!-- ══════════════ BLACK: nav + hero + proof ══════════════ -->
+  <div style="background: #0D0D0C; position: relative; overflow: hidden;">
+
+    <!-- the cut: one 45° hairline, the only ornament on the first screen -->
+    <div style="position: absolute; left: 4%; bottom: -160px; width: 1px; height: 620px; background: rgba(244,243,240,0.16); transform: rotate(45deg); transform-origin: bottom center;"></div>
+
+    <!-- §12 translucent chrome, content passes underneath -->
+    <div class="chrome" style="background: rgba(13,13,12,0.72); backdrop-filter: blur(20px) saturate(160%); border-top: 1px solid rgba(244,243,240,0.10); position: relative; z-index: 3;">
+      <div style="max-width: 1240px; margin: 0 auto; padding: 0 44px; height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 40px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <svg width="76" height="28" viewBox="0 0 268 100" fill="none" aria-label="عقل">
+            <path d="M46 4 L60 4 L100 96 L82 96 L53 26 L24 96 L6 96 Z" fill="#F4F3F0"/>
+            <path d="M158 4 C185 4 205 25 205 50 C205 75 185 96 158 96 C131 96 111 75 111 50 C111 25 131 4 158 4 Z M158 24 C143 24 131 35 131 50 C131 65 143 76 158 76 C173 76 185 65 185 50 C185 35 173 24 158 24 Z" fill="#F4F3F0"/>
+            <path d="M172 42 L186 56 L156 86 L142 72 Z" fill="#E0A44A"/>
+            <path d="M196 66 L210 80 L192 98 L178 84 Z" fill="#E0A44A"/>
+            <path d="M226 4 L244 4 L244 78 L262 78 L262 96 L226 96 Z" fill="#F4F3F0"/>
+          </svg>
+          <span style="font-size: 12px; color: rgba(244,243,240,0.40);">عقل لتقنية المعلومات</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 32px;">
+
+            <a class="navlink" href="#security" style="font-size: 15px; font-weight: 500; color: rgba(244,243,240,0.72); min-height: 44px; display: flex; align-items: center;">الأمن الهجومي</a>
+
+            <a class="navlink" href="#design" style="font-size: 15px; font-weight: 500; color: rgba(244,243,240,0.72); min-height: 44px; display: flex; align-items: center;">التصميم</a>
+
+            <a class="navlink" href="#software" style="font-size: 15px; font-weight: 500; color: rgba(244,243,240,0.72); min-height: 44px; display: flex; align-items: center;">البرمجيات</a>
+
+            <a class="navlink" href="#built" style="font-size: 15px; font-weight: 500; color: rgba(244,243,240,0.72); min-height: 44px; display: flex; align-items: center;">ما بنيناه</a>
+
+            <a class="navlink" href="#team" style="font-size: 15px; font-weight: 500; color: rgba(244,243,240,0.72); min-height: 44px; display: flex; align-items: center;">الفريق</a>
+
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <a class="navlink lat" href="/en" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: rgba(244,243,240,0.44); min-height: 44px; display: flex; align-items: center;">EN</a>
+          <a class="btn btn-solid" href="#contact" style="background: #E0A44A; color: #0D0D0C; font-size: 15px; font-weight: 700; padding: 0 24px; min-height: 44px; display: flex; align-items: center;">اطلب نطاق عمل</a>
+        </div>
+      </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container nav-content">
-            <div class="nav-left">
-                <div class="logo">
-                    <img src="assets/logo_v2.png" alt="AQL Technology" class="logo-img">
-                </div>
-                <div class="nav-links">
-                    <a href="#services" class="nav-btn lang-text" data-en="Capabilities"
-                        data-ar="القدرات">Capabilities</a>
-                    <a href="#ai-products" class="nav-btn lang-text" data-en="AI Products"
-                        data-ar="منتجات الذكاء الاصطناعي">AI Products</a>
-                    <a href="#approach" class="nav-btn lang-text" data-en="Methodology"
-                        data-ar="المنهجية">Methodology</a>
-                    <a href="#contact" class="btn primary-btn lang-text" data-en="Engage Team"
-                        data-ar="تواصل معنا">Engage
-                        Team</a>
-                </div>
-            </div>
-            <div class="lang-switch" id="lang-toggle">
-                <span class="lang-option active" data-lang="en">EN</span>
-                <span class="lang-option" data-lang="ar">AR</span>
-                <div class="lang-slider"></div>
-            </div>
-        </div>
-    </nav>
+    <!-- hero: the boldness lives in scale and contrast, not in effects -->
+    <div style="max-width: 1240px; margin: 0 auto; padding: 148px 44px 128px; position: relative; z-index: 2;">
+      <h1 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 112px; line-height: 1.32; margin: 0 0 40px; max-width: 15ch;">
+        <span style="display: block;">نختبر الأنظمة</span>
+        <span style="display: block; color: #E0A44A;">التي لا تحتمل الفشل.</span>
+      </h1>
+      <p style="font-size: 21px; line-height: 1.7; color: rgba(244,243,240,0.62); margin: 0 0 48px; max-width: 44ch;">
+        فريق سعودي متخصص في الأمن الهجومي. اثنتا عشرة شهادة هجومية معتمدة، وخبرة تنفيذية في البنوك والجهات الحكومية والتقنية المالية.
+      </p>
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <a class="btn btn-solid" href="#contact" style="background: #E0A44A; color: #0D0D0C; font-size: 17px; font-weight: 700; padding: 0 36px; min-height: 60px; display: flex; align-items: center;">اطلب نطاق عمل</a>
+        <a class="btn btn-ghost" href="#method" style="border: 1px solid rgba(244,243,240,0.28); color: #F4F3F0; font-size: 17px; font-weight: 500; padding: 0 36px; min-height: 60px; display: flex; align-items: center;">كيف نعمل</a>
+      </div>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container hero-content">
-            <div class="hero-text animate-up">
-                <div class="badge-tag lang-text" data-en="Vision 2030 Inspired" data-ar="مستوحى من رؤية 2030">Vision
-                    2030 Inspired <span>//</span> KSA</div>
-                <h1 class="glitch-text lang-text"
-                    data-en="Digital Transformation & <span class='highlight'>Enterprise Intelligence</span>"
-                    data-ar="التحول الرقمي و<span class='highlight'>ذكاء المؤسسات</span>">Digital Transformation &amp;
-                    <span class="highlight">Enterprise Intelligence</span></h1>
-                <p class="hero-desc lang-text"
-                    data-en="Empowering Saudi Arabia's Digital Transformation with Vision 2030. We deliver advanced AI, cybersecurity, and bespoke software solutions to build sovereign, intelligent enterprises."
-                    data-ar="ندعم التحول الرقمي للمملكة العربية السعودية مع رؤية 2030. نقدم حلول الذكاء الاصطناعي المتقدمة، والأمن السيبراني، والبرمجيات المخصصة لبناء مؤسسات ذكية وذات سيادة.">
-                    Empowering Saudi Arabia's Digital Transformation with Vision 2030. We deliver advanced AI,
-                    cybersecurity, and bespoke software solutions to build sovereign, intelligent enterprises.</p>
-                <div class="hero-actions">
-                    <a href="#services" class="btn primary-btn lang-text" data-en="Explore Capabilities"
-                        data-ar="استكشف القدرات">Explore Capabilities</a>
-                    <a href="#contact" class="btn outline-btn lang-text" data-en="Request Assessment"
-                        data-ar="اطلب تقييم">Request Assessment</a>
-                </div>
-            </div>
-            <div class="hero-visual animate-in">
-                <div class="shield-container">
-                    <div class="shield-core"></div>
-                    <div class="shield-ring ring-1"></div>
-                    <div class="shield-ring ring-2"></div>
-                    <div class="shield-ring ring-3"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- proof: three numbers, at display scale -->
+    <div style="max-width: 1240px; margin: 0 auto; padding: 0 44px 112px; position: relative; z-index: 2;">
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid rgba(244,243,240,0.14);">
 
-    <!-- Services Section -->
-    <section id="services" class="services section">
-        <div class="container">
-            <div class="section-header animate-up">
-                <div class="badge-tag lang-text" data-en="Capability Matrix" data-ar="مصفوفة القدرات">Capability Matrix
-                </div>
-                <h2 class="lang-text" data-en="Service <span class='highlight'>Offerings</span>"
-                    data-ar="الخدمات <span class='highlight'>المقدمة</span>">Service <span
-                        class="highlight">Offerings</span></h2>
-                <div class="divider"></div>
-            </div>
+          <div style="padding: 40px 40px 0 0; border-left: 1px solid rgba(244,243,240,0.10);">
+            <div style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 64px; line-height: 1; margin-bottom: 14px; font-variant-numeric: tabular-nums;">١٢</div>
+            <p style="font-size: 16px; line-height: 1.65; color: rgba(244,243,240,0.55); margin: 0; max-width: 26ch;">شهادة هجومية معتمدة يحملها أفراد الفريق</p>
+          </div>
 
-            <div class="service-grid">
-                <!-- New General Tech Services -->
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">01</div>
-                        <div class="service-icon"><i class="fa-solid fa-brain"></i></div>
-                        <h3 class="lang-text" data-en="Artificial Intelligence" data-ar="الذكاء الاصطناعي">Artificial
-                            Intelligence</h3>
-                        <p class="lang-text"
-                            data-en="Developing advanced AI models, language agents, and data-driven systems to automate workflows and unlock organizational intelligence."
-                            data-ar="تطوير نماذج ذكاء اصطناعي متقدمة وأنظمة مبنية على البيانات لأتمتة سير العمل وفتح آفاق الذكاء المؤسسي.">
-                            Developing advanced AI models, language agents, and data-driven systems to automate
-                            workflows and unlock organizational intelligence.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+          <div style="padding: 40px 40px 0 0; border-left: 1px solid rgba(244,243,240,0.10);">
+            <div style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 64px; line-height: 1; margin-bottom: 14px; font-variant-numeric: tabular-nums;">[٥–١٠+]</div>
+            <p style="font-size: 16px; line-height: 1.65; color: rgba(244,243,240,0.55); margin: 0; max-width: 26ch;">سنوات خبرة عملية لكل فرد</p>
+          </div>
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">02</div>
-                        <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                        <h3 class="lang-text" data-en="Cybersecurity" data-ar="الأمن السيبراني">Cybersecurity</h3>
-                        <p class="lang-text"
-                            data-en="Comprehensive offensive and defensive security services, including penetration testing, vulnerability assessments, and secure architecture."
-                            data-ar="خدمات أمنية هجومية ودفاعية شاملة، تشمل اختبار الاختراق وتقييم الثغرات والبنية الأمنية.">
-                            Comprehensive offensive and defensive security services, including penetration testing,
-                            vulnerability assessments, and secure architecture.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+          <div style="padding: 40px 40px 0 0; border-left: 1px solid rgba(244,243,240,0.10);">
+            <div style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 64px; line-height: 1; margin-bottom: 14px; font-variant-numeric: tabular-nums;">[العدد]</div>
+            <p style="font-size: 16px; line-height: 1.65; color: rgba(244,243,240,0.55); margin: 0; max-width: 26ch;">ارتباطاً مُغلقاً في قطاعات منظّمة</p>
+          </div>
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">03</div>
-                        <div class="service-icon"><i class="fa-solid fa-code"></i></div>
-                        <h3 class="lang-text" data-en="Software Engineering" data-ar="هندسة البرمجيات">Software
-                            Engineering</h3>
-                        <p class="lang-text"
-                            data-en="End-to-end development of robust, scalable bespoke applications, web platforms, and mobile solutions tailored to complex business needs."
-                            data-ar="تطوير متكامل لتطبيقات ومنصات ويب وحلول هواتف محمولة مخصصة وقابلة للتطوير لتلبية احتياجات الأعمال المعقدة.">
-                            End-to-end development of robust, scalable bespoke applications, web platforms, and mobile
-                            solutions tailored to complex business needs.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+      </div>
+    </div>
+  </div>
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">04</div>
-                        <div class="service-icon"><i class="fa-solid fa-chart-line"></i></div>
-                        <h3 class="lang-text" data-en="Data Analytics" data-ar="تحليل البيانات">Data Analytics</h3>
-                        <p class="lang-text"
-                            data-en="Transforming raw data into actionable insights through advanced analytics, big data processing, and dynamic visualization dashboards."
-                            data-ar="تحويل البيانات الخام إلى رؤى قابلة للتنفيذ من خلال التحليلات المتقدمة ومعالجة البيانات الضخمة ولوحات العرض الديناميكية.">
-                            Transforming raw data into actionable insights through advanced analytics, big data
-                            processing, and dynamic visualization dashboards.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+  <!-- ══════════════ WHITE: offensive security ══════════════ -->
+  <div id="security" style="background: #F4F3F0; color: #0D0D0C;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 120px 44px;">
+      <span style="font-size: 13px; font-weight: 600; color: #8A5A12; display: block; margin-bottom: 18px; font-variant-numeric: tabular-nums;">٠١</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 72px; line-height: 1.22; margin: 0 0 24px;">الأمن الهجومي</h2>
+      <p style="font-size: 21px; line-height: 1.7; color: #5E5E5A; margin: 0 0 64px; max-width: 52ch;">
+        لا نبيع «تقييم أمني» مبهماً. كل ارتباط له نطاق مكتوب، ومنهجية متفق عليها، ومخرَج واحد: تقرير تستطيع فرقك التنفيذ منه.
+      </p>
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">05</div>
-                        <div class="service-icon"><i class="fa-solid fa-cloud"></i></div>
-                        <h3 class="lang-text" data-en="Cloud Infrastructure" data-ar="البنية التحتية السحابية">Cloud
-                            Infrastructure</h3>
-                        <p class="lang-text"
-                            data-en="Designing and managing secure, scalable, and highly available cloud environments utilizing modern DevSecOps and Kubernetes architectures."
-                            data-ar="تصميم وإدارة بيئات سحابية آمنة وقابلة للتطوير وذات توفر عالٍ باستخدام بنيات DevSecOps و Kubernetes الحديثة.">
-                            Designing and managing secure, scalable, and highly available cloud environments utilizing
-                            modern DevSecOps and Kubernetes architectures.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 2px solid #0D0D0C;">
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">06</div>
-                        <div class="service-icon"><i class="fa-solid fa-network-wired"></i></div>
-                        <h3 class="lang-text" data-en="Digital Transformation" data-ar="التحول الرقمي">Digital
-                            Transformation</h3>
-                        <p class="lang-text"
-                            data-en="Guiding organizations through complete technological modernization, digitizing operational flows to match Vision 2030 standards."
-                            data-ar="توجيه المؤسسات خلال التحديث التكنولوجي الشامل، ورقمنة مسارات التشغيل لتتناسب مع معايير رؤية 2030.">
-                            Guiding organizations through complete technological modernization, digitizing operational
-                            flows to match Vision 2030 standards.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+          <div style="padding: 36px 0 36px 48px; border-bottom: 1px solid #C9C8C3;">
+            <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #8A5A12; margin-bottom: 14px;" class="lat">OSWE · eWPTX</div>
+            <h3 style="font-size: 26px; font-weight: 700; margin: 0 0 12px; line-height: 1.35;">تطبيقات الويب والـ API</h3>
+            <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0; max-width: 44ch;">اختبار مصادقة وصلاحيات ومنطق أعمال، وصولاً إلى تنفيذ التعليمات عن بُعد. لا مسح آلي.</p>
+          </div>
 
-    <!-- Core AI Products Section -->
-    <section id="ai-products" class="ai-products section">
-        <div class="container">
-            <div class="section-header animate-up">
-                <div class="badge-tag lang-text" data-en="Core Systems" data-ar="الأنظمة الأساسية">Core Systems</div>
-                <h2 class="lang-text" data-en="Core AI <span class='highlight'>Products</span>"
-                    data-ar="منتجات الذكاء الاصطناعي <span class='highlight'>الأساسية</span>">Core AI <span
-                        class="highlight">Products</span></h2>
-                <div class="divider"></div>
-            </div>
+          <div style="padding: 36px 0 36px 48px; border-bottom: 1px solid #C9C8C3;">
+            <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #8A5A12; margin-bottom: 14px;" class="lat">OSEP · CRTP · CRTO</div>
+            <h3 style="font-size: 26px; font-weight: 700; margin: 0 0 12px; line-height: 1.35;">الشبكات الداخلية وActive Directory</h3>
+            <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0; max-width: 44ch;">محاكاة خصم من موطئ قدم واحد إلى صلاحيات النطاق الكاملة، مع توثيق كل خطوة.</p>
+          </div>
 
-            <div class="ai-products-grid">
+          <div style="padding: 36px 0 36px 48px; border-bottom: 1px solid #C9C8C3;">
+            <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #8A5A12; margin-bottom: 14px;" class="lat">eMAPT</div>
+            <h3 style="font-size: 26px; font-weight: 700; margin: 0 0 12px; line-height: 1.35;">تطبيقات الجوال</h3>
+            <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0; max-width: 44ch;">تحليل ثابت وديناميكي لتطبيقات iOS وAndroid، وقنوات الاتصال بالخوادم.</p>
+          </div>
 
-                <!-- Faiz -->
-                <div class="ai-product-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="product-header">
-                            <h3 class="gradient-text gradient-gold lang-text" data-en="Faiz" data-ar="فايز">Faiz</h3>
-                            <span class="product-subtitle lang-text" data-en="AI Employee Builder"
-                                data-ar="الموظف الذكي للتاجر">AI Employee Builder</span>
-                        </div>
-                        <p class="product-desc lang-text"
-                            data-en="An AI employee for your store that understands merchant context, proposes decisions, and executes operations directly within the platform (Salla/Shopify)."
-                            data-ar="موظف ذكاء اصطناعي للمتجر يفهم وضع التاجر، ويقترح قرارات ويقدر ينفذ داخل المتجر مبدئياً على سلة وشوبيفاي.">
-                            An AI employee for your store that understands merchant context, proposes decisions, and
-                            executes operations directly within the platform (Salla/Shopify).</p>
+          <div style="padding: 36px 0 36px 48px; border-bottom: 1px solid #C9C8C3;">
+            <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: #8A5A12; margin-bottom: 14px;" class="lat">OSED · OSCE3</div>
+            <h3 style="font-size: 26px; font-weight: 700; margin: 0 0 12px; line-height: 1.35;">تطوير الاستغلال</h3>
+            <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0; max-width: 44ch;">تحليل ثنائيات وكتابة استغلال مخصّص حين لا تكفي الأدوات الجاهزة.</p>
+          </div>
 
-                        <div class="modules-grid">
-                            <div class="module-item">
-                                <i class="fa-solid fa-chart-pie"></i>
-                                <span class="lang-text" data-en="Analytics & Forecasts"
-                                    data-ar="التقارير والتنبؤ">Analytics & Forecasts</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-users-viewfinder"></i>
-                                <span class="lang-text" data-en="Loyalty & Growth" data-ar="الولاء والنمو">Loyalty &
-                                    Growth</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-headset"></i>
-                                <span class="lang-text" data-en="Customer Care Automation"
-                                    data-ar="أتمتة خدمة العملاء">Customer Care Automation</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-image"></i>
-                                <span class="lang-text" data-en="Creative Studio" data-ar="الاستديو الإبداعي">Creative
-                                    Studio</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      </div>
+    </div>
+  </div>
 
-                <!-- SIAQ -->
-                <div class="ai-product-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="product-header">
-                            <h3 class="gradient-text gradient-cyan lang-text" data-en="SIAQ" data-ar="سياق">SIAQ</h3>
-                            <span class="product-subtitle lang-text" data-en="Model-Routing Agent"
-                                data-ar="وكيل توجيه النماذج">Model-Routing Agent</span>
-                        </div>
-                        <p class="product-desc lang-text"
-                            data-en="An intelligent agent that parses user requests and perfectly routes tasks to the best foundation model (video, audio, text), returning a unified result and mitigating subscription fatigue."
-                            data-ar="وكيل يقرأ طلب المستخدم ويوزع المهمة على أفضل نموذج (فيديو، صوت، نص) ويرجع نتيجة واحدة موحدة.">
-                            An intelligent agent that parses user requests and perfectly routes tasks to the best
-                            foundation model (video, audio, text), returning a unified result and mitigating
-                            subscription fatigue.</p>
+  <!-- ══════════════ WHITE: the engagement ledger ══════════════ -->
+  <div style="background: #F4F3F0; color: #0D0D0C;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 0 44px 120px;">
+      <span style="font-size: 13px; font-weight: 600; color: #8A5A12; display: block; margin-bottom: 18px; font-variant-numeric: tabular-nums;">٠٢</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 72px; line-height: 1.22; margin: 0 0 24px;">سجل الارتباطات</h2>
+      <p style="font-size: 21px; line-height: 1.7; color: #5E5E5A; margin: 0 0 48px; max-width: 52ch;">
+        عملاؤنا تحت اتفاقيات سرية، فلا نسمّيهم، ولا نختلق شعارات بديلة. القطاع والنطاق والسنة دقيقة، والاسم وحده محجوب.
+      </p>
 
-                        <div class="modules-grid">
-                            <div class="module-item">
-                                <i class="fa-solid fa-network-wired"></i>
-                                <span class="lang-text" data-en="Smart Model Routing" data-ar="توجيه ذكي للنماذج">Smart
-                                    Model Routing</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-diagram-project"></i>
-                                <span class="lang-text" data-en="Task Decomposition" data-ar="تفكيك المهام">Task
-                                    Decomposition</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-layer-group"></i>
-                                <span class="lang-text" data-en="Unified Outputs" data-ar="مخرجات موحدة">Unified
-                                    Outputs</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-brain"></i>
-                                <span class="lang-text" data-en="Context Retention"
-                                    data-ar="حفظ السياق والمعرفة">Context Retention</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Vision -->
-                <div class="ai-product-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="product-header">
-                            <h3 class="gradient-text gradient-purple lang-text" data-en="Vision" data-ar="فيجن">Vision
-                            </h3>
-                            <span class="product-subtitle lang-text" data-en="Data Wrapping Intelligence"
-                                data-ar="طبقة تغليف البيانات">Data Wrapping Intelligence</span>
-                        </div>
-                        <p class="product-desc lang-text"
-                            data-en="Ingests raw data (CSV, ERP exports, CRM), understands your business vertical, and automatically reorganizes it into actionable, aesthetic dashboards and pivotal KPIs."
-                            data-ar="أداة تستقبل أي بيانات وتفهم نوع البزنس ثم تنظمها وتعرضها بأفضل شكل تلقائياً وبسرعة.">
-                            Ingests raw data (CSV, ERP exports, CRM), understands your business vertical, and
-                            automatically reorganizes it into actionable, aesthetic dashboards and pivotal KPIs.</p>
-
-                        <div class="modules-grid">
-                            <div class="module-item">
-                                <i class="fa-solid fa-file-csv"></i>
-                                <span class="lang-text" data-en="Omni-Format Ingestion"
-                                    data-ar="استقبال كافة الصيغ">Omni-Format Ingestion</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-shapes"></i>
-                                <span class="lang-text" data-en="Auto-Templates"
-                                    data-ar="قوالب بناء تلقائية">Auto-Templates</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-gauge-high"></i>
-                                <span class="lang-text" data-en="KPI Extraction" data-ar="استخراج المؤشرات">KPI
-                                    Extraction</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                <span class="lang-text" data-en="Instant Dashboards" data-ar="لوحات تحكم فورية">Instant
-                                    Dashboards</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Teaser Products Section -->
-    <section class="teaser-products section">
-        <div class="container">
-            <div class="section-header animate-up">
-                <div class="badge-tag lang-text" data-en="Upcoming Horizons" data-ar="آفاق قادمة">Upcoming Horizons
-                </div>
-                <h2 class="lang-text" data-en="Future <span class='highlight'>Expansions</span>"
-                    data-ar="توسعات <span class='highlight'>مستقبلية</span>">Future <span
-                        class="highlight">Expansions</span></h2>
-                <div class="divider"></div>
-            </div>
-
-            <div class="teaser-grid">
-                <!-- Workspace -->
-                <div class="teaser-card">
-                    <div class="secret-overlay"></div>
-                    <div class="teaser-content">
-                        <i class="fa-solid fa-building-user"></i>
-                        <h4 class="lang-text" data-en="AQL Workspace" data-ar="عقل وركسبيس">AQL Workspace</h4>
-                        <span class="teaser-label lang-text" data-en="Organizational Intelligence"
-                            data-ar="ذكاء مؤسسي">Organizational Intelligence</span>
-                        <p class="lang-text"
-                            data-en="An AI operating layer mapping intelligence to job roles (CEO AI, Ops AI), persistently retaining institutional knowledge regardless of human turnover. Features a Role-Based Dashboard, Org View, and Smart Inbox."
-                            data-ar="طبقة تشغيلية ذكية تثبت الذكاء الاصطناعي للمسميات الوظيفية بدل الأشخاص لحفظ المعرفة والقرارات المؤسسية.">
-                            An AI operating layer mapping intelligence to job roles (CEO AI, Ops AI), persistently
-                            retaining institutional knowledge regardless of human turnover. Features a Role-Based
-                            Dashboard, Org View, and Smart Inbox.</p>
-                    </div>
-                </div>
-
-                <!-- Experience -->
-                <div class="teaser-card">
-                    <div class="secret-overlay"></div>
-                    <div class="teaser-content">
-                        <i class="fa-solid fa-id-card-clip"></i>
-                        <h4 class="lang-text" data-en="AQL Experience" data-ar="عقل إكسبيرينس">AQL Experience</h4>
-                        <span class="teaser-label lang-text" data-en="Digital Identity & Queues"
-                            data-ar="هوية رقمية وطابور ذكي">Digital Identity & Queues</span>
-                        <p class="lang-text"
-                            data-en="A seamless digital identity and smart service flow. Revolutionizing physical experiences like automated smart queues, gas station interactions without physical chips, and family digital wallets."
-                            data-ar="مسار تجارب ذكية يشمل الهوية الرقمية والطابور الذكي ومحفظة متكاملة لتحسين الخدمة في الميادين المادية كالوقود وغيرها.">
-                            A seamless digital identity and smart service flow. Revolutionizing physical experiences
-                            like automated smart queues, gas station interactions without physical chips, and family
-                            digital wallets.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Certifications Marquee Section -->
-    <section class="certifications">
-        <div class="cert-overlay"></div>
-        <div class="container text-center animate-up">
-            <h4 class="sub-heading lang-text" data-en="Verification & Standards" data-ar="التحقق والمعايير">Verification
-                & Standards</h4>
-            <p class="cert-desc lang-text" data-en="INDUSTRY RECOGNIZED CYBERSECURITY PROFICIENCY BADGES"
-                data-ar="شارات الكفاءة في الأمن السيبراني المعترف بها في القطاع">INDUSTRY RECOGNIZED CYBERSECURITY
-                PROFICIENCY BADGES</p>
+      <div style="border-top: 2px solid #0D0D0C;">
+        <div style="display: grid; grid-template-columns: 190px 1fr 300px 120px 130px; padding: 16px 0; border-bottom: 1px solid #C9C8C3; font-size: 13px; font-weight: 600; color: #5E5E5A;">
+          <span>القطاع</span><span>العميل</span><span>النطاق</span><span>السنة</span><span>الحالة</span>
         </div>
 
-        <div class="marquee-container">
-            <div class="marquee-content">
-                <img src="assets/OSCP+.svg" alt="OSCP+">
-                <img src="assets/OSCP.svg" alt="OSCP">
-                <img src="assets/OSCE3.svg" alt="OSCE3">
-                <img src="assets/OSEP.svg" alt="OSEP">
-                <img src="assets/OSED.svg" alt="OSED">
-                <img src="assets/OSWE.svg" alt="OSWE">
-                <img src="assets/OSWP.svg" alt="OSWP">
-                <img src="assets/CRTP.png" alt="CRTP">
-                <img src="assets/CTRO.png" alt="CTRO">
-                <img src="assets/ewptx.svg" alt="eWPTX">
-                <img src="assets/ecppt.svg" alt="eCPPT">
-                <img src="assets/emapt.svg" alt="eMAPT">
-            </div>
-            <!-- Duplicated entire content for seamless infinite scroll -->
-            <div class="marquee-content" aria-hidden="true">
-                <img src="assets/OSCP+.svg" alt="OSCP+">
-                <img src="assets/OSCP.svg" alt="OSCP">
-                <img src="assets/OSCE3.svg" alt="OSCE3">
-                <img src="assets/OSEP.svg" alt="OSEP">
-                <img src="assets/OSED.svg" alt="OSED">
-                <img src="assets/OSWE.svg" alt="OSWE">
-                <img src="assets/OSWP.svg" alt="OSWP">
-                <img src="assets/CRTP.png" alt="CRTP" style="height: 50px;">
-                <img src="assets/CTRO.png" alt="CTRO" style="height: 50px;">
-                <img src="assets/ewptx.svg" alt="eWPTX">
-                <img src="assets/ecppt.svg" alt="eCPPT">
-                <img src="assets/emapt.svg" alt="eMAPT">
-            </div>
-        </div>
-    </section>
+          <div style="display: grid; grid-template-columns: 190px 1fr 300px 120px 130px; padding: 26px 0; border-bottom: 1px solid #C9C8C3; font-size: 18px; align-items: center;">
+            <span style="font-weight: 700;">مصرفي</span>
+            <span><span style="display: inline-block; height: 20px; background: #0D0D0C; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); width: 132px;"></span></span>
+            <span style="color: #5E5E5A;">تطبيق ويب</span>
+            <span style="color: #5E5E5A; font-variant-numeric: tabular-nums;">٢٠xx</span>
+            <span style="font-weight: 600;">مُغلق <span style="color: #8A5A12;">✓</span></span>
+          </div>
 
-    <!-- Experience & Approach Section -->
-    <section id="approach" class="dual-section section">
-        <div class="container dual-grid">
+          <div style="display: grid; grid-template-columns: 190px 1fr 300px 120px 130px; padding: 26px 0; border-bottom: 1px solid #C9C8C3; font-size: 18px; align-items: center;">
+            <span style="font-weight: 700;">حكومي</span>
+            <span><span style="display: inline-block; height: 20px; background: #0D0D0C; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); width: 104px;"></span></span>
+            <span style="color: #5E5E5A;">شبكة داخلية وActive Directory</span>
+            <span style="color: #5E5E5A; font-variant-numeric: tabular-nums;">٢٠xx</span>
+            <span style="font-weight: 600;">مُغلق <span style="color: #8A5A12;">✓</span></span>
+          </div>
 
-            <!-- Experience -->
-            <div id="experience" class="info-block animate-left">
-                <div class="badge-tag lang-text" data-en="Human Intelligence" data-ar="الذكاء البشري">Human Intelligence
-                </div>
-                <h2 class="lang-text" data-en="Team <span class='highlight'>Experience</span>"
-                    data-ar="خبرة <span class='highlight'>الفريق</span>">Team <span class="highlight">Experience</span>
-                </h2>
-                <div class="node-list">
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="<strong>5–10+ years</strong> of hands-on cybersecurity experience per team member."
-                            data-ar="<strong>٥ إلى ١٠ سنوات فأكثر</strong> من الخبرة العملية في الأمن السيبراني لكل عضو في الفريق.">
-                            <strong>5–10+ years</strong> of hands-on cybersecurity experience per team member.
-                        </p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Strong background in <strong>offensive security</strong>, application security, and adversary simulation."
-                            data-ar="خلفية قوية في <strong>الأمن الهجومي</strong> وأمن التطبيقات ومحاكاة الخصوم.">Strong
-                            background in <strong>offensive security</strong>, application security, and adversary
-                            simulation.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Practical experience across banking, government, fintech, and <strong>enterprise environments</strong>."
-                            data-ar="خبرة عملية عبر القطاعات المصرفية والحكومية والتكنولوجيا المالية و<strong>بيئات الشركات الكبرى</strong>.">
-                            Practical experience across banking, government, fintech, and <strong>enterprise
-                                environments</strong>.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Proven ability to operate in <strong>regulated and high-risk</strong> environments."
-                            data-ar="قدرة مثبتة على العمل في <strong>بيئات شديدة التنظيم وعالية المخاطر</strong>.">
-                            Proven ability to operate in <strong>regulated and high-risk</strong> environments.</p>
-                    </div>
-                </div>
+          <div style="display: grid; grid-template-columns: 190px 1fr 300px 120px 130px; padding: 26px 0; border-bottom: 1px solid #C9C8C3; font-size: 18px; align-items: center;">
+            <span style="font-weight: 700;">تقنية مالية</span>
+            <span><span style="display: inline-block; height: 20px; background: #0D0D0C; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); width: 158px;"></span></span>
+            <span style="color: #5E5E5A;">واجهات برمجية وتطبيق جوال</span>
+            <span style="color: #5E5E5A; font-variant-numeric: tabular-nums;">٢٠xx</span>
+            <span style="font-weight: 600;">مُغلق <span style="color: #8A5A12;">✓</span></span>
+          </div>
+
+      </div>
+      <p style="font-size: 15px; color: #5E5E5A; margin: 20px 0 0;">الأسماء محجوبة بموجب اتفاقيات السرية. القطاع والنطاق دقيقان.</p>
+      <p style="font-size: 14px; color: #8A5A12; margin: 8px 0 0; font-weight: 600;">[لا يُنشر إلا بأرقام تستطيع الشهادة بها. بانتظار تأكيد ما تسمح به الاتفاقيات]</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ THE FLIP: design, full bleed ══════════════ -->
+  <div id="design" style="background: #0D0D0C; position: relative; overflow: hidden;">
+    <svg viewBox="0 0 1440 620" width="1440" height="620" style="display: block;" aria-label="مشهد معماري نجدي ليلي">
+      <rect width="1440" height="620" fill="#171714"/>
+      <rect x="0" y="368" width="1440" height="164" fill="#242320"/>
+
+
+        <circle cx="140" cy="92" r="1.5" fill="#F4F3F0" opacity="0.62"/>
+
+        <circle cx="268" cy="150" r="1.1" fill="#F4F3F0" opacity="0.44"/>
+
+        <circle cx="402" cy="78" r="1.7" fill="#F4F3F0" opacity="0.7"/>
+
+        <circle cx="520" cy="136" r="1.2" fill="#F4F3F0" opacity="0.4"/>
+
+        <circle cx="648" cy="70" r="1.4" fill="#F4F3F0" opacity="0.58"/>
+
+        <circle cx="790" cy="126" r="1.6" fill="#F4F3F0" opacity="0.48"/>
+
+        <circle cx="880" cy="62" r="1.2" fill="#F4F3F0" opacity="0.62"/>
+
+        <circle cx="1006" cy="142" r="1.5" fill="#F4F3F0" opacity="0.44"/>
+
+        <circle cx="1128" cy="82" r="1.3" fill="#F4F3F0" opacity="0.54"/>
+
+        <circle cx="1252" cy="156" r="1.6" fill="#F4F3F0" opacity="0.4"/>
+
+        <circle cx="1348" cy="94" r="1.2" fill="#F4F3F0" opacity="0.58"/>
+
+        <circle cx="332" cy="210" r="1.1" fill="#F4F3F0" opacity="0.3"/>
+
+        <circle cx="1064" cy="224" r="1.3" fill="#F4F3F0" opacity="0.34"/>
+
+        <circle cx="712" cy="196" r="1.2" fill="#F4F3F0" opacity="0.32"/>
+
+        <circle cx="206" cy="268" r="1" fill="#F4F3F0" opacity="0.24"/>
+
+        <circle cx="962" cy="286" r="1.1" fill="#F4F3F0" opacity="0.22"/>
+
+
+      <path d="M0 532 L150 532 L150 384 L150 384 L159.41666666666666 373 L168.83333333333334 384 L168.83333333333334 384 L178.25 373 L187.66666666666669 384 L187.66666666666666 384 L197.08333333333331 373 L206.5 384 L206.5 384 L215.91666666666666 373 L225.33333333333334 384 L225.33333333333331 384 L234.74999999999997 373 L244.16666666666666 384 L244.16666666666666 384 L253.58333333333331 373 L263 384 L263 384 L272.4166666666667 373 L281.8333333333333 384 L281.8333333333333 384 L291.25 373 L300.66666666666663 384 L300.66666666666663 384 L310.0833333333333 373 L319.49999999999994 384 L319.5 384 L328.9166666666667 373 L338.3333333333333 384 L338.3333333333333 384 L347.75 373 L357.16666666666663 384 L357.16666666666663 384 L366.5833333333333 373 L375.99999999999994 384 L376 384 L376 532 L376 532 L376 434 L376 434 L385.2 423 L394.4 434 L394.4 434 L403.59999999999997 423 L412.79999999999995 434 L412.8 434 L422 423 L431.2 434 L431.2 434 L440.4 423 L449.59999999999997 434 L449.6 434 L458.8 423 L468 434 L468 434 L468 532 L500 532 L500 276 L500 276 L509.6 265 L519.2 276 L519.2 276 L528.8000000000001 265 L538.4000000000001 276 L538.4 276 L548 265 L557.6 276 L557.6 276 L567.2 265 L576.8000000000001 276 L576.8 276 L586.4 265 L596 276 L596 276 L605.6 265 L615.2 276 L615.2 276 L624.8000000000001 265 L634.4000000000001 276 L634.4 276 L644 265 L653.6 276 L653.6 276 L663.2 265 L672.8000000000001 276 L672.8 276 L682.4 265 L692 276 L692 276 L701.6 265 L711.2 276 L711.2 276 L720.8000000000001 265 L730.4000000000001 276 L730.4 276 L740 265 L749.6 276 L749.6 276 L759.2 265 L768.8000000000001 276 L768.8 276 L778.4 265 L788 276 L788 276 L788 532 L788 532 L788 362 L788 362 L797.25 351 L806.5 362 L806.5 362 L815.75 351 L825 362 L825 362 L834.25 351 L843.5 362 L843.5 362 L852.75 351 L862 362 L862 362 L862 532 L900 532 L900 418 L900 418 L909.4545454545455 407 L918.9090909090909 418 L918.9090909090909 418 L928.3636363636364 407 L937.8181818181818 418 L937.8181818181819 418 L947.2727272727274 407 L956.7272727272727 418 L956.7272727272727 418 L966.1818181818182 407 L975.6363636363636 418 L975.6363636363636 418 L985.0909090909091 407 L994.5454545454545 418 L994.5454545454545 418 L1004 407 L1013.4545454545454 418 L1013.4545454545455 418 L1022.909090909091 407 L1032.3636363636365 418 L1032.3636363636365 418 L1041.818181818182 407 L1051.2727272727275 418 L1051.2727272727273 418 L1060.7272727272727 407 L1070.1818181818182 418 L1070.1818181818182 418 L1079.6363636363637 407 L1089.0909090909092 418 L1089.090909090909 418 L1098.5454545454545 407 L1108 418 L1108 418 L1108 532 L1108 532 L1108 466 L1108 466 L1118 455 L1128 466 L1128 466 L1138 455 L1148 466 L1148 466 L1158 455 L1168 466 L1168 466 L1178 455 L1188 466 L1188 466 L1198 455 L1208 466 L1208 466 L1218 455 L1228 466 L1228 466 L1238 455 L1248 466 L1248 466 L1248 532 L1440 532 L1440 620 L0 620 Z" fill="#050504"/>
+
+
+        <path d="M1318 532 Q1322 488 1318 444 M1318 444 Q1288.96 430 1259.92 456 M1318 444 Q1347.04 430 1376.08 456 M1318 444 Q1295.9296 438 1273.8592 466 M1318 444 Q1340.0704 438 1362.1408 466 M1318 444 Q1302.8992 446 1287.7984 476 M1318 444 Q1333.1008 446 1348.2016 476" fill="none" stroke="#050504" stroke-width="2.6" stroke-linecap="round"/>
+
+        <path d="M1392 532 Q1396 501 1392 470 M1392 470 Q1371.54 456 1351.08 482 M1392 470 Q1412.46 456 1432.92 482 M1392 470 Q1376.4504 464 1360.9008 492 M1392 470 Q1407.5496 464 1423.0992 492 M1392 470 Q1381.3608 472 1370.7216 502 M1392 470 Q1402.6392 472 1413.2784 502" fill="none" stroke="#050504" stroke-width="2.6" stroke-linecap="round"/>
+
+        <path d="M88 532 Q92 497 88 462 M88 462 Q64.9 448 41.8 474 M88 462 Q111.1 448 134.2 474 M88 462 Q70.444 456 52.888 484 M88 462 Q105.556 456 123.112 484 M88 462 Q75.988 464 63.976 494 M88 462 Q100.012 464 112.024 494" fill="none" stroke="#050504" stroke-width="2.6" stroke-linecap="round"/>
+
+
+
+        <path d="M180.66666666666666 431 L187.66666666666666 414 L194.66666666666666 431 Z" fill="#E0A44A" opacity="0.62"/>
+
+        <path d="M218.33333333333331 431 L225.33333333333331 414 L232.33333333333331 431 Z" fill="#E0A44A" opacity="0.92"/>
+
+        <path d="M256 431 L263 414 L270 431 Z" fill="#E0A44A" opacity="0.8200000000000001"/>
+
+        <path d="M293.66666666666663 431 L300.66666666666663 414 L307.66666666666663 431 Z" fill="#E0A44A" opacity="0.72"/>
+
+        <path d="M331.3333333333333 431 L338.3333333333333 414 L345.3333333333333 431 Z" fill="#E0A44A" opacity="0.62"/>
+
+        <path d="M180.66666666666666 476 L187.66666666666666 459 L194.66666666666666 476 Z" fill="#E0A44A" opacity="0.92"/>
+
+        <path d="M218.33333333333331 476 L225.33333333333331 459 L232.33333333333331 476 Z" fill="#E0A44A" opacity="0.8200000000000001"/>
+
+        <path d="M256 476 L263 459 L270 476 Z" fill="#E0A44A" opacity="0.72"/>
+
+        <path d="M293.66666666666663 476 L300.66666666666663 459 L307.66666666666663 476 Z" fill="#E0A44A" opacity="0.62"/>
+
+        <path d="M331.3333333333333 476 L338.3333333333333 459 L345.3333333333333 476 Z" fill="#E0A44A" opacity="0.92"/>
+
+        <path d="M399.6666666666667 481 L406.6666666666667 464 L413.6666666666667 481 Z" fill="#E0A44A" opacity="0.8200000000000001"/>
+
+        <path d="M430.3333333333333 481 L437.3333333333333 464 L444.3333333333333 481 Z" fill="#E0A44A" opacity="0.72"/>
+
+        <path d="M534.1428571428571 323 L541.1428571428571 306 L548.1428571428571 323 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M575.2857142857143 323 L582.2857142857143 306 L589.2857142857143 323 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M616.4285714285714 323 L623.4285714285714 306 L630.4285714285714 323 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M657.5714285714286 323 L664.5714285714286 306 L671.5714285714286 323 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M698.7142857142858 323 L705.7142857142858 306 L712.7142857142858 323 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M739.8571428571429 323 L746.8571428571429 306 L753.8571428571429 323 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M534.1428571428571 372.5 L541.1428571428571 355.5 L548.1428571428571 372.5 Z" fill="#E0A44A" opacity="0.8200000000000001"/>
+
+        <path d="M575.2857142857143 372.5 L582.2857142857143 355.5 L589.2857142857143 372.5 Z" fill="#E0A44A" opacity="0.72"/>
+
+        <path d="M616.4285714285714 372.5 L623.4285714285714 355.5 L630.4285714285714 372.5 Z" fill="#E0A44A" opacity="0.62"/>
+
+        <path d="M657.5714285714286 372.5 L664.5714285714286 355.5 L671.5714285714286 372.5 Z" fill="#E0A44A" opacity="0.92"/>
+
+        <path d="M698.7142857142858 372.5 L705.7142857142858 355.5 L712.7142857142858 372.5 Z" fill="#E0A44A" opacity="0.8200000000000001"/>
+
+        <path d="M739.8571428571429 372.5 L746.8571428571429 355.5 L753.8571428571429 372.5 Z" fill="#E0A44A" opacity="0.72"/>
+
+        <path d="M534.1428571428571 422 L541.1428571428571 405 L548.1428571428571 422 Z" fill="#E0A44A" opacity="0.62"/>
+
+        <path d="M575.2857142857143 422 L582.2857142857143 405 L589.2857142857143 422 Z" fill="#E0A44A" opacity="0.92"/>
+
+        <path d="M616.4285714285714 422 L623.4285714285714 405 L630.4285714285714 422 Z" fill="#E0A44A" opacity="0.8200000000000001"/>
+
+        <path d="M657.5714285714286 422 L664.5714285714286 405 L671.5714285714286 422 Z" fill="#E0A44A" opacity="0.72"/>
+
+        <path d="M698.7142857142858 422 L705.7142857142858 405 L712.7142857142858 422 Z" fill="#E0A44A" opacity="0.62"/>
+
+        <path d="M739.8571428571429 422 L746.8571428571429 405 L753.8571428571429 422 Z" fill="#E0A44A" opacity="0.92"/>
+
+        <path d="M534.1428571428571 471.5 L541.1428571428571 454.5 L548.1428571428571 471.5 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M575.2857142857143 471.5 L582.2857142857143 454.5 L589.2857142857143 471.5 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M616.4285714285714 471.5 L623.4285714285714 454.5 L630.4285714285714 471.5 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M657.5714285714286 471.5 L664.5714285714286 454.5 L671.5714285714286 471.5 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M698.7142857142858 471.5 L705.7142857142858 454.5 L712.7142857142858 471.5 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M739.8571428571429 471.5 L746.8571428571429 454.5 L753.8571428571429 471.5 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M805.6666666666666 409 L812.6666666666666 392 L819.6666666666666 409 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M830.3333333333334 409 L837.3333333333334 392 L844.3333333333334 409 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M805.6666666666666 465 L812.6666666666666 448 L819.6666666666666 465 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M830.3333333333334 465 L837.3333333333334 448 L844.3333333333334 465 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M927.6666666666666 465 L934.6666666666666 448 L941.6666666666666 465 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M962.3333333333334 465 L969.3333333333334 448 L976.3333333333334 465 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M997 465 L1004 448 L1011 465 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M1031.6666666666667 465 L1038.6666666666667 448 L1045.6666666666667 465 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M1066.3333333333333 465 L1073.3333333333333 448 L1080.3333333333333 465 Z" fill="#E0A44A" opacity="0.08"/>
+
+        <path d="M1136 513 L1143 496 L1150 513 Z" fill="#E0A44A" opacity="0.92"/>
+
+        <path d="M1171 513 L1178 496 L1185 513 Z" fill="#E0A44A" opacity="0.8200000000000001"/>
+
+        <path d="M1206 513 L1213 496 L1220 513 Z" fill="#E0A44A" opacity="0.72"/>
+
+
+
+        <path d="M250 532 L250 507 L263 494 L276 507 L276 532 Z" fill="#E0A44A" opacity="0.40"/>
+
+        <path d="M631 532 L631 507 L644 494 L657 507 L657 532 Z" fill="#E0A44A" opacity="0.40"/>
+
+        <path d="M991 532 L991 507 L1004 494 L1017 507 L1017 532 Z" fill="#E0A44A" opacity="0.40"/>
+
+
+      <rect x="0" y="532" width="1440" height="88" fill="#050504"/>
+    </svg>
+
+    <!-- the sober page's own material, floating inside the imagined world -->
+    <div style="position: absolute; top: 92px; right: 132px; width: 462px; background: #F4F3F0; color: #0D0D0C; padding: 40px 42px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);">
+      <span style="font-size: 13px; font-weight: 600; color: #8A5A12; display: block; margin-bottom: 16px; font-variant-numeric: tabular-nums;">٠٣</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 54px; line-height: 1.2; margin: 0 0 20px;">التصميم</h2>
+      <p style="font-size: 17.5px; line-height: 1.75; color: #5E5E5A; margin: 0 0 26px;">
+        نصمّم ونبني الواجهة التي سيراها عميلك، بنفس دقّة التقرير الذي نسلّمه. هذا القسم نفسه هو العيّنة.
+      </p>
+      <div style="border-top: 1px solid #C9C8C3; padding-top: 18px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5E5E5A; font-variant-numeric: tabular-nums;">
+        <span style="width: 8px; height: 8px; background: #8A5A12; display: inline-block;"></span>
+        <span>الرياض ٠٢:٤٠</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ WHITE: engineering + what we built ══════════════ -->
+  <div id="software" style="background: #F4F3F0; color: #0D0D0C;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 120px 44px;">
+      <span style="font-size: 13px; font-weight: 600; color: #8A5A12; display: block; margin-bottom: 18px; font-variant-numeric: tabular-nums;">٠٤</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 72px; line-height: 1.22; margin: 0 0 24px;">هندسة البرمجيات</h2>
+      <p style="font-size: 21px; line-height: 1.7; color: #5E5E5A; margin: 0 0 56px; max-width: 52ch;">
+        نبني ما نستطيع اختباره. كل ما نسلّمه يمرّ على نفس الفريق الذي يكسر أنظمة الآخرين.
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; border-top: 2px solid #0D0D0C; padding-top: 36px;">
+
+          <div>
+            <h3 style="font-size: 24px; font-weight: 700; margin: 0 0 12px;">منصات ويب</h3>
+            <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0;">تطبيقات ولوحات تحكّم تُبنى للتشغيل الطويل، لا للعرض.</p>
+          </div>
+
+          <div>
+            <h3 style="font-size: 24px; font-weight: 700; margin: 0 0 12px;">تطبيقات الجوال</h3>
+            <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0;">تطبيقات كاملة من التصميم إلى النشر على المتاجر.</p>
+          </div>
+
+          <div>
+            <h3 style="font-size: 24px; font-weight: 700; margin: 0 0 12px;">بنية آمنة</h3>
+            <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0;">نشر ومراجعة بنية على مبدأ أن يُختبر ما نبنيه قبل أن يُسلَّم.</p>
+          </div>
+
+      </div>
+    </div>
+
+    <div id="built" style="max-width: 1240px; margin: 0 auto; padding: 0 44px 120px;">
+      <span style="font-size: 13px; font-weight: 600; color: #8A5A12; display: block; margin-bottom: 18px; font-variant-numeric: tabular-nums;">٠٥</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 72px; line-height: 1.22; margin: 0 0 24px;">ما بنيناه</h2>
+      <p style="font-size: 21px; line-height: 1.7; color: #5E5E5A; margin: 0 0 48px;">لا نعرض ما لم يُشحن.</p>
+
+      <div style="border-top: 2px solid #0D0D0C;">
+
+          <div style="display: grid; grid-template-columns: 300px 1fr 170px; gap: 40px; padding: 32px 0; border-bottom: 1px solid #C9C8C3; align-items: start;">
+            <div>
+              <h3 style="font-size: 30px; font-weight: 700; margin: 0 0 6px; font-family: 'Kufam', Georgia, serif;">مصاريف</h3>
+              <span style="font-size: 15.5px; color: #5E5E5A;">تطبيق مصروفات وميزانية شخصية</span>
+            </div>
+            <div>
+              <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0 0 10px;">منتج مستهلك كامل عبر ثلاثة إصدارات، مع صفحة خصوصية منشورة.</p>
+              <span class="lat" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #85847F; direction: ltr; display: block; text-align: right;">masarif · masarifApp · masarifv2</span>
+            </div>
+            <div style="text-align: left;">
+
+                <span style="display: inline-block; background: #0D0D0C; color: #F4F3F0; padding: 5px 16px; font-size: 13px; font-weight: 600;">شُحن</span>
+
+
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 300px 1fr 170px; gap: 40px; padding: 32px 0; border-bottom: 1px solid #C9C8C3; align-items: start;">
+            <div>
+              <h3 style="font-size: 30px; font-weight: 700; margin: 0 0 6px; font-family: 'Kufam', Georgia, serif;">مرصاد</h3>
+              <span style="font-size: 15.5px; color: #5E5E5A;">[الوصف: بانتظارك]</span>
+            </div>
+            <div>
+              <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0 0 10px;">لم يكتمل بعد.</p>
+              <span class="lat" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #85847F; direction: ltr; display: block; text-align: right;">mirsad</span>
+            </div>
+            <div style="text-align: left;">
+
+
+                <span style="display: inline-flex; align-items: center; gap: 9px; border: 1px solid #0D0D0C; padding: 4px 15px; font-size: 13px; font-weight: 600;">
+                  <svg width="10" height="10" viewBox="0 0 10 10" style="flex: none;" aria-hidden="true"><path d="M0.6 9.4 L5 0.6 L9.4 9.4 Z" fill="none" stroke="#0D0D0C" stroke-width="1.3"/></svg>
+                  تحت الإنشاء
+                </span>
+
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 300px 1fr 170px; gap: 40px; padding: 32px 0; border-bottom: 1px solid #C9C8C3; align-items: start;">
+            <div>
+              <h3 style="font-size: 30px; font-weight: 700; margin: 0 0 6px; font-family: 'Kufam', Georgia, serif;">فايز</h3>
+              <span style="font-size: 15.5px; color: #5E5E5A;">موظف ذكاء اصطناعي لتجار سلة وشوبيفاي</span>
+            </div>
+            <div>
+              <p style="font-size: 16.5px; line-height: 1.72; color: #5E5E5A; margin: 0 0 10px;">تحت الإنشاء.</p>
+              <span class="lat" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #85847F; direction: ltr; display: block; text-align: right;">—</span>
+            </div>
+            <div style="text-align: left;">
+
+
+                <span style="display: inline-flex; align-items: center; gap: 9px; border: 1px solid #0D0D0C; padding: 4px 15px; font-size: 13px; font-weight: 600;">
+                  <svg width="10" height="10" viewBox="0 0 10 10" style="flex: none;" aria-hidden="true"><path d="M0.6 9.4 L5 0.6 L9.4 9.4 Z" fill="none" stroke="#0D0D0C" stroke-width="1.3"/></svg>
+                  تحت الإنشاء
+                </span>
+
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ BLACK: how we work + the report ══════════════ -->
+  <div id="method" style="background: #0D0D0C; color: #F4F3F0;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 120px 44px;">
+      <span style="font-size: 13px; font-weight: 600; color: #E0A44A; display: block; margin-bottom: 18px; font-variant-numeric: tabular-nums;">٠٦</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 72px; line-height: 1.22; margin: 0 0 56px;">كيف نعمل، وماذا تستلم</h2>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start;">
+        <div style="border-top: 2px solid rgba(244,243,240,0.9);">
+
+            <div style="display: grid; grid-template-columns: 52px 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(244,243,240,0.14);">
+              <span style="font-size: 14px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠١</span>
+              <div>
+                <h3 style="font-size: 21px; font-weight: 700; margin: 0 0 6px;">نطاق مكتوب</h3>
+                <p style="font-size: 16px; line-height: 1.7; color: rgba(244,243,240,0.56); margin: 0;">ما الذي سيُختبر بالضبط، وما الذي لن يُختبر، ومتى.</p>
+              </div>
             </div>
 
-            <!-- Approach -->
-            <div class="info-block animate-right">
-                <div class="badge-tag lang-text" data-en="Methodology" data-ar="منهجية العمل">Methodology</div>
-                <h2 class="lang-text" data-en="Engagement <span class='highlight'>Approach</span>"
-                    data-ar="مقاربة <span class='highlight'>الارتباط</span>">Engagement <span
-                        class="highlight">Approach</span></h2>
-                <div class="node-list">
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text" data-en="Clear scope definition and <strong>agreed methodology</strong>."
-                            data-ar="تحديد واضح لنطاق العمل و<strong>منهجية متفق عليها</strong>.">Clear scope definition
-                            and <strong>agreed methodology</strong>.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text" data-en="<strong>Risk-based prioritization</strong> of findings."
-                            data-ar="تحديد أولويات النتائج <strong>بناءً على المخاطر</strong>."><strong>Risk-based
-                                prioritization</strong> of findings.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Executive-level reporting supported by <strong>technical detail</strong>."
-                            data-ar="تقارير بمستوى تنفيذي مدعومة بـ <strong>تفاصيل فنية</strong>.">Executive-level
-                            reporting supported by <strong>technical detail</strong>.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text" data-en="Practical, actionable <strong>remediation guidance</strong>."
-                            data-ar="إرشادات <strong>معالجة عملية وقابلة للتنفيذ</strong>.">Practical, actionable
-                            <strong>remediation guidance</strong>.
-                        </p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Post-engagement clarification and <strong>technical support</strong>."
-                            data-ar="توضيح ما بعد الارتباط و<strong>الدعم الفني</strong>.">Post-engagement clarification
-                            and <strong>technical support</strong>.</p>
-                    </div>
-                </div>
+            <div style="display: grid; grid-template-columns: 52px 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(244,243,240,0.14);">
+              <span style="font-size: 14px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠٢</span>
+              <div>
+                <h3 style="font-size: 21px; font-weight: 700; margin: 0 0 6px;">منهجية متفق عليها</h3>
+                <p style="font-size: 16px; line-height: 1.7; color: rgba(244,243,240,0.56); margin: 0;">صندوق أسود أو رمادي أو أبيض: تُختار قبل البدء لا أثناءه.</p>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 52px 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(244,243,240,0.14);">
+              <span style="font-size: 14px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠٣</span>
+              <div>
+                <h3 style="font-size: 21px; font-weight: 700; margin: 0 0 6px;">إبلاغ فوري للحرج</h3>
+                <p style="font-size: 16px; line-height: 1.7; color: rgba(244,243,240,0.56); margin: 0;">ما يهدّد الإنتاج لا ينتظر التقرير النهائي.</p>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 52px 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(244,243,240,0.14);">
+              <span style="font-size: 14px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠٤</span>
+              <div>
+                <h3 style="font-size: 21px; font-weight: 700; margin: 0 0 6px;">تقرير بمستويين</h3>
+                <p style="font-size: 16px; line-height: 1.7; color: rgba(244,243,240,0.56); margin: 0;">ملخّص تنفيذي لمن يقرّر، وتفصيل تقني لمن ينفّذ.</p>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 52px 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(244,243,240,0.14);">
+              <span style="font-size: 14px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠٥</span>
+              <div>
+                <h3 style="font-size: 21px; font-weight: 700; margin: 0 0 6px;">إعادة اختبار</h3>
+                <p style="font-size: 16px; line-height: 1.7; color: rgba(244,243,240,0.56); margin: 0;">نتحقق من المعالجة بعد إصلاحكم، ونوثّق الإغلاق.</p>
+              </div>
             </div>
 
         </div>
-    </section>
 
-    <!-- Delivery & Reporting -->
-    <section class="delivery section">
-        <div class="container text-center animate-up">
-            <div class="badge-tag mx-auto lang-text" data-en="Intelligence Output" data-ar="مخرجات الذكاء">Intelligence
-                Output</div>
-            <h2 class="lang-text" data-en="Delivery & <span class='highlight'>Reporting</span>"
-                data-ar="التسليم و<span class='highlight'>التقارير</span>">Delivery & <span
-                    class="highlight">Reporting</span></h2>
-            <p class="delivery-desc lang-text"
-                data-en="We transform complex technical findings into actionable strategic intelligence."
-                data-ar="نحن نحول النتائج الفنية المعقدة إلى ذكاء استراتيجي قابل للتنفيذ.">We transform complex
-                technical findings into actionable strategic intelligence.</p>
+        <div class="card" style="background: #F4F3F0; color: #0D0D0C; padding: 38px 40px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%);">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #0D0D0C; padding-bottom: 14px; margin-bottom: 24px;">
+            <span style="font-size: 13px; font-weight: 600; color: #5E5E5A;">عيّنة صفحة نتيجة</span>
+            <span class="lat" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #5E5E5A;">F-04</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
+            <span style="background: #0D0D0C; color: #F4F3F0; font-size: 12.5px; font-weight: 700; padding: 4px 12px;">حرجة</span>
+            <h3 style="font-size: 23px; font-weight: 700; margin: 0; line-height: 1.35;">تجاوز التحقق على مسار الاسترجاع</h3>
+          </div>
 
-            <div class="delivery-grid">
-                <div class="delivery-card">
-                    <i class="fa-solid fa-file-contract"></i>
-                    <h4 class="lang-text" data-en="Structured Reports" data-ar="تقارير منظمة">Structured Reports</h4>
-                    <p class="lang-text" data-en="Technical reports and executive summaries"
-                        data-ar="تقارير فنية وملخصات تنفيذية">Technical reports and executive summaries</p>
-                </div>
-                <div class="delivery-card">
-                    <i class="fa-solid fa-ranking-star"></i>
-                    <h4 class="lang-text" data-en="Risk Ratings" data-ar="تقييم المخاطر">Risk Ratings</h4>
-                    <p class="lang-text" data-en="Clear risk ratings and remediation guidance"
-                        data-ar="تقييمات واضحة للمخاطر وتوجيهات للمعالجة">Clear risk ratings and remediation guidance
-                    </p>
-                </div>
-                <div class="delivery-card">
-                    <i class="fa-solid fa-scale-balanced"></i>
-                    <h4 class="lang-text" data-en="Industry Standards" data-ar="معايير الصناعة">Industry Standards</h4>
-                    <p class="lang-text" data-en="Alignment with industry standards and best practices"
-                        data-ar="التوافق مع معايير الصناعة وأفضل الممارسات">Alignment with industry standards and best
-                        practices</p>
-                </div>
-                <div class="delivery-card">
-                    <i class="fa-solid fa-check-double"></i>
-                    <h4 class="lang-text" data-en="Validation Support" data-ar="دعم التحقق">Validation Support</h4>
-                    <p class="lang-text" data-en="Support for re-testing and validation upon request"
-                        data-ar="دعم إعادة الاختبار والتحقق عند الطلب">Support for re-testing and validation upon
-                        request</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact" class="footer">
-        <div class="container footer-content">
-            <div class="footer-brand">
-                <div class="logo">
-                    <img src="assets/logo_v2.png" alt="AQL Technology" class="logo-img">
-                    <div class="brand-text">
-                        <span class="logo-text lang-text" data-en="AQL TECHNOLOGY" data-ar="عقل التقنية">AQL
-                            TECHNOLOGY</span>
-                        <span class="arabic">عقل التقنية</span>
-                    </div>
-                </div>
-                <p class="lang-text" data-en="Advanced Cybersecurity Solutions & Intelligence Systems."
-                    data-ar="حلول الأمن السيبراني المتقدمة وأنظمة الذكاء.">Advanced Cybersecurity Solutions &
-                    Intelligence Systems.</p>
+            <div style="display: grid; grid-template-columns: 108px 1fr; gap: 18px; padding: 13px 0; border-bottom: 1px solid #C9C8C3; font-size: 15.5px;">
+              <span style="font-weight: 600; color: #5E5E5A;">الأثر</span>
+              <span style="color: #5E5E5A; line-height: 1.65;">استيلاء على حساب أي مستخدم دون تفاعل منه.</span>
             </div>
 
-            <div class="footer-contact">
-                <h4 class="lang-text" data-en="Engage With Us" data-ar="تواصل معنا">Engage With Us</h4>
-                <a href="mailto:info@aql-tech.com" class="contact-link"><i class="fa-solid fa-envelope"></i>
-                    info@aql-tech.com</a>
-                <a href="tel:+966566575579" class="contact-link"><i class="fa-solid fa-phone"
-                        style="margin-right: 10px;"></i> <bdi>+966 56 657 5579</bdi></a>
+            <div style="display: grid; grid-template-columns: 108px 1fr; gap: 18px; padding: 13px 0; border-bottom: 1px solid #C9C8C3; font-size: 15.5px;">
+              <span style="font-weight: 600; color: #5E5E5A;">الدليل</span>
+              <span style="color: #5E5E5A; line-height: 1.65;">طلب وردّ كاملان، مع تسجيل شاشة للمسار.</span>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="lang-text" data-en="&copy; 2026 AQL Technology. Confidential Cyber Defense Protocol."
-                data-ar="&copy; 2026 عقل التقنية. بروتوكول الدفاع السيبراني السري.">&copy; 2026 AQL Technology.
-                Confidential Cyber Defense Protocol.</p>
-        </div>
-    </footer>
 
-    <!-- Particles.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="script.js"></script>
-</body>
+            <div style="display: grid; grid-template-columns: 108px 1fr; gap: 18px; padding: 13px 0; border-bottom: 1px solid #C9C8C3; font-size: 15.5px;">
+              <span style="font-weight: 600; color: #5E5E5A;">إعادة الإنتاج</span>
+              <span style="color: #5E5E5A; line-height: 1.65;">أربع خطوات مرقّمة على بيئة الاختبار.</span>
+            </div>
 
-</html>
+            <div style="display: grid; grid-template-columns: 108px 1fr; gap: 18px; padding: 13px 0; border-bottom: 1px solid #C9C8C3; font-size: 15.5px;">
+              <span style="font-weight: 600; color: #5E5E5A;">المعالجة</span>
+              <span style="color: #5E5E5A; line-height: 1.65;">ربط رمز الاسترجاع بالجلسة وإبطاله بعد الاستعمال.</span>
+            </div>
+
+          <p style="font-size: 14.5px; color: #5E5E5A; margin: 20px 0 0; line-height: 1.7;">
+            كل نتيجة لها دليل، وخطوات إعادة إنتاج، ومعالجة قابلة للتنفيذ. لا «درجة خطورة» بلا سند.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ WHITE: the team, and their certifications ══════════════ -->
+  <div id="team" style="background: #F4F3F0; color: #0D0D0C;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 120px 44px;">
+      <span style="font-size: 13px; font-weight: 600; color: #8A5A12; display: block; margin-bottom: 18px; font-variant-numeric: tabular-nums;">٠٧</span>
+      <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 72px; line-height: 1.22; margin: 0 0 24px;">من سيشتغل على ارتباطك</h2>
+      <p style="font-size: 21px; line-height: 1.7; color: #5E5E5A; margin: 0 0 20px; max-width: 54ch;">
+        الشهادات يحملها أفراد، لا شركات. فنعرضها حيث تنتمي: بجانب من حصّلها.
+      </p>
+      <p style="font-size: 14px; color: #8A5A12; margin: 0 0 56px; font-weight: 600;">
+        [الأسماء والصور بانتظار موافقة كل فرد]
+      </p>
+
+      <div style="border-top: 2px solid #0D0D0C;">
+
+          <div style="display: grid; grid-template-columns: 320px 1fr; gap: 56px; padding: 40px 0; border-bottom: 1px solid #C9C8C3; align-items: center;">
+            <div>
+              <h3 style="font-size: 27px; font-weight: 700; margin: 0 0 6px; font-family: 'Kufam', Georgia, serif;">[الاسم الأول]</h3>
+              <span style="font-size: 16px; color: #5E5E5A;">أمن هجومي — تطبيقات ويب واستغلال</span>
+              <div style="font-size: 15px; color: #5E5E5A; margin-top: 8px; font-variant-numeric: tabular-nums;">[س] سنوات خبرة</div>
+            </div>
+            <!-- badges at a uniform optical height, own colours, no frames -->
+            <div style="display: flex; flex-wrap: wrap; gap: 26px; align-items: center;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSCPplus.svg" alt="OSCP+" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSWE.svg" alt="OSWE" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSCE3.svg" alt="OSCE3" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/ewptx.png" alt="eWPTX" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSED.svg" alt="OSED" style="height: 52px; width: auto; display: block;">
+
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 320px 1fr; gap: 56px; padding: 40px 0; border-bottom: 1px solid #C9C8C3; align-items: center;">
+            <div>
+              <h3 style="font-size: 27px; font-weight: 700; margin: 0 0 6px; font-family: 'Kufam', Georgia, serif;">[الاسم الثاني]</h3>
+              <span style="font-size: 16px; color: #5E5E5A;">أمن هجومي — شبكات داخلية وActive Directory</span>
+              <div style="font-size: 15px; color: #5E5E5A; margin-top: 8px; font-variant-numeric: tabular-nums;">[س] سنوات خبرة</div>
+            </div>
+            <!-- badges at a uniform optical height, own colours, no frames -->
+            <div style="display: flex; flex-wrap: wrap; gap: 26px; align-items: center;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSCP.svg" alt="OSCP" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSEP.svg" alt="OSEP" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/CRTP.png" alt="CRTP" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/CRTO.png" alt="CRTO" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSWP.svg" alt="OSWP" style="height: 52px; width: auto; display: block;">
+
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 320px 1fr; gap: 56px; padding: 40px 0; border-bottom: 1px solid #C9C8C3; align-items: center;">
+            <div>
+              <h3 style="font-size: 27px; font-weight: 700; margin: 0 0 6px; font-family: 'Kufam', Georgia, serif;">[الاسم الثالث]</h3>
+              <span style="font-size: 16px; color: #5E5E5A;">أمن تطبيقات الجوال</span>
+              <div style="font-size: 15px; color: #5E5E5A; margin-top: 8px; font-variant-numeric: tabular-nums;">[س] سنوات خبرة</div>
+            </div>
+            <!-- badges at a uniform optical height, own colours, no frames -->
+            <div style="display: flex; flex-wrap: wrap; gap: 26px; align-items: center;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/emapt.png" alt="eMAPT" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/ecppt.png" alt="eCPPT" style="height: 52px; width: auto; display: block;">
+
+                <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/ejpt.svg" alt="eJPT" style="height: 52px; width: auto; display: block;">
+
+            </div>
+          </div>
+
+      </div>
+
+      <p style="font-size: 14px; color: #5E5E5A; margin: 24px 0 0; line-height: 1.7; max-width: 70ch;">
+        الشارات ملك جهات إصدارها، وتُعرض هنا لأن أفراد الفريق حصّلوها. لا تعني انتساباً لعقل ولا اعتماداً منها.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════ BLACK: contact ══════════════ -->
+  <div id="contact" style="background: #0D0D0C; color: #F4F3F0;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 128px 44px 64px;">
+      <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 88px; align-items: start;">
+        <div>
+          <h2 style="font-family: 'Kufam', Georgia, serif; font-weight: 700; font-size: 84px; line-height: 1.2; margin: 0 0 28px;">اطلب نطاق عمل</h2>
+          <p style="font-size: 21px; line-height: 1.7; color: rgba(244,243,240,0.62); margin: 0 0 40px; max-width: 40ch;">
+            نرجع لك بنطاق مكتوب ومدّة وسعر، لا عرضاً عاماً. أخبرنا بثلاثة أشياء فقط.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 44px;">
+
+              <div style="display: flex; align-items: baseline; gap: 16px; font-size: 18px; color: rgba(244,243,240,0.86);">
+                <span style="font-size: 13px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠١</span>
+                <span>ما الذي تريد اختباره أو بناءه؟</span>
+              </div>
+
+              <div style="display: flex; align-items: baseline; gap: 16px; font-size: 18px; color: rgba(244,243,240,0.86);">
+                <span style="font-size: 13px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠٢</span>
+                <span>ما حجمه تقريباً: كم تطبيقاً، كم مستخدماً، كم نطاقاً؟</span>
+              </div>
+
+              <div style="display: flex; align-items: baseline; gap: 16px; font-size: 18px; color: rgba(244,243,240,0.86);">
+                <span style="font-size: 13px; font-weight: 600; color: #E0A44A; font-variant-numeric: tabular-nums;">٠٣</span>
+                <span>متى تحتاج النتيجة؟</span>
+              </div>
+
+          </div>
+          <a class="btn btn-solid" href="mailto:[البريد]" style="background: #E0A44A; color: #0D0D0C; font-size: 17px; font-weight: 700; padding: 0 36px; min-height: 60px; display: inline-flex; align-items: center;">ابدأ المحادثة</a>
+        </div>
+
+        <div style="border-top: 2px solid rgba(244,243,240,0.9); padding-top: 32px; display: flex; flex-direction: column; gap: 26px;">
+          <div>
+            <div style="font-size: 13px; color: rgba(244,243,240,0.40); margin-bottom: 6px;">البريد</div>
+            <a href="mailto:[البريد]" style="font-size: 19px; color: #F4F3F0;">[البريد الرسمي]</a>
+          </div>
+          <div>
+            <div style="font-size: 13px; color: rgba(244,243,240,0.40); margin-bottom: 6px;">الهاتف</div>
+            <a href="tel:[الهاتف]" class="lat" style="font-size: 19px; color: #F4F3F0; direction: ltr; display: inline-block;">[الهاتف]</a>
+          </div>
+          <div>
+            <div style="font-size: 13px; color: rgba(244,243,240,0.40); margin-bottom: 6px;">المقر</div>
+            <span style="font-size: 19px;">الرياض، المملكة العربية السعودية</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(244,243,240,0.12); margin-top: 88px; padding-top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 24px; font-size: 13px; color: rgba(244,243,240,0.36);">
+        <span>عقل لتقنية المعلومات</span>
+        <span class="lat" style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">AQL Technology</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body></html>
