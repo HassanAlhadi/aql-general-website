@@ -8,3 +8,7 @@
 aql-homepage.html
 preview.html
 fonts/
+
+# badge copies build-preview.py needs beside preview.html — masters live in badges/
+/*.svg
+/*.png

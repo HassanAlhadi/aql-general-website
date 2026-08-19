@@ -24,21 +24,42 @@ def fill(t, ctx):
         return str(cur)
     return re.sub(r'\{\{\s*([\w.$]+)\s*\}\}', rep, t)
 
+def find_block(t, start):
+    """Return (inner_start, inner_end, close_end) for the sc-for opened at `start`,
+    matching nested sc-for tags instead of stopping at the first close."""
+    open_end = t.index('>', start) + 1
+    depth, i = 1, open_end
+    while depth:
+        nxt_o = t.find('<sc-for', i)
+        nxt_c = t.find('</sc-for>', i)
+        if nxt_c == -1:
+            raise ValueError('unbalanced sc-for')
+        if nxt_o != -1 and nxt_o < nxt_c:
+            depth += 1; i = nxt_o + 7
+        else:
+            depth -= 1; i = nxt_c + 9
+    return open_end, i - 9, i
+
+
 def expand(t, ctx):
-    pat = re.compile(r'<sc-for list="\{\{([\w.]+)\}\}" as="(\w+)"[^>]*>(.*?)</sc-for>', re.S)
+    head = re.compile(r'<sc-for list="\{\{([\w.]+)\}\}" as="(\w+)"')
+    out, pos = [], 0
     while True:
-        m = pat.search(t)
-        if not m: break
-        path, alias, inner = m.group(1), m.group(2), m.group(3)
+        m = head.search(t, pos)
+        if not m:
+            out.append(t[pos:]); break
+        out.append(t[pos:m.start()])
+        inner_start, inner_end, close_end = find_block(t, m.start())
+        inner = t[inner_start:inner_end]
         cur = ctx
-        for p in path.split('.'):
-            cur = cur.get(p, []) if isinstance(cur, dict) else []
-        out = []
+        for part in m.group(1).split('.'):
+            cur = cur.get(part, []) if isinstance(cur, dict) else []
         for i, item in enumerate(cur or []):
-            c2 = dict(ctx); c2[alias] = item; c2['$index'] = i
+            c2 = dict(ctx); c2[m.group(2)] = item; c2['$index'] = i
             out.append(expand(inner, c2))
-        t = t[:m.start()] + ''.join(out) + t[m.end():]
-    return fill(t, ctx)
+        pos = close_end
+    return fill(''.join(out), ctx)
+
 
 body = expand(body, vals)
 # resolve sc-if against the literals fill() left behind
