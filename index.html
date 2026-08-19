@@ -1,598 +1,716 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-
+<!doctype html>
+<html lang="en" dir="ltr" class="anim">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQL Technology | Intelligence Systems</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>AQL Technology — Offensive Security &amp; Software Engineering</title>
+<meta name="description" content="A Saudi practice for offensive security and secure software engineering. Every engagement starts with a written scope and ends with a report your team can act on.">
+<link rel="icon" type="image/png" href="assets/logo_favicon.png">
 
-    <!-- Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap"
-        rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&family=Instrument+Serif:ital@1&display=swap">
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root{
+    --bg:#000000; --ink:#ffffff;
+    --muted: rgba(255,255,255,.58); --muted-2: rgba(255,255,255,.38);
+    --accent:#E0A44A; --accent-ink:#17110a;
+    --line: rgba(255,255,255,.16); --line-soft: rgba(255,255,255,.09);
+    --surface: rgba(255,255,255,.04);
+    --radius: 8px;
+    --header-x: 40px; --header-y: 22px;
+    --nav-h: 40px; --btn-h: 40px; --hero-btn-h: 46px;
+    --h1: 92px; --lede: 17px; --badge: 12.5px; --stat: 13.5px;
+    --copy-max: 760px; --lede-max: 480px;
+    --reveal: cubic-bezier(.16,1,.3,1);
+    --soft: cubic-bezier(.25,.8,.28,1);
+  }
 
-    <link rel="stylesheet" href="styles.css">
+  html, body{ background:#000000 !important; color:#ffffff; }
+  *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+  html, body{ background:#000000; color:#ffffff; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility; overflow-x:hidden; position:relative;
+  }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; }
+  ul{ list-style:none; }
+  img{ max-width:100%; display:block; }
+  section{ position:relative; }
+
+  em{ font-style:italic; }
+
+  ::selection{ background:var(--accent); color:var(--accent-ink); }
+
+  /* grain */
+  .grain{
+    position:fixed; inset:0; z-index:100; pointer-events:none;
+    opacity:.09; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- header ---------- */
+  header.header{
+    position:relative; z-index:50;
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
+    padding:var(--header-y) var(--header-x) 10px;
+  }
+  .logo{
+    display:inline-flex; align-items:center; gap:9px; justify-self:start;
+    font-size:15.5px; font-weight:600; letter-spacing:-0.02em; color:#fff;
+  }
+  .logo svg{ width:22px; height:22px; }
+  .logo-suffix{ font-weight:400; color:var(--muted); }
+
+  nav#site-nav{ display:flex; align-items:center; gap:8px; justify-self:center; }
+  .navlink{
+    height:var(--nav-h); padding:0 20px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid rgba(255,255,255,.22); color:#e9e9e9;
+    background:linear-gradient(105deg, #050505 0%, #141210 55%, rgba(224,164,74,.16) 100%);
+    font-size:14.5px; font-weight:500; letter-spacing:-0.01em; white-space:nowrap;
+    position:relative; overflow:hidden; isolation:isolate;
+    transition:border-color .3s ease, color .3s ease, background-color .3s ease, box-shadow .3s ease;
+  }
+  .navlink::before{
+    content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.16) 50%, transparent 70%);
+    transform:translateX(-120%); transition:transform .6s ease;
+  }
+  .navlink > *{ position:relative; z-index:2; }
+  @media (hover:hover) and (pointer:fine){
+    .navlink:hover{ border-color:var(--accent); color:#fff; box-shadow:0 0 22px rgba(224,164,74,.24); }
+    .navlink:hover::before{ transform:translateX(120%); }
+  }
+  .navlink:active{ transform:scale(.97); }
+
+  .header-right{ display:flex; align-items:center; gap:14px; justify-self:end; }
+
+  .burger{
+    display:none; width:42px; height:42px; border-radius:6px;
+    border:1px solid var(--line); background:rgba(0,0,0,.5);
+    z-index:60; position:relative; align-items:center; justify-content:center; gap:5px; flex-direction:column;
+    cursor:pointer; transition:border-color .2s ease, background-color .2s ease;
+  }
+  .burger:hover{ border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.05); }
+  .burger span{ width:16px; height:1.5px; background:#fff; border-radius:1px; transition:transform .25s ease, opacity .2s ease; }
+  body.menu-open .burger span:nth-child(1){ transform:translateY(6.5px) rotate(45deg); }
+  body.menu-open .burger span:nth-child(2){ opacity:0; }
+  body.menu-open .burger span:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg); }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    position:relative; isolation:isolate; overflow:hidden;
+    display:inline-flex; align-items:center; justify-content:center;
+    height:var(--btn-h); padding:0 22px; border-radius:6px;
+    font-size:14px; font-weight:600; letter-spacing:-0.01em; line-height:1;
+    white-space:nowrap; cursor:pointer;
+    transition:background-color .3s ease, border-color .3s ease, box-shadow .3s ease, color .3s ease, transform .15s ease;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn::after{
+    content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,.5) 48%, transparent 76%);
+    transform:translateX(-130%); transition:transform .65s ease;
+  }
+  .btn > *{ position:relative; z-index:2; }
+  .btn-solid{ background:linear-gradient(180deg,#ffffff 0%,#fff8ec 60%,#f3e2c2 100%); color:#000; border:1px solid #fff; box-shadow:0 0 0 rgba(224,164,74,0); }
+  @media (hover:hover) and (pointer:fine){
+    .btn-solid:hover{ box-shadow:0 0 30px rgba(224,164,74,.45), 0 8px 22px rgba(0,0,0,.45); }
+    .btn-solid:hover::after{ transform:translateX(130%); }
+  }
+  .btn-ghost{ background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.5) 55%, rgba(224,164,74,.1)); color:#fff; border:1.5px solid rgba(255,255,255,.4); }
+  @media (hover:hover) and (pointer:fine){
+    .btn-ghost:hover{ border-color:var(--accent); box-shadow:0 0 24px rgba(224,164,74,.28); }
+    .btn-ghost:hover::after{ transform:translateX(130%); }
+  }
+  .hero-actions .btn{ height:var(--hero-btn-h); padding:0 30px; font-size:15px; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100dvh; display:flex; align-items:flex-end; justify-content:center;
+    padding:8px 24px 70px; position:relative; z-index:1;
+  }
+  .hero::before{
+    content:""; position:absolute; left:50%; bottom:-10%; width:1100px; height:700px;
+    transform:translateX(-50%); pointer-events:none; z-index:0;
+    background:radial-gradient(closest-side, rgba(224,164,74,.20), rgba(224,164,74,.05) 55%, transparent 75%);
+  }
+  .hero-copy{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    max-width:var(--copy-max); width:100%;
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:26px;
+    padding:10px 18px; border:1px solid rgba(224,164,74,.45); border-radius:999px;
+    background:rgba(224,164,74,.08);
+    color:#f6f0e6; font-size:var(--badge); font-weight:600; letter-spacing:.01em;
+  }
+  .badge svg{ width:14px; height:14px; flex:none; color:var(--accent); }
+
+  h1.headline{
+    font-weight:500; letter-spacing:-0.03em; line-height:1.1; color:#fff;
+    display:flex; flex-direction:column; align-items:center;
+    font-size:var(--h1);
+  }
+  .headline-line{ display:block; overflow:hidden; padding:.06em .1em .12em; }
+  h1 em{
+    font-family:"Instrument Serif","Times New Roman",Times,serif;
+    font-style:italic; font-weight:400; font-size:1.06em; letter-spacing:-0.02em;
+    color:var(--accent);
+  }
+
+  .lede{
+    max-width:var(--lede-max); margin-top:18px; color:var(--muted);
+    font-size:var(--lede); font-weight:400; line-height:1.6; letter-spacing:-0.01em;
+  }
+  .hero-actions{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:12px; margin-top:28px; }
+
+  /* ---------- stats footer ---------- */
+  .stats{
+    position:relative; z-index:1;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    padding:0 var(--header-x) 40px; color:#dcdcdc; flex-wrap:wrap;
+  }
+  .stat{ display:inline-flex; align-items:center; gap:14px; font-size:var(--stat); letter-spacing:-0.01em; }
+  .stat svg{ width:20px; height:20px; flex:none; color:var(--accent); }
+  .stat b{ color:#fff; font-weight:600; }
+
+  /* ---------- appear entrance system ---------- */
+  .appear{
+    opacity:1;
+    animation-duration:1.05s; animation-fill-mode:both;
+    animation-timing-function:var(--reveal); animation-delay:var(--d,.08s);
+  }
+  .appear--scale{ animation-name:in-scale; animation-timing-function:var(--soft); }
+  .appear--soft{ animation-name:in-soft; animation-timing-function:var(--soft); }
+  .appear--mask{ animation-name:in-mask; }
+  .appear--pop{ animation-name:in-pop; animation-timing-function:var(--soft); }
+  .appear--btn{ animation-name:in-btn; animation-timing-function:var(--soft); }
+  .appear--stat{ animation-name:in-stat; animation-timing-function:var(--soft); }
+  .appear.is-in{ animation:none!important; opacity:1!important; transform:none!important; filter:none!important; }
+
+  @keyframes in-scale{ from{ opacity:0; transform:scale(.86);} to{ opacity:1; transform:none;} }
+  @keyframes in-soft{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:none;} }
+  @keyframes in-mask{ from{ opacity:0; transform:translateY(40%);} to{ opacity:1; transform:none;} }
+  @keyframes in-pop{ 0%{ opacity:0; transform:scale(.9);} 70%{ opacity:1; transform:scale(1.02);} 100%{ transform:scale(1);} }
+  @keyframes in-btn{ from{ opacity:0; transform:translateY(16px) scale(.95);} to{ opacity:1; transform:none;} }
+  @keyframes in-stat{ from{ opacity:0; transform:translateY(18px);} to{ opacity:1; transform:none;} }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{ transition:none!important; animation:none!important; }
+    .appear{ opacity:1!important; transform:none!important; }
+  }
+
+  /* ---------- sections ---------- */
+  .section{ padding:120px var(--header-x); max-width:1240px; margin:0 auto; }
+  .section-ref{ display:block; font-size:13px; font-weight:600; color:var(--accent); margin-bottom:18px; letter-spacing:.02em; }
+  .section h2{ font-size:68px; font-weight:500; letter-spacing:-0.02em; line-height:1.12; margin-bottom:22px; }
+  .section .lede-body{ font-size:19px; line-height:1.65; color:var(--muted); max-width:56ch; margin-bottom:56px; }
+  hr.rule{ border:0; border-top:1px solid var(--line); }
+
+  .grid-2{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid var(--line); }
+  .cap-card{ padding:32px 40px 32px 0; border-bottom:1px solid var(--line-soft); }
+  .cap-card .code{ font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12px; color:var(--accent); margin-bottom:12px; letter-spacing:.02em; }
+  .cap-card h3{ font-size:22px; font-weight:500; margin-bottom:10px; }
+  .cap-card p{ font-size:15.5px; line-height:1.65; color:var(--muted); max-width:44ch; }
+
+  /* ---------- design / morph scene ---------- */
+  .design-section{ padding:0; }
+  .scene-wrap{ position:relative; overflow:hidden; background:#050504; }
+  .scene-morph{ position:relative; width:100%; aspect-ratio:1440/620; overflow:hidden; }
+  .scene-layer{ position:absolute; inset:0; }
+  .scene-layer svg{ width:100%; height:100%; display:block; }
+  .scene-layer--reveal{
+    filter:invert(1) saturate(1.5) hue-rotate(-10deg) brightness(1.15);
+    -webkit-mask-image:linear-gradient(#000,#000); mask-image:linear-gradient(#000,#000);
+    -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+    -webkit-mask-size:100% 100%; mask-size:100% 100%;
+    opacity:0; transition:opacity .15s ease;
+  }
+  .scene-morph.hovering .scene-layer--reveal{ opacity:1; }
+  .scene-card{
+    position:absolute; top:8%; right:9%; width:min(420px,38%); background:#F4F3F0; color:#0D0D0C;
+    padding:34px 36px; clip-path:polygon(0 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%);
+    z-index:2;
+  }
+  .scene-card .section-ref{ color:#8A5A12; margin-bottom:14px; }
+  .scene-card h2{ font-size:40px; margin-bottom:16px; color:#0D0D0C; }
+  .scene-card p{ font-size:15.5px; line-height:1.7; color:#5E5E5A; margin-bottom:20px; }
+  .scene-clock{ border-top:1px solid #C9C8C3; padding-top:14px; display:flex; align-items:center; gap:9px; font-size:13px; color:#5E5E5A; }
+  .scene-clock i{ width:7px; height:7px; background:#8A5A12; display:inline-block; }
+  .scene-hint{ position:absolute; bottom:26px; left:9%; z-index:2; color:rgba(255,255,255,.4); font-size:12.5px; letter-spacing:.02em; }
+
+  /* ---------- built rows ---------- */
+  .built-row{ display:grid; grid-template-columns:260px 1fr 190px; gap:36px; padding:30px 0; border-bottom:1px solid var(--line-soft); align-items:start; }
+  .built-row:first-child{ border-top:1px solid var(--line); }
+  .built-row h3{ font-size:26px; font-weight:500; margin-bottom:6px; }
+  .built-row .sub{ font-size:14.5px; color:var(--muted-2); }
+  .built-row .desc{ font-size:15.5px; line-height:1.68; color:var(--muted); margin-bottom:10px; }
+  .built-row .repo{ font-family:ui-monospace,monospace; font-size:12.5px; color:var(--muted-2); }
+  .pill-status{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; padding:5px 14px; border-radius:999px; }
+  .pill-status.shipped{ background:#fff; color:#000; }
+  .pill-status.progress{ border:1px solid var(--line); color:var(--muted); }
+  .store-btn{ display:inline-flex; align-items:center; gap:8px; margin-top:12px; font-size:13px; color:#fff; border:1px solid var(--line); border-radius:999px; padding:8px 16px; }
+  .store-btn:hover{ border-color:var(--accent); }
+
+  /* ---------- method ---------- */
+  .method-grid{ display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; }
+  .method-step{ display:grid; grid-template-columns:44px 1fr; gap:18px; padding:22px 0; border-bottom:1px solid var(--line-soft); }
+  .method-step:first-child{ border-top:1px solid var(--line); }
+  .method-grid > div:first-child .method-step:first-child{ border-top:1px solid var(--line); }
+  .method-step .n{ font-size:13px; font-weight:600; color:var(--accent); }
+  .method-step h3{ font-size:19px; font-weight:500; margin-bottom:6px; }
+  .method-step p{ font-size:15px; line-height:1.68; color:var(--muted); }
+  .report-card{ background:#F4F3F0; color:#0D0D0C; padding:34px 36px; clip-path:polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%); }
+  .report-card .head{ display:flex; justify-content:space-between; border-bottom:2px solid #0D0D0C; padding-bottom:12px; margin-bottom:20px; font-size:13px; color:#5E5E5A; }
+  .report-card .sev{ background:#0D0D0C; color:#F4F3F0; font-size:12px; font-weight:700; padding:4px 11px; margin-right:12px; }
+  .report-card h3{ font-size:21px; margin-bottom:16px; color:#0D0D0C; }
+  .report-row{ display:grid; grid-template-columns:96px 1fr; gap:16px; padding:11px 0; border-bottom:1px solid #C9C8C3; font-size:14.5px; }
+  .report-row .k{ font-weight:600; color:#5E5E5A; }
+  .report-row .v{ color:#5E5E5A; line-height:1.6; }
+
+  /* ---------- certifications ---------- */
+  .cert-grid{ display:flex; flex-wrap:wrap; gap:20px; align-items:center; padding:44px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .cert-tile{ display:flex; align-items:center; justify-content:center; background:#F4F3F0; border-radius:8px; padding:14px 18px; height:64px; }
+  .cert-tile img{ height:38px; width:auto; display:block; }
+  .cert-note{ font-size:14px; color:var(--muted-2); line-height:1.7; max-width:70ch; margin-top:24px; }
+
+  /* ---------- contact ---------- */
+  .contact-grid{ display:grid; grid-template-columns:1.15fr 1fr; gap:80px; align-items:start; }
+  .contact-grid h2{ font-size:64px; }
+  .ask-item{ display:flex; align-items:baseline; gap:14px; font-size:17px; color:rgba(255,255,255,.86); padding:10px 0; }
+  .ask-item .n{ font-size:13px; font-weight:600; color:var(--accent); }
+  .contact-side{ border-top:1px solid var(--line); padding-top:28px; display:flex; flex-direction:column; gap:24px; }
+  .contact-side .label{ font-size:12.5px; color:var(--muted-2); margin-bottom:6px; }
+  .contact-side a, .contact-side span{ font-size:18px; }
+  footer.foot{ border-top:1px solid var(--line-soft); margin-top:80px; padding:26px var(--header-x); display:flex; justify-content:space-between; align-items:center; gap:20px; font-size:13px; color:var(--muted-2); max-width:1240px; margin-left:auto; margin-right:auto; }
+
+  /* ---------- mobile menu ---------- */
+  .menu-backdrop{
+    display:block; position:fixed; inset:0; z-index:40;
+    background:rgba(0,0,0,.6); opacity:0; visibility:hidden; transition:opacity .28s ease;
+  }
+  body.menu-open .menu-backdrop{ opacity:1; visibility:visible; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  body.menu-open{ overflow:hidden; }
+
+  @media (max-width:900px){
+    nav#site-nav{
+      position:fixed; inset:0; z-index:45; flex-direction:column; justify-content:center;
+      gap:14px; padding:32px; opacity:0; visibility:hidden; pointer-events:none;
+      transition:opacity .28s ease;
+    }
+    body.menu-open nav#site-nav{ opacity:1; visibility:visible; pointer-events:auto; }
+    .navlink{ width:100%; max-width:320px; height:56px; font-size:18px; border-radius:10px; }
+    .header-cta{ display:none; }
+    .burger{ display:flex; }
+    :root{ --h1:38px; --header-x:20px; }
+    .contact-grid, .grid-2, .method-grid{ grid-template-columns:1fr; }
+    .contact-grid h2{ font-size:42px; }
+    .stats{ flex-direction:column; align-items:flex-start; gap:16px; }
+    .built-row{ grid-template-columns:1fr; }
+    .scene-card{ position:static; width:100%; margin:24px 0 0; }
+    .hero-actions{ flex-direction:column; width:100%; }
+    .hero-actions .btn{ width:100%; }
+  }
+  @media (min-width:1920px){
+    :root{ --h1:80px; }
+  }
+</style>
 </head>
+<body style="background:#000;color:#fff">
 
-<body>
-    <!-- Abstract Tech Background Elements -->
-    <div class="background-elements">
-        <div class="grid-mesh"></div>
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="particles" id="particles-js"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="menu-backdrop" aria-hidden="true"></div>
+
+<header class="header">
+  <a class="logo appear appear--scale" style="--d:.08s" href="#top" aria-label="AQL Technology">
+    <img src="assets/logo_mark_white.png" alt="AQL Technology" style="height:26px;width:auto;">
+  </a>
+
+  <nav id="site-nav" aria-label="Primary">
+    <a class="navlink appear appear--scale" style="--d:.16s" href="#security">Security</a>
+    <a class="navlink appear appear--soft" style="--d:.28s" href="#design">Design</a>
+    <a class="navlink appear appear--scale" style="--d:.40s" href="#engineering">Engineering</a>
+    <a class="navlink appear appear--soft" style="--d:.52s" href="#certifications">Certifications</a>
+  </nav>
+
+  <div class="header-right">
+    <a class="btn btn-solid header-cta appear appear--scale" style="--d:.34s" href="#contact">Request Engagement</a>
+    <button class="burger" id="burger" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="badge appear appear--pop" style="--d:.22s">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6c.55 0 .88.55 1.08 2.1.62 4.7 1.52 5.6 6.22 6.22 1.55.2 2.1.53 2.1 1.08s-.55.88-2.1 1.08c-4.7.62-5.6 1.52-6.22 6.22-.2 1.55-.53 2.1-1.08 2.1s-.88-.55-1.08-2.1c-.62-4.7-1.52-5.6-6.22-6.22C3.15 12.88 2.6 12.55 2.6 12s.55-.88 2.1-1.08c4.7-.62 5.6-1.52 6.22-6.22.2-1.55.53-2.1 1.08-2.1Z"/></svg>
+        Every Engagement, Scoped in Writing
+      </span>
+
+      <h1 class="headline">
+        <span class="headline-line appear appear--mask" style="--d:.42s">We test the <em>systems</em></span>
+        <span class="headline-line appear appear--mask" style="--d:.62s">that cannot fail.</span>
+      </h1>
+
+      <p class="lede appear appear--soft" style="--d:.82s; animation-duration:1.25s">
+        A Saudi practice for offensive security and secure software engineering. Every engagement starts with a written scope and ends with a report your team can act on.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-solid appear appear--btn" style="--d:.96s" href="#contact">Request Engagement</a>
+        <a class="btn btn-ghost appear appear--btn" style="--d:1.1s" href="#design">See Our Work</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="stats">
+    <span class="stat appear appear--stat" style="--d:1.12s">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+      <span>Written scope <b>before</b> work begins</span>
+    </span>
+    <span class="stat appear appear--stat" style="--d:1.28s">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 15h4"/></svg>
+      <span><b>Two-tier</b> reporting, every engagement</span>
+    </span>
+    <span class="stat appear appear--stat" style="--d:1.44s">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12a8 8 0 1 1 2.7 6"/><path d="M4 20v-5h5"/></svg>
+      <span><b>Retest</b> included after remediation</span>
+    </span>
+  </footer>
+
+  <!-- ══════════ security ══════════ -->
+  <section id="security" class="section">
+    <span class="section-ref">01</span>
+    <h2>Offensive Security</h2>
+    <p class="lede-body">We don't sell a vague "security assessment." Every engagement has a written scope, an agreed methodology, and one output: a report your team can execute against. Our practice is built on certifications including OSWE, OSCE3, OSEP, and others held within our network.</p>
+    <div class="grid-2">
+      <div class="cap-card"><div class="code">OSWE · eWPTX</div><h3>Web Applications &amp; APIs</h3><p>Authentication, authorization, and business-logic testing, up to remote code execution. No automated scans.</p></div>
+      <div class="cap-card"><div class="code">OSEP · CRTP · CRTO</div><h3>Internal Networks &amp; Active Directory</h3><p>Adversary simulation from a single foothold to full domain compromise, with every step documented.</p></div>
+      <div class="cap-card"><div class="code">eMAPT</div><h3>Mobile Applications</h3><p>Static and dynamic analysis of iOS and Android apps, including their server-side communication channels.</p></div>
+      <div class="cap-card"><div class="code">OSED · OSCE3</div><h3>Exploit Development</h3><p>Binary analysis and custom exploit writing when off-the-shelf tooling isn't enough.</p></div>
+    </div>
+  </section>
+
+  <!-- ══════════ design (morph scene) ══════════ -->
+  <section id="design" class="design-section">
+    <div class="scene-wrap">
+      <div class="scene-morph" id="sceneMorph">
+        <div class="scene-layer scene-layer--base">
+          <svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-label="Najdi night skyline">
+            <g id="baseSceneRef">
+            <rect width="1440" height="620" fill="#171714"/>
+            <rect x="0" y="368" width="1440" height="164" fill="#242320"/>
+            <circle cx="140" cy="92" r="1.5" fill="#F4F3F0" opacity="0.62"/><circle cx="268" cy="150" r="1.1" fill="#F4F3F0" opacity="0.44"/>
+            <circle cx="402" cy="78" r="1.7" fill="#F4F3F0" opacity="0.7"/><circle cx="520" cy="136" r="1.2" fill="#F4F3F0" opacity="0.4"/>
+            <circle cx="648" cy="70" r="1.4" fill="#F4F3F0" opacity="0.58"/><circle cx="790" cy="126" r="1.6" fill="#F4F3F0" opacity="0.48"/>
+            <circle cx="880" cy="62" r="1.2" fill="#F4F3F0" opacity="0.62"/><circle cx="1006" cy="142" r="1.5" fill="#F4F3F0" opacity="0.44"/>
+            <circle cx="1128" cy="82" r="1.3" fill="#F4F3F0" opacity="0.54"/><circle cx="1252" cy="156" r="1.6" fill="#F4F3F0" opacity="0.4"/>
+            <circle cx="1348" cy="94" r="1.2" fill="#F4F3F0" opacity="0.58"/><circle cx="332" cy="210" r="1.1" fill="#F4F3F0" opacity="0.3"/>
+            <circle cx="1064" cy="224" r="1.3" fill="#F4F3F0" opacity="0.34"/><circle cx="712" cy="196" r="1.2" fill="#F4F3F0" opacity="0.32"/>
+            <circle cx="206" cy="268" r="1" fill="#F4F3F0" opacity="0.24"/><circle cx="962" cy="286" r="1.1" fill="#F4F3F0" opacity="0.22"/>
+            <path d="M0 532 L150 532 L150 384 L159 373 L169 384 L178 373 L188 384 L197 373 L206 384 L216 373 L225 384 L235 373 L244 384 L254 373 L263 384 L272 373 L282 384 L291 373 L301 384 L310 373 L319 384 L329 373 L338 384 L348 373 L357 384 L367 373 L376 384 L376 532 L376 434 L385 423 L394 434 L404 423 L413 434 L422 423 L431 434 L440 423 L450 434 L459 423 L468 434 L468 532 L500 532 L500 276 L510 265 L519 276 L529 265 L538 276 L548 265 L558 276 L567 265 L577 276 L586 265 L596 276 L606 265 L615 276 L625 265 L634 276 L644 265 L654 276 L663 265 L673 276 L682 265 L692 276 L702 265 L711 276 L720 265 L730 276 L740 265 L750 276 L759 265 L769 276 L779 265 L788 276 L788 532 L788 362 L797 351 L807 362 L816 351 L825 362 L834 351 L844 362 L853 351 L862 362 L862 532 L900 532 L900 418 L909 407 L919 418 L928 407 L938 418 L947 407 L957 418 L966 407 L976 418 L985 407 L995 418 L1004 407 L1013 418 L1023 407 L1032 418 L1042 407 L1051 418 L1061 407 L1070 418 L1080 407 L1089 418 L1099 407 L1108 418 L1108 532 L1108 466 L1118 455 L1128 466 L1138 455 L1148 466 L1158 455 L1168 466 L1178 455 L1188 466 L1198 455 L1208 466 L1218 455 L1228 466 L1238 455 L1248 466 L1248 532 L1440 532 L1440 620 L0 620 Z" fill="#050504"/>
+            <path d="M1318 532 Q1322 488 1318 444 M1318 444 Q1289 430 1260 456 M1318 444 Q1347 430 1376 456" fill="none" stroke="#050504" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M1392 532 Q1396 501 1392 470 M1392 470 Q1372 456 1351 482 M1392 470 Q1412 456 1433 482" fill="none" stroke="#050504" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M88 532 Q92 497 88 462 M88 462 Q65 448 42 474 M88 462 Q111 448 134 474" fill="none" stroke="#050504" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M181 431 L188 414 L195 431 Z" fill="#E0A44A" opacity="0.62"/><path d="M218 431 L225 414 L232 431 Z" fill="#E0A44A" opacity="0.92"/>
+            <path d="M256 431 L263 414 L270 431 Z" fill="#E0A44A" opacity="0.82"/><path d="M294 431 L301 414 L308 431 Z" fill="#E0A44A" opacity="0.72"/>
+            <path d="M534 372 L541 355 L548 372 Z" fill="#E0A44A" opacity="0.82"/><path d="M575 372 L582 355 L589 372 Z" fill="#E0A44A" opacity="0.72"/>
+            <path d="M616 422 L623 405 L630 422 Z" fill="#E0A44A" opacity="0.62"/><path d="M658 422 L665 405 L672 422 Z" fill="#E0A44A" opacity="0.72"/>
+            <path d="M1136 513 L1143 496 L1150 513 Z" fill="#E0A44A" opacity="0.92"/><path d="M1171 513 L1178 496 L1185 513 Z" fill="#E0A44A" opacity="0.82"/>
+            <path d="M250 532 L250 507 L263 494 L276 507 L276 532 Z" fill="#E0A44A" opacity="0.40"/>
+            <path d="M631 532 L631 507 L644 494 L657 507 L657 532 Z" fill="#E0A44A" opacity="0.40"/>
+            <path d="M991 532 L991 507 L1004 494 L1017 507 L1017 532 Z" fill="#E0A44A" opacity="0.40"/>
+            <rect x="0" y="532" width="1440" height="88" fill="#050504"/>
+            </g>
+          </svg>
+        </div>
+        <div class="scene-layer scene-layer--reveal" id="sceneReveal" aria-hidden="true">
+          <svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice">
+            <use href="#baseSceneRef"/>
+          </svg>
+        </div>
+      </div>
+      <span class="scene-hint" id="sceneHint">move your cursor over the skyline</span>
+      <div class="scene-card">
+        <span class="section-ref">02</span>
+        <h2>Design</h2>
+        <p>We design and build the interface your client will see, with the same rigor as the report we deliver. This section is the sample.</p>
+        <div class="scene-clock"><i></i><span id="riyadhClock">Riyadh —:—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ engineering ══════════ -->
+  <section id="engineering" class="section">
+    <span class="section-ref">03</span>
+    <h2>Software Engineering</h2>
+    <p class="lede-body">We build what we can test. Web platforms, mobile apps, and infrastructure reviewed against the same standard we hold client systems to.</p>
+
+    <div class="grid-2" style="margin-bottom:64px">
+      <div class="cap-card"><h3>Web Platforms</h3><p>Applications and dashboards built for long-term operation, not a demo.</p></div>
+      <div class="cap-card"><h3>Mobile Applications</h3><p>End-to-end apps, from design to store release.</p></div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container nav-content">
-            <div class="nav-left">
-                <div class="logo">
-                    <img src="assets/logo_v2.png" alt="AQL Technology" class="logo-img">
-                </div>
-                <div class="nav-links">
-                    <a href="#services" class="nav-btn lang-text" data-en="Capabilities"
-                        data-ar="القدرات">Capabilities</a>
-                    <a href="#ai-products" class="nav-btn lang-text" data-en="AI Products"
-                        data-ar="منتجات الذكاء الاصطناعي">AI Products</a>
-                    <a href="#approach" class="nav-btn lang-text" data-en="Methodology"
-                        data-ar="المنهجية">Methodology</a>
-                    <a href="#contact" class="btn primary-btn lang-text" data-en="Engage Team"
-                        data-ar="تواصل معنا">Engage
-                        Team</a>
-                </div>
-            </div>
-            <div class="lang-switch" id="lang-toggle">
-                <span class="lang-option active" data-lang="en">EN</span>
-                <span class="lang-option" data-lang="ar">AR</span>
-                <div class="lang-slider"></div>
-            </div>
-        </div>
-    </nav>
+    <div class="built-row">
+      <div><h3>Masarif</h3><span class="sub">Personal expense &amp; budget tracker</span></div>
+      <div>
+        <p class="desc">A consumer app for personal expense and budget tracking, live on the App Store.</p>
+        <span class="repo">masarif</span>
+        <a class="store-btn" href="https://apps.apple.com/sa/app/masarif-auto-expense-tracker/id6775404394" target="_blank" rel="noopener">Available on the App Store ↗</a>
+      </div>
+      <div><span class="pill-status shipped">Shipped</span></div>
+    </div>
+    <div class="built-row">
+      <div><h3>Mirsad</h3><span class="sub">In progress</span></div>
+      <div><p class="desc">Not yet public.</p><span class="repo">mirsad</span></div>
+      <div><span class="pill-status progress">In Progress</span></div>
+    </div>
+    <div class="built-row">
+      <div><h3>Faiz</h3><span class="sub">AI employee for Salla &amp; Shopify merchants</span></div>
+      <div><p class="desc">In progress.</p><span class="repo">—</span></div>
+      <div><span class="pill-status progress">In Progress</span></div>
+    </div>
+  </section>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container hero-content">
-            <div class="hero-text animate-up">
-                <div class="badge-tag lang-text" data-en="Vision 2030 Inspired" data-ar="مستوحى من رؤية 2030">Vision
-                    2030 Inspired <span>//</span> KSA</div>
-                <h1 class="glitch-text lang-text"
-                    data-en="Digital Transformation & <span class='highlight'>Enterprise Intelligence</span>"
-                    data-ar="التحول الرقمي و<span class='highlight'>ذكاء المؤسسات</span>">Digital Transformation &amp;
-                    <span class="highlight">Enterprise Intelligence</span></h1>
-                <p class="hero-desc lang-text"
-                    data-en="Empowering Saudi Arabia's Digital Transformation with Vision 2030. We deliver advanced AI, cybersecurity, and bespoke software solutions to build sovereign, intelligent enterprises."
-                    data-ar="ندعم التحول الرقمي للمملكة العربية السعودية مع رؤية 2030. نقدم حلول الذكاء الاصطناعي المتقدمة، والأمن السيبراني، والبرمجيات المخصصة لبناء مؤسسات ذكية وذات سيادة.">
-                    Empowering Saudi Arabia's Digital Transformation with Vision 2030. We deliver advanced AI,
-                    cybersecurity, and bespoke software solutions to build sovereign, intelligent enterprises.</p>
-                <div class="hero-actions">
-                    <a href="#services" class="btn primary-btn lang-text" data-en="Explore Capabilities"
-                        data-ar="استكشف القدرات">Explore Capabilities</a>
-                    <a href="#contact" class="btn outline-btn lang-text" data-en="Request Assessment"
-                        data-ar="اطلب تقييم">Request Assessment</a>
-                </div>
-            </div>
-            <div class="hero-visual animate-in">
-                <div class="shield-container">
-                    <div class="shield-core"></div>
-                    <div class="shield-ring ring-1"></div>
-                    <div class="shield-ring ring-2"></div>
-                    <div class="shield-ring ring-3"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- ══════════ method ══════════ -->
+  <section id="method" class="section">
+    <span class="section-ref">04</span>
+    <h2>How We Work</h2>
+    <div class="method-grid">
+      <div>
+        <div class="method-step"><span class="n">01</span><div><h3>Written Scope</h3><p>Exactly what will be tested, what won't, and when.</p></div></div>
+        <div class="method-step"><span class="n">02</span><div><h3>Agreed Methodology</h3><p>Black-box, grey-box, or white-box — chosen before work starts, not during.</p></div></div>
+        <div class="method-step"><span class="n">03</span><div><h3>Immediate Escalation</h3><p>Anything that threatens production doesn't wait for the final report.</p></div></div>
+        <div class="method-step"><span class="n">04</span><div><h3>Two-Tier Report</h3><p>An executive summary for decision-makers, a technical breakdown for implementers.</p></div></div>
+        <div class="method-step"><span class="n">05</span><div><h3>Retest</h3><p>We verify remediation and document closure.</p></div></div>
+      </div>
+      <div class="report-card">
+        <div class="head"><span>Sample Finding</span><span style="font-family:ui-monospace,monospace">F-04</span></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><span class="sev">Critical</span><h3 style="margin:0">Broken Verification on Password Reset</h3></div>
+        <div class="report-row"><span class="k">Impact</span><span class="v">Full account takeover without user interaction.</span></div>
+        <div class="report-row"><span class="k">Evidence</span><span class="v">Full request/response pair, with screen recording.</span></div>
+        <div class="report-row"><span class="k">Reproduction</span><span class="v">Four numbered steps on the test environment.</span></div>
+        <div class="report-row"><span class="k">Remediation</span><span class="v">Bind the reset token to the session and invalidate after use.</span></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services section">
-        <div class="container">
-            <div class="section-header animate-up">
-                <div class="badge-tag lang-text" data-en="Capability Matrix" data-ar="مصفوفة القدرات">Capability Matrix
-                </div>
-                <h2 class="lang-text" data-en="Service <span class='highlight'>Offerings</span>"
-                    data-ar="الخدمات <span class='highlight'>المقدمة</span>">Service <span
-                        class="highlight">Offerings</span></h2>
-                <div class="divider"></div>
-            </div>
+  <!-- ══════════ certifications ══════════ -->
+  <section id="certifications" class="section">
+    <span class="section-ref">05</span>
+    <h2>The Standards We Build On</h2>
+    <p class="lede-body">These certifications are held within our practice. They belong to their issuing bodies; showing them here does not imply endorsement by, or affiliation with, those bodies.</p>
+    <div class="cert-grid">
+      <div class="cert-tile"><img src="badges/OSCPplus.svg" alt="OSCP+"></div>
+      <div class="cert-tile"><img src="badges/OSWE.svg" alt="OSWE"></div>
+      <div class="cert-tile"><img src="badges/OSCE3.svg" alt="OSCE3"></div>
+      <div class="cert-tile"><img src="badges/ewptx.png" alt="eWPTX"></div>
+      <div class="cert-tile"><img src="badges/OSED.svg" alt="OSED"></div>
+      <div class="cert-tile"><img src="badges/OSEP.svg" alt="OSEP"></div>
+      <div class="cert-tile"><img src="badges/CRTP.png" alt="CRTP"></div>
+      <div class="cert-tile"><img src="badges/CRTO.png" alt="CRTO"></div>
+      <div class="cert-tile"><img src="badges/OSWP.svg" alt="OSWP"></div>
+      <div class="cert-tile"><img src="badges/emapt.png" alt="eMAPT"></div>
+      <div class="cert-tile"><img src="badges/ecppt.png" alt="eCPPT"></div>
+      <div class="cert-tile"><img src="badges/ejpt.svg" alt="eJPT"></div>
+    </div>
+  </section>
 
-            <div class="service-grid">
-                <!-- New General Tech Services -->
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">01</div>
-                        <div class="service-icon"><i class="fa-solid fa-brain"></i></div>
-                        <h3 class="lang-text" data-en="Artificial Intelligence" data-ar="الذكاء الاصطناعي">Artificial
-                            Intelligence</h3>
-                        <p class="lang-text"
-                            data-en="Developing advanced AI models, language agents, and data-driven systems to automate workflows and unlock organizational intelligence."
-                            data-ar="تطوير نماذج ذكاء اصطناعي متقدمة وأنظمة مبنية على البيانات لأتمتة سير العمل وفتح آفاق الذكاء المؤسسي.">
-                            Developing advanced AI models, language agents, and data-driven systems to automate
-                            workflows and unlock organizational intelligence.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+  <!-- ══════════ contact ══════════ -->
+  <section id="contact" class="section">
+    <div class="contact-grid">
+      <div>
+        <h2>Request Engagement</h2>
+        <p class="lede-body" style="margin-bottom:32px">We'll come back with a written scope, timeline, and price — not a general offer. Tell us three things.</p>
+        <div class="ask-item"><span class="n">01</span><span>What do you want tested or built?</span></div>
+        <div class="ask-item"><span class="n">02</span><span>Roughly how big: how many apps, users, domains?</span></div>
+        <div class="ask-item"><span class="n">03</span><span>When do you need the result?</span></div>
+        <a class="btn btn-solid" style="margin-top:32px" href="mailto:info@aql-tech.com">Start the Conversation</a>
+      </div>
+      <div class="contact-side">
+        <div><div class="label">Email</div><a href="mailto:info@aql-tech.com">info@aql-tech.com</a></div>
+        <div><div class="label">Phone</div><a href="tel:[phone]">[phone]</a></div>
+        <div><div class="label">Location</div><span>Riyadh, Saudi Arabia</span></div>
+      </div>
+    </div>
+  </section>
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">02</div>
-                        <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                        <h3 class="lang-text" data-en="Cybersecurity" data-ar="الأمن السيبراني">Cybersecurity</h3>
-                        <p class="lang-text"
-                            data-en="Comprehensive offensive and defensive security services, including penetration testing, vulnerability assessments, and secure architecture."
-                            data-ar="خدمات أمنية هجومية ودفاعية شاملة، تشمل اختبار الاختراق وتقييم الثغرات والبنية الأمنية.">
-                            Comprehensive offensive and defensive security services, including penetration testing,
-                            vulnerability assessments, and secure architecture.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+  <footer class="foot">
+    <span>AQL Technology</span>
+    <span style="font-family:ui-monospace,monospace">عقل لتقنية المعلومات</span>
+  </footer>
+</main>
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">03</div>
-                        <div class="service-icon"><i class="fa-solid fa-code"></i></div>
-                        <h3 class="lang-text" data-en="Software Engineering" data-ar="هندسة البرمجيات">Software
-                            Engineering</h3>
-                        <p class="lang-text"
-                            data-en="End-to-end development of robust, scalable bespoke applications, web platforms, and mobile solutions tailored to complex business needs."
-                            data-ar="تطوير متكامل لتطبيقات ومنصات ويب وحلول هواتف محمولة مخصصة وقابلة للتطوير لتلبية احتياجات الأعمال المعقدة.">
-                            End-to-end development of robust, scalable bespoke applications, web platforms, and mobile
-                            solutions tailored to complex business needs.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+<script>
+(function(){
+  "use strict";
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">04</div>
-                        <div class="service-icon"><i class="fa-solid fa-chart-line"></i></div>
-                        <h3 class="lang-text" data-en="Data Analytics" data-ar="تحليل البيانات">Data Analytics</h3>
-                        <p class="lang-text"
-                            data-en="Transforming raw data into actionable insights through advanced analytics, big data processing, and dynamic visualization dashboards."
-                            data-ar="تحويل البيانات الخام إلى رؤى قابلة للتنفيذ من خلال التحليلات المتقدمة ومعالجة البيانات الضخمة ولوحات العرض الديناميكية.">
-                            Transforming raw data into actionable insights through advanced analytics, big data
-                            processing, and dynamic visualization dashboards.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+  /* entrance: animationend -> is-in, plus rAF fallback */
+  var appearEls = document.querySelectorAll(".appear");
+  appearEls.forEach(function(el){
+    el.addEventListener("animationend", function(){ el.classList.add("is-in"); }, { once:true });
+  });
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      var root = document.documentElement;
+      var anyRunning = false;
+      appearEls.forEach(function(el){
+        var anims = el.getAnimations ? el.getAnimations() : [];
+        if(anims.some(function(a){ return a.playState === "running" || a.playState === "finished"; })) anyRunning = true;
+      });
+      if(!anyRunning) appearEls.forEach(function(el){ el.classList.add("is-in"); });
+      root.classList.remove("anim");
+    });
+  });
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">05</div>
-                        <div class="service-icon"><i class="fa-solid fa-cloud"></i></div>
-                        <h3 class="lang-text" data-en="Cloud Infrastructure" data-ar="البنية التحتية السحابية">Cloud
-                            Infrastructure</h3>
-                        <p class="lang-text"
-                            data-en="Designing and managing secure, scalable, and highly available cloud environments utilizing modern DevSecOps and Kubernetes architectures."
-                            data-ar="تصميم وإدارة بيئات سحابية آمنة وقابلة للتطوير وذات توفر عالٍ باستخدام بنيات DevSecOps و Kubernetes الحديثة.">
-                            Designing and managing secure, scalable, and highly available cloud environments utilizing
-                            modern DevSecOps and Kubernetes architectures.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
+  /* mobile menu */
+  var burger = document.getElementById("burger");
+  var nav = document.getElementById("site-nav");
+  function closeMenu(){
+    document.body.classList.remove("menu-open");
+    burger.setAttribute("aria-expanded","false");
+    burger.setAttribute("aria-label","Open menu");
+  }
+  function openMenu(){
+    document.body.classList.add("menu-open");
+    burger.setAttribute("aria-expanded","true");
+    burger.setAttribute("aria-label","Close menu");
+  }
+  burger.addEventListener("click", function(){
+    document.body.classList.contains("menu-open") ? closeMenu() : openMenu();
+  });
+  nav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", closeMenu); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeMenu(); });
+  window.addEventListener("resize", function(){ if(window.matchMedia("(min-width:901px)").matches) closeMenu(); });
 
-                <div class="service-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="service-number">06</div>
-                        <div class="service-icon"><i class="fa-solid fa-network-wired"></i></div>
-                        <h3 class="lang-text" data-en="Digital Transformation" data-ar="التحول الرقمي">Digital
-                            Transformation</h3>
-                        <p class="lang-text"
-                            data-en="Guiding organizations through complete technological modernization, digitizing operational flows to match Vision 2030 standards."
-                            data-ar="توجيه المؤسسات خلال التحديث التكنولوجي الشامل، ورقمنة مسارات التشغيل لتتناسب مع معايير رؤية 2030.">
-                            Guiding organizations through complete technological modernization, digitizing operational
-                            flows to match Vision 2030 standards.</p>
-                    </div>
-                    <div class="card-glow"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+  /* Riyadh clock */
+  function tick(){
+    var el = document.getElementById("riyadhClock");
+    if(!el) return;
+    var s = new Intl.DateTimeFormat("en-US",{ timeZone:"Asia/Riyadh", hour:"2-digit", minute:"2-digit", hour12:false }).format(new Date());
+    el.textContent = "Riyadh " + s;
+  }
+  tick(); setInterval(tick, 30000);
 
-    <!-- Core AI Products Section -->
-    <section id="ai-products" class="ai-products section">
-        <div class="container">
-            <div class="section-header animate-up">
-                <div class="badge-tag lang-text" data-en="Core Systems" data-ar="الأنظمة الأساسية">Core Systems</div>
-                <h2 class="lang-text" data-en="Core AI <span class='highlight'>Products</span>"
-                    data-ar="منتجات الذكاء الاصطناعي <span class='highlight'>الأساسية</span>">Core AI <span
-                        class="highlight">Products</span></h2>
-                <div class="divider"></div>
-            </div>
+  /* mouse morph-reveal trail over the Najdi scene */
+  var scene = document.getElementById("sceneMorph");
+  var revealLayer = document.getElementById("sceneReveal");
+  var sceneHint = document.getElementById("sceneHint");
+  if(sceneHint && ("ontouchstart" in window || navigator.maxTouchPoints > 0)){
+    sceneHint.textContent = "touch and drag over the skyline";
+  }
+  if(scene && revealLayer){
+    var TRAIL_MAX_POINTS = 60, TRAIL_HEAD_R = 140, TRAIL_NOISE_AMP = 44,
+        TRAIL_BLOB_PTS = 24, TRAIL_FADE_SPEED = 0.92, TRAIL_SAMPLE_DIST = 8;
 
-            <div class="ai-products-grid">
+    var maskCanvas = document.createElement("canvas");
+    var mctx = maskCanvas.getContext("2d");
+    var W = 1440, H = 620;
+    maskCanvas.width = W; maskCanvas.height = H;
 
-                <!-- Faiz -->
-                <div class="ai-product-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="product-header">
-                            <h3 class="gradient-text gradient-gold lang-text" data-en="Faiz" data-ar="فايز">Faiz</h3>
-                            <span class="product-subtitle lang-text" data-en="AI Employee Builder"
-                                data-ar="الموظف الذكي للتاجر">AI Employee Builder</span>
-                        </div>
-                        <p class="product-desc lang-text"
-                            data-en="An AI employee for your store that understands merchant context, proposes decisions, and executes operations directly within the platform (Salla/Shopify)."
-                            data-ar="موظف ذكاء اصطناعي للمتجر يفهم وضع التاجر، ويقترح قرارات ويقدر ينفذ داخل المتجر مبدئياً على سلة وشوبيفاي.">
-                            An AI employee for your store that understands merchant context, proposes decisions, and
-                            executes operations directly within the platform (Salla/Shopify).</p>
+    var points = [];
+    var head = { x: W/2, y: H/2, r: 0 };
+    var hovering = false;
+    var time = 0;
+    var lastSample = null;
 
-                        <div class="modules-grid">
-                            <div class="module-item">
-                                <i class="fa-solid fa-chart-pie"></i>
-                                <span class="lang-text" data-en="Analytics & Forecasts"
-                                    data-ar="التقارير والتنبؤ">Analytics & Forecasts</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-users-viewfinder"></i>
-                                <span class="lang-text" data-en="Loyalty & Growth" data-ar="الولاء والنمو">Loyalty &
-                                    Growth</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-headset"></i>
-                                <span class="lang-text" data-en="Customer Care Automation"
-                                    data-ar="أتمتة خدمة العملاء">Customer Care Automation</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-image"></i>
-                                <span class="lang-text" data-en="Creative Studio" data-ar="الاستديو الإبداعي">Creative
-                                    Studio</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    function sceneToCanvas(clientX, clientY){
+      var rect = scene.getBoundingClientRect();
+      var x = (clientX - rect.left) / rect.width * W;
+      var y = (clientY - rect.top) / rect.height * H;
+      return { x:x, y:y };
+    }
 
-                <!-- SIAQ -->
-                <div class="ai-product-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="product-header">
-                            <h3 class="gradient-text gradient-cyan lang-text" data-en="SIAQ" data-ar="سياق">SIAQ</h3>
-                            <span class="product-subtitle lang-text" data-en="Model-Routing Agent"
-                                data-ar="وكيل توجيه النماذج">Model-Routing Agent</span>
-                        </div>
-                        <p class="product-desc lang-text"
-                            data-en="An intelligent agent that parses user requests and perfectly routes tasks to the best foundation model (video, audio, text), returning a unified result and mitigating subscription fatigue."
-                            data-ar="وكيل يقرأ طلب المستخدم ويوزع المهمة على أفضل نموذج (فيديو، صوت، نص) ويرجع نتيجة واحدة موحدة.">
-                            An intelligent agent that parses user requests and perfectly routes tasks to the best
-                            foundation model (video, audio, text), returning a unified result and mitigating
-                            subscription fatigue.</p>
+    scene.addEventListener("mouseenter", function(){ hovering = true; scene.classList.add("hovering"); });
+    scene.addEventListener("mouseleave", function(){ hovering = false; scene.classList.remove("hovering"); });
+    scene.addEventListener("mousemove", function(e){
+      var p = sceneToCanvas(e.clientX, e.clientY);
+      head.x = p.x; head.y = p.y;
+    });
 
-                        <div class="modules-grid">
-                            <div class="module-item">
-                                <i class="fa-solid fa-network-wired"></i>
-                                <span class="lang-text" data-en="Smart Model Routing" data-ar="توجيه ذكي للنماذج">Smart
-                                    Model Routing</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-diagram-project"></i>
-                                <span class="lang-text" data-en="Task Decomposition" data-ar="تفكيك المهام">Task
-                                    Decomposition</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-layer-group"></i>
-                                <span class="lang-text" data-en="Unified Outputs" data-ar="مخرجات موحدة">Unified
-                                    Outputs</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-brain"></i>
-                                <span class="lang-text" data-en="Context Retention"
-                                    data-ar="حفظ السياق والمعرفة">Context Retention</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    /* touch: drag across the scene drives the same trail */
+    scene.addEventListener("touchstart", function(e){
+      hovering = true; scene.classList.add("hovering");
+      var t = e.touches[0];
+      var p = sceneToCanvas(t.clientX, t.clientY);
+      head.x = p.x; head.y = p.y;
+    }, { passive:true });
+    scene.addEventListener("touchmove", function(e){
+      var t = e.touches[0];
+      var p = sceneToCanvas(t.clientX, t.clientY);
+      head.x = p.x; head.y = p.y;
+    }, { passive:true });
+    scene.addEventListener("touchend", function(){ hovering = false; scene.classList.remove("hovering"); });
 
-                <!-- Vision -->
-                <div class="ai-product-card tilt-card" data-tilt>
-                    <div class="card-inner">
-                        <div class="product-header">
-                            <h3 class="gradient-text gradient-purple lang-text" data-en="Vision" data-ar="فيجن">Vision
-                            </h3>
-                            <span class="product-subtitle lang-text" data-en="Data Wrapping Intelligence"
-                                data-ar="طبقة تغليف البيانات">Data Wrapping Intelligence</span>
-                        </div>
-                        <p class="product-desc lang-text"
-                            data-en="Ingests raw data (CSV, ERP exports, CRM), understands your business vertical, and automatically reorganizes it into actionable, aesthetic dashboards and pivotal KPIs."
-                            data-ar="أداة تستقبل أي بيانات وتفهم نوع البزنس ثم تنظمها وتعرضها بأفضل شكل تلقائياً وبسرعة.">
-                            Ingests raw data (CSV, ERP exports, CRM), understands your business vertical, and
-                            automatically reorganizes it into actionable, aesthetic dashboards and pivotal KPIs.</p>
+    function drawMorphBlob(ctx, cx, cy, r, t, seed){
+      if(r < 2) return;
+      ctx.beginPath();
+      var pts = [];
+      for(var i=0;i<TRAIL_BLOB_PTS;i++){
+        var angle = (i / TRAIL_BLOB_PTS) * Math.PI * 2;
+        var n1 = Math.sin(angle*3 + t*1.4 + seed) * 0.45;
+        var n2 = Math.sin(angle*5 - t*0.9 + seed*2.3) * 0.3;
+        var n3 = Math.cos(angle*2 + t*1.8 + seed*0.7) * 0.25;
+        var noise = (n1+n2+n3) * TRAIL_NOISE_AMP * (r/TRAIL_HEAD_R);
+        var rr = r + noise;
+        pts.push({ x: cx + Math.cos(angle)*rr, y: cy + Math.sin(angle)*rr });
+      }
+      ctx.moveTo((pts[0].x+pts[pts.length-1].x)/2, (pts[0].y+pts[pts.length-1].y)/2);
+      for(var j=0;j<pts.length;j++){
+        var cur = pts[j], nxt = pts[(j+1)%pts.length];
+        var midX = (cur.x+nxt.x)/2, midY=(cur.y+nxt.y)/2;
+        ctx.quadraticCurveTo(cur.x, cur.y, midX, midY);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
 
-                        <div class="modules-grid">
-                            <div class="module-item">
-                                <i class="fa-solid fa-file-csv"></i>
-                                <span class="lang-text" data-en="Omni-Format Ingestion"
-                                    data-ar="استقبال كافة الصيغ">Omni-Format Ingestion</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-shapes"></i>
-                                <span class="lang-text" data-en="Auto-Templates"
-                                    data-ar="قوالب بناء تلقائية">Auto-Templates</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-gauge-high"></i>
-                                <span class="lang-text" data-en="KPI Extraction" data-ar="استخراج المؤشرات">KPI
-                                    Extraction</span>
-                            </div>
-                            <div class="module-item">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                <span class="lang-text" data-en="Instant Dashboards" data-ar="لوحات تحكم فورية">Instant
-                                    Dashboards</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    function frame(){
+      time += 0.016;
+      var targetR = hovering ? TRAIL_HEAD_R : 0;
+      head.r += (targetR - head.r) * (hovering ? 0.14 : 0.04);
 
-            </div>
-        </div>
-    </section>
+      if(hovering && head.r > 5){
+        if(!lastSample || Math.hypot(head.x-lastSample.x, head.y-lastSample.y) > TRAIL_SAMPLE_DIST){
+          points.push({ x:head.x, y:head.y, r:head.r, alpha:1, seed:Math.random()*100 });
+          if(points.length > TRAIL_MAX_POINTS) points.shift();
+          lastSample = { x:head.x, y:head.y };
+        }
+      }
 
-    <!-- Teaser Products Section -->
-    <section class="teaser-products section">
-        <div class="container">
-            <div class="section-header animate-up">
-                <div class="badge-tag lang-text" data-en="Upcoming Horizons" data-ar="آفاق قادمة">Upcoming Horizons
-                </div>
-                <h2 class="lang-text" data-en="Future <span class='highlight'>Expansions</span>"
-                    data-ar="توسعات <span class='highlight'>مستقبلية</span>">Future <span
-                        class="highlight">Expansions</span></h2>
-                <div class="divider"></div>
-            </div>
+      points = points.filter(function(p){
+        p.alpha *= TRAIL_FADE_SPEED; p.r *= 0.995;
+        return p.alpha > 0.01;
+      });
 
-            <div class="teaser-grid">
-                <!-- Workspace -->
-                <div class="teaser-card">
-                    <div class="secret-overlay"></div>
-                    <div class="teaser-content">
-                        <i class="fa-solid fa-building-user"></i>
-                        <h4 class="lang-text" data-en="AQL Workspace" data-ar="عقل وركسبيس">AQL Workspace</h4>
-                        <span class="teaser-label lang-text" data-en="Organizational Intelligence"
-                            data-ar="ذكاء مؤسسي">Organizational Intelligence</span>
-                        <p class="lang-text"
-                            data-en="An AI operating layer mapping intelligence to job roles (CEO AI, Ops AI), persistently retaining institutional knowledge regardless of human turnover. Features a Role-Based Dashboard, Org View, and Smart Inbox."
-                            data-ar="طبقة تشغيلية ذكية تثبت الذكاء الاصطناعي للمسميات الوظيفية بدل الأشخاص لحفظ المعرفة والقرارات المؤسسية.">
-                            An AI operating layer mapping intelligence to job roles (CEO AI, Ops AI), persistently
-                            retaining institutional knowledge regardless of human turnover. Features a Role-Based
-                            Dashboard, Org View, and Smart Inbox.</p>
-                    </div>
-                </div>
+      mctx.clearRect(0,0,W,H);
+      mctx.fillStyle = "#fff";
+      for(var i=0;i<points.length;i++){
+        var p = points[i];
+        mctx.globalAlpha = p.alpha;
+        drawMorphBlob(mctx, p.x, p.y, p.r, time, p.seed);
+      }
+      mctx.globalAlpha = 1;
 
-                <!-- Experience -->
-                <div class="teaser-card">
-                    <div class="secret-overlay"></div>
-                    <div class="teaser-content">
-                        <i class="fa-solid fa-id-card-clip"></i>
-                        <h4 class="lang-text" data-en="AQL Experience" data-ar="عقل إكسبيرينس">AQL Experience</h4>
-                        <span class="teaser-label lang-text" data-en="Digital Identity & Queues"
-                            data-ar="هوية رقمية وطابور ذكي">Digital Identity & Queues</span>
-                        <p class="lang-text"
-                            data-en="A seamless digital identity and smart service flow. Revolutionizing physical experiences like automated smart queues, gas station interactions without physical chips, and family digital wallets."
-                            data-ar="مسار تجارب ذكية يشمل الهوية الرقمية والطابور الذكي ومحفظة متكاملة لتحسين الخدمة في الميادين المادية كالوقود وغيرها.">
-                            A seamless digital identity and smart service flow. Revolutionizing physical experiences
-                            like automated smart queues, gas station interactions without physical chips, and family
-                            digital wallets.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+      var url = "url(" + maskCanvas.toDataURL() + ")";
+      revealLayer.style.webkitMaskImage = url;
+      revealLayer.style.maskImage = url;
 
-    <!-- Certifications Marquee Section -->
-    <section class="certifications">
-        <div class="cert-overlay"></div>
-        <div class="container text-center animate-up">
-            <h4 class="sub-heading lang-text" data-en="Verification & Standards" data-ar="التحقق والمعايير">Verification
-                & Standards</h4>
-            <p class="cert-desc lang-text" data-en="INDUSTRY RECOGNIZED CYBERSECURITY PROFICIENCY BADGES"
-                data-ar="شارات الكفاءة في الأمن السيبراني المعترف بها في القطاع">INDUSTRY RECOGNIZED CYBERSECURITY
-                PROFICIENCY BADGES</p>
-        </div>
-
-        <div class="marquee-container">
-            <div class="marquee-content">
-                <img src="assets/OSCP+.svg" alt="OSCP+">
-                <img src="assets/OSCP.svg" alt="OSCP">
-                <img src="assets/OSCE3.svg" alt="OSCE3">
-                <img src="assets/OSEP.svg" alt="OSEP">
-                <img src="assets/OSED.svg" alt="OSED">
-                <img src="assets/OSWE.svg" alt="OSWE">
-                <img src="assets/OSWP.svg" alt="OSWP">
-                <img src="assets/CRTP.png" alt="CRTP">
-                <img src="assets/CTRO.png" alt="CTRO">
-                <img src="assets/ewptx.svg" alt="eWPTX">
-                <img src="assets/ecppt.svg" alt="eCPPT">
-                <img src="assets/emapt.svg" alt="eMAPT">
-            </div>
-            <!-- Duplicated entire content for seamless infinite scroll -->
-            <div class="marquee-content" aria-hidden="true">
-                <img src="assets/OSCP+.svg" alt="OSCP+">
-                <img src="assets/OSCP.svg" alt="OSCP">
-                <img src="assets/OSCE3.svg" alt="OSCE3">
-                <img src="assets/OSEP.svg" alt="OSEP">
-                <img src="assets/OSED.svg" alt="OSED">
-                <img src="assets/OSWE.svg" alt="OSWE">
-                <img src="assets/OSWP.svg" alt="OSWP">
-                <img src="assets/CRTP.png" alt="CRTP" style="height: 50px;">
-                <img src="assets/CTRO.png" alt="CTRO" style="height: 50px;">
-                <img src="assets/ewptx.svg" alt="eWPTX">
-                <img src="assets/ecppt.svg" alt="eCPPT">
-                <img src="assets/emapt.svg" alt="eMAPT">
-            </div>
-        </div>
-    </section>
-
-    <!-- Experience & Approach Section -->
-    <section id="approach" class="dual-section section">
-        <div class="container dual-grid">
-
-            <!-- Experience -->
-            <div id="experience" class="info-block animate-left">
-                <div class="badge-tag lang-text" data-en="Human Intelligence" data-ar="الذكاء البشري">Human Intelligence
-                </div>
-                <h2 class="lang-text" data-en="Team <span class='highlight'>Experience</span>"
-                    data-ar="خبرة <span class='highlight'>الفريق</span>">Team <span class="highlight">Experience</span>
-                </h2>
-                <div class="node-list">
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="<strong>5–10+ years</strong> of hands-on cybersecurity experience per team member."
-                            data-ar="<strong>٥ إلى ١٠ سنوات فأكثر</strong> من الخبرة العملية في الأمن السيبراني لكل عضو في الفريق.">
-                            <strong>5–10+ years</strong> of hands-on cybersecurity experience per team member.
-                        </p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Strong background in <strong>offensive security</strong>, application security, and adversary simulation."
-                            data-ar="خلفية قوية في <strong>الأمن الهجومي</strong> وأمن التطبيقات ومحاكاة الخصوم.">Strong
-                            background in <strong>offensive security</strong>, application security, and adversary
-                            simulation.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Practical experience across banking, government, fintech, and <strong>enterprise environments</strong>."
-                            data-ar="خبرة عملية عبر القطاعات المصرفية والحكومية والتكنولوجيا المالية و<strong>بيئات الشركات الكبرى</strong>.">
-                            Practical experience across banking, government, fintech, and <strong>enterprise
-                                environments</strong>.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Proven ability to operate in <strong>regulated and high-risk</strong> environments."
-                            data-ar="قدرة مثبتة على العمل في <strong>بيئات شديدة التنظيم وعالية المخاطر</strong>.">
-                            Proven ability to operate in <strong>regulated and high-risk</strong> environments.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Approach -->
-            <div class="info-block animate-right">
-                <div class="badge-tag lang-text" data-en="Methodology" data-ar="منهجية العمل">Methodology</div>
-                <h2 class="lang-text" data-en="Engagement <span class='highlight'>Approach</span>"
-                    data-ar="مقاربة <span class='highlight'>الارتباط</span>">Engagement <span
-                        class="highlight">Approach</span></h2>
-                <div class="node-list">
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text" data-en="Clear scope definition and <strong>agreed methodology</strong>."
-                            data-ar="تحديد واضح لنطاق العمل و<strong>منهجية متفق عليها</strong>.">Clear scope definition
-                            and <strong>agreed methodology</strong>.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text" data-en="<strong>Risk-based prioritization</strong> of findings."
-                            data-ar="تحديد أولويات النتائج <strong>بناءً على المخاطر</strong>."><strong>Risk-based
-                                prioritization</strong> of findings.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Executive-level reporting supported by <strong>technical detail</strong>."
-                            data-ar="تقارير بمستوى تنفيذي مدعومة بـ <strong>تفاصيل فنية</strong>.">Executive-level
-                            reporting supported by <strong>technical detail</strong>.</p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text" data-en="Practical, actionable <strong>remediation guidance</strong>."
-                            data-ar="إرشادات <strong>معالجة عملية وقابلة للتنفيذ</strong>.">Practical, actionable
-                            <strong>remediation guidance</strong>.
-                        </p>
-                    </div>
-                    <div class="node-item">
-                        <div class="node-dot"></div>
-                        <p class="lang-text"
-                            data-en="Post-engagement clarification and <strong>technical support</strong>."
-                            data-ar="توضيح ما بعد الارتباط و<strong>الدعم الفني</strong>.">Post-engagement clarification
-                            and <strong>technical support</strong>.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Delivery & Reporting -->
-    <section class="delivery section">
-        <div class="container text-center animate-up">
-            <div class="badge-tag mx-auto lang-text" data-en="Intelligence Output" data-ar="مخرجات الذكاء">Intelligence
-                Output</div>
-            <h2 class="lang-text" data-en="Delivery & <span class='highlight'>Reporting</span>"
-                data-ar="التسليم و<span class='highlight'>التقارير</span>">Delivery & <span
-                    class="highlight">Reporting</span></h2>
-            <p class="delivery-desc lang-text"
-                data-en="We transform complex technical findings into actionable strategic intelligence."
-                data-ar="نحن نحول النتائج الفنية المعقدة إلى ذكاء استراتيجي قابل للتنفيذ.">We transform complex
-                technical findings into actionable strategic intelligence.</p>
-
-            <div class="delivery-grid">
-                <div class="delivery-card">
-                    <i class="fa-solid fa-file-contract"></i>
-                    <h4 class="lang-text" data-en="Structured Reports" data-ar="تقارير منظمة">Structured Reports</h4>
-                    <p class="lang-text" data-en="Technical reports and executive summaries"
-                        data-ar="تقارير فنية وملخصات تنفيذية">Technical reports and executive summaries</p>
-                </div>
-                <div class="delivery-card">
-                    <i class="fa-solid fa-ranking-star"></i>
-                    <h4 class="lang-text" data-en="Risk Ratings" data-ar="تقييم المخاطر">Risk Ratings</h4>
-                    <p class="lang-text" data-en="Clear risk ratings and remediation guidance"
-                        data-ar="تقييمات واضحة للمخاطر وتوجيهات للمعالجة">Clear risk ratings and remediation guidance
-                    </p>
-                </div>
-                <div class="delivery-card">
-                    <i class="fa-solid fa-scale-balanced"></i>
-                    <h4 class="lang-text" data-en="Industry Standards" data-ar="معايير الصناعة">Industry Standards</h4>
-                    <p class="lang-text" data-en="Alignment with industry standards and best practices"
-                        data-ar="التوافق مع معايير الصناعة وأفضل الممارسات">Alignment with industry standards and best
-                        practices</p>
-                </div>
-                <div class="delivery-card">
-                    <i class="fa-solid fa-check-double"></i>
-                    <h4 class="lang-text" data-en="Validation Support" data-ar="دعم التحقق">Validation Support</h4>
-                    <p class="lang-text" data-en="Support for re-testing and validation upon request"
-                        data-ar="دعم إعادة الاختبار والتحقق عند الطلب">Support for re-testing and validation upon
-                        request</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact" class="footer">
-        <div class="container footer-content">
-            <div class="footer-brand">
-                <div class="logo">
-                    <img src="assets/logo_v2.png" alt="AQL Technology" class="logo-img">
-                    <div class="brand-text">
-                        <span class="logo-text lang-text" data-en="AQL TECHNOLOGY" data-ar="عقل التقنية">AQL
-                            TECHNOLOGY</span>
-                        <span class="arabic">عقل التقنية</span>
-                    </div>
-                </div>
-                <p class="lang-text" data-en="Advanced Cybersecurity Solutions & Intelligence Systems."
-                    data-ar="حلول الأمن السيبراني المتقدمة وأنظمة الذكاء.">Advanced Cybersecurity Solutions &
-                    Intelligence Systems.</p>
-            </div>
-
-            <div class="footer-contact">
-                <h4 class="lang-text" data-en="Engage With Us" data-ar="تواصل معنا">Engage With Us</h4>
-                <a href="mailto:info@aql-tech.com" class="contact-link"><i class="fa-solid fa-envelope"></i>
-                    info@aql-tech.com</a>
-                <a href="tel:+966566575579" class="contact-link"><i class="fa-solid fa-phone"
-                        style="margin-right: 10px;"></i> <bdi>+966 56 657 5579</bdi></a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="lang-text" data-en="&copy; 2026 AQL Technology. Confidential Cyber Defense Protocol."
-                data-ar="&copy; 2026 عقل التقنية. بروتوكول الدفاع السيبراني السري.">&copy; 2026 AQL Technology.
-                Confidential Cyber Defense Protocol.</p>
-        </div>
-    </footer>
-
-    <!-- Particles.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="script.js"></script>
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+})();
+</script>
 </body>
-
 </html>
