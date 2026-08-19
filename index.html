@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000000">
 <title>AQL Technology — Offensive Security &amp; Software Engineering</title>
 <meta name="description" content="A Saudi practice for offensive security and secure software engineering. Every engagement starts with a written scope and ends with a report your team can act on.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 268 100'%3E%3Cpath fill='%23fff' d='M46 4 L60 4 L100 96 L82 96 L53 26 L24 96 L6 96 Z'/%3E%3Cpath fill='%23fff' d='M158 4C185 4 205 25 205 50C205 75 185 96 158 96C131 96 111 75 111 50C111 25 131 4 158 4Z M158 24C143 24 131 35 131 50C131 65 143 76 158 76C173 76 185 65 185 50C185 35 173 24 158 24Z'/%3E%3Cpath fill='%23E0A44A' d='M172 42 L186 56 L156 86 L142 72 Z'/%3E%3Cpath fill='%23E0A44A' d='M196 66 L210 80 L192 98 L178 84 Z'/%3E%3Cpath fill='%23fff' d='M226 4 L244 4 L244 78 L262 78 L262 96 L226 96 Z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="assets/logo_favicon.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +22,7 @@
     --radius: 8px;
     --header-x: 40px; --header-y: 22px;
     --nav-h: 40px; --btn-h: 40px; --hero-btn-h: 46px;
-    --h1: 64px; --lede: 16.5px; --badge: 12.5px; --stat: 13.5px;
+    --h1: 92px; --lede: 17px; --badge: 12.5px; --stat: 13.5px;
     --copy-max: 760px; --lede-max: 480px;
     --reveal: cubic-bezier(.16,1,.3,1);
     --soft: cubic-bezier(.25,.8,.28,1);
@@ -50,7 +50,7 @@
   /* grain */
   .grain{
     position:fixed; inset:0; z-index:100; pointer-events:none;
-    opacity:.05; mix-blend-mode:overlay;
+    opacity:.09; mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -69,15 +69,15 @@
 
   nav#site-nav{ display:flex; align-items:center; gap:8px; justify-self:center; }
   .navlink{
-    height:var(--nav-h); padding:0 18px; border-radius:999px;
+    height:var(--nav-h); padding:0 20px; border-radius:999px;
     display:inline-flex; align-items:center; justify-content:center;
-    border:1px solid var(--line); color:var(--muted);
-    font-size:14px; font-weight:400; letter-spacing:-0.01em; white-space:nowrap;
+    border:1px solid rgba(255,255,255,.22); color:#e9e9e9; background:rgba(255,255,255,.03);
+    font-size:14.5px; font-weight:500; letter-spacing:-0.01em; white-space:nowrap;
     position:relative; overflow:hidden;
     transition:border-color .3s ease, color .3s ease, background-color .3s ease, box-shadow .3s ease;
   }
   @media (hover:hover) and (pointer:fine){
-    .navlink:hover{ border-color:rgba(255,255,255,.55); color:#fff; background:var(--surface); box-shadow:0 0 18px rgba(224,164,74,.14); }
+    .navlink:hover{ border-color:var(--accent); color:#fff; background:rgba(224,164,74,.1); box-shadow:0 0 22px rgba(224,164,74,.22); }
   }
 
   .header-right{ display:flex; align-items:center; gap:14px; justify-self:end; }
@@ -98,34 +98,41 @@
   .btn{
     position:relative; isolation:isolate; overflow:hidden;
     display:inline-flex; align-items:center; justify-content:center;
-    height:var(--btn-h); padding:0 20px; border-radius:6px;
-    font-size:13.5px; font-weight:500; letter-spacing:-0.01em; line-height:1;
+    height:var(--btn-h); padding:0 22px; border-radius:6px;
+    font-size:14px; font-weight:600; letter-spacing:-0.01em; line-height:1;
     white-space:nowrap; cursor:pointer;
-    transition:background-color .3s ease, border-color .3s ease, box-shadow .3s ease, color .3s ease;
+    transition:background-color .3s ease, border-color .3s ease, box-shadow .3s ease, color .3s ease, transform .15s ease;
   }
-  .btn-solid{ background:#fff; color:#000; border:1px solid #fff; }
+  .btn:active{ transform:scale(.97); }
+  .btn-solid{ background:#fff; color:#000; border:1px solid #fff; box-shadow:0 0 0 rgba(224,164,74,0); }
   @media (hover:hover) and (pointer:fine){
-    .btn-solid:hover{ box-shadow:0 0 22px rgba(224,164,74,.35), 0 8px 18px rgba(0,0,0,.4); }
+    .btn-solid:hover{ box-shadow:0 0 30px rgba(224,164,74,.45), 0 8px 22px rgba(0,0,0,.45); }
   }
-  .btn-ghost{ background:transparent; color:#fff; border:1px solid var(--line); }
+  .btn-ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.4); }
   @media (hover:hover) and (pointer:fine){
-    .btn-ghost:hover{ border-color:var(--accent); box-shadow:0 0 20px rgba(224,164,74,.22); }
+    .btn-ghost:hover{ border-color:var(--accent); background:rgba(224,164,74,.08); box-shadow:0 0 24px rgba(224,164,74,.28); }
   }
-  .hero-actions .btn{ height:var(--hero-btn-h); padding:0 26px; }
+  .hero-actions .btn{ height:var(--hero-btn-h); padding:0 30px; font-size:15px; }
 
   /* ---------- hero ---------- */
   .hero{
     min-height:100dvh; display:flex; align-items:flex-end; justify-content:center;
     padding:8px 24px 70px; position:relative; z-index:1;
   }
+  .hero::before{
+    content:""; position:absolute; left:50%; bottom:-10%; width:1100px; height:700px;
+    transform:translateX(-50%); pointer-events:none; z-index:0;
+    background:radial-gradient(closest-side, rgba(224,164,74,.20), rgba(224,164,74,.05) 55%, transparent 75%);
+  }
   .hero-copy{
     display:flex; flex-direction:column; align-items:center; text-align:center;
     max-width:var(--copy-max); width:100%;
   }
   .badge{
-    display:inline-flex; align-items:center; gap:8px; margin-bottom:22px;
-    padding:9px 16px; border:1px solid var(--line); border-radius:999px;
-    color:#f2f2f2; font-size:var(--badge); font-weight:400; letter-spacing:.01em;
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:26px;
+    padding:10px 18px; border:1px solid rgba(224,164,74,.45); border-radius:999px;
+    background:rgba(224,164,74,.08);
+    color:#f6f0e6; font-size:var(--badge); font-weight:600; letter-spacing:.01em;
   }
   .badge svg{ width:14px; height:14px; flex:none; color:var(--accent); }
 
@@ -186,7 +193,7 @@
   /* ---------- sections ---------- */
   .section{ padding:120px var(--header-x); max-width:1240px; margin:0 auto; }
   .section-ref{ display:block; font-size:13px; font-weight:600; color:var(--accent); margin-bottom:18px; letter-spacing:.02em; }
-  .section h2{ font-size:56px; font-weight:500; letter-spacing:-0.02em; line-height:1.15; margin-bottom:22px; }
+  .section h2{ font-size:68px; font-weight:500; letter-spacing:-0.02em; line-height:1.12; margin-bottom:22px; }
   .section .lede-body{ font-size:19px; line-height:1.65; color:var(--muted); max-width:56ch; margin-bottom:56px; }
   hr.rule{ border:0; border-top:1px solid var(--line); }
 
@@ -252,8 +259,9 @@
   .report-row .v{ color:#5E5E5A; line-height:1.6; }
 
   /* ---------- certifications ---------- */
-  .cert-grid{ display:flex; flex-wrap:wrap; gap:34px 44px; align-items:center; padding:44px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-  .cert-grid img{ height:44px; width:auto; filter:brightness(0) invert(1); opacity:.85; }
+  .cert-grid{ display:flex; flex-wrap:wrap; gap:20px; align-items:center; padding:44px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .cert-tile{ display:flex; align-items:center; justify-content:center; background:#F4F3F0; border-radius:8px; padding:14px 18px; height:64px; }
+  .cert-tile img{ height:38px; width:auto; display:block; }
   .cert-note{ font-size:14px; color:var(--muted-2); line-height:1.7; max-width:70ch; margin-top:24px; }
 
   /* ---------- contact ---------- */
@@ -305,13 +313,7 @@
 
 <header class="header">
   <a class="logo appear appear--scale" style="--d:.08s" href="#top" aria-label="AQL Technology">
-    <svg viewBox="0 0 268 100" fill="none" aria-hidden="true">
-      <path d="M46 4 L60 4 L100 96 L82 96 L53 26 L24 96 L6 96 Z" fill="#fff"/>
-      <path d="M158 4C185 4 205 25 205 50C205 75 185 96 158 96C131 96 111 75 111 50C111 25 131 4 158 4Z M158 24C143 24 131 35 131 50C131 65 143 76 158 76C173 76 185 65 185 50C185 35 173 24 158 24Z" fill="#fff"/>
-      <path d="M172 42 L186 56 L156 86 L142 72 Z" fill="#E0A44A"/>
-      <path d="M196 66 L210 80 L192 98 L178 84 Z" fill="#E0A44A"/>
-      <path d="M226 4 L244 4 L244 78 L262 78 L262 96 L226 96 Z" fill="#fff"/>
-    </svg>
+    <img src="assets/logo_mark_white.png" alt="" aria-hidden="true" style="height:20px;width:auto;">
     <span>AQL<span class="logo-suffix">.tech</span></span>
   </a>
 
@@ -493,18 +495,18 @@
     <h2>The Standards We Build On</h2>
     <p class="lede-body">These certifications are held within our practice. They belong to their issuing bodies; showing them here does not imply endorsement by, or affiliation with, those bodies.</p>
     <div class="cert-grid">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSCPplus.svg" alt="OSCP+">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSWE.svg" alt="OSWE">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSCE3.svg" alt="OSCE3">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/ewptx.png" alt="eWPTX">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSED.svg" alt="OSED">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSEP.svg" alt="OSEP">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/CRTP.png" alt="CRTP">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/CRTO.png" alt="CRTO">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/OSWP.svg" alt="OSWP">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/emapt.png" alt="eMAPT">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/ecppt.png" alt="eCPPT">
-      <img src="https://raw.githubusercontent.com/HassanAlhadi/aql-general-website/claude/aql-homepage-design/design/canvas/badges/ejpt.svg" alt="eJPT">
+      <div class="cert-tile"><img src="badges/OSCPplus.svg" alt="OSCP+"></div>
+      <div class="cert-tile"><img src="badges/OSWE.svg" alt="OSWE"></div>
+      <div class="cert-tile"><img src="badges/OSCE3.svg" alt="OSCE3"></div>
+      <div class="cert-tile"><img src="badges/ewptx.png" alt="eWPTX"></div>
+      <div class="cert-tile"><img src="badges/OSED.svg" alt="OSED"></div>
+      <div class="cert-tile"><img src="badges/OSEP.svg" alt="OSEP"></div>
+      <div class="cert-tile"><img src="badges/CRTP.png" alt="CRTP"></div>
+      <div class="cert-tile"><img src="badges/CRTO.png" alt="CRTO"></div>
+      <div class="cert-tile"><img src="badges/OSWP.svg" alt="OSWP"></div>
+      <div class="cert-tile"><img src="badges/emapt.png" alt="eMAPT"></div>
+      <div class="cert-tile"><img src="badges/ecppt.png" alt="eCPPT"></div>
+      <div class="cert-tile"><img src="badges/ejpt.svg" alt="eJPT"></div>
     </div>
   </section>
 
@@ -587,7 +589,7 @@
   /* mouse morph-reveal trail over the Najdi scene */
   var scene = document.getElementById("sceneMorph");
   var revealLayer = document.getElementById("sceneReveal");
-  if(scene && revealLayer && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+  if(scene && revealLayer){
     var TRAIL_MAX_POINTS = 60, TRAIL_HEAD_R = 140, TRAIL_NOISE_AMP = 44,
         TRAIL_BLOB_PTS = 24, TRAIL_FADE_SPEED = 0.92, TRAIL_SAMPLE_DIST = 8;
 
