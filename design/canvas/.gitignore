@@ -1,2 +1,10 @@
-# الملف المنشور يُولَّد من Main.dc.html + canvas.json — لا يُتتبَّع (‏٢٫٢MB من كود المحرّر)
+# Generated from Main.dc.html + canvas.json — see the README notes below.
+#
+#   aql-homepage.html   the published canvas (~2.2MB, mostly editor code)
+#   preview.html        flat render, for screenshots and quick browser checks
+#   fonts/              webfont binaries, refetched with fetch-fonts.py
+#
+# Rebuild:  python3 fetch-fonts.py && python3 build-preview.py
 aql-homepage.html
+preview.html
+fonts/
