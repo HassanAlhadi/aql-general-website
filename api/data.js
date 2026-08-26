@@ -135,6 +135,103 @@ module.exports = async (req, res) => {
     const toCustomer = aMoves.filter((m) =>
       String(flat(m.location_dest_id)).toLowerCase().includes('customer'));
 
+
+    /* ── الشحن والتسليم ── */
+    const outAll = await SR('stock.picking', [['picking_type_id.code', '=', 'outgoing']],
+      ['state', 'scheduled_date', 'date_done', 'partner_id']);
+    const outOpen = outAll.filter((r) => !['done', 'cancel'].includes(r.state));
+    const outDone = outAll.filter((r) => r.state === 'done');
+    const lateP = outOpen.filter((r) => (r.scheduled_date || '') < midnight);
+
+    // ⚠️ الفارق بالأيام لا بالطابع الزمني — تسليم أُنجز بعد ساعتين ليس متأخراً.
+    const lagDays = (r) => {
+      if (!r.scheduled_date || !r.date_done) return null;
+      const d1 = new Date(r.scheduled_date.replace(' ', 'T') + 'Z');
+      const d2 = new Date(r.date_done.replace(' ', 'T') + 'Z');
+      return Math.floor((d2 - d1) / 864e5);
+    };
+    const lags = outDone.map(lagDays).filter((x) => x !== null).sort((a, b) => a - b);
+    const onTime = lags.filter((x) => x <= 0).length;
+    const lateBy = new Map();
+    for (const r of lateP) {
+      const k = flat(r.partner_id) || '—';
+      lateBy.set(k, (lateBy.get(k) || 0) + 1);
+    }
+    const logistics = {
+      source: 'stock.picking (outgoing)',
+      total: outAll.length, open: outOpen.length, done: outDone.length, late: lateP.length,
+      states: outOpen.reduce((a, r) => (a[r.state] = (a[r.state] || 0) + 1, a), {}),
+      on_time_done: onTime,
+      on_time_pct: lags.length ? Math.round(onTime / lags.length * 1000) / 10 : null,
+      lag_buckets: {
+        'في الموعد أو قبله': onTime,
+        '1-7 أيام': lags.filter((x) => x >= 1 && x <= 7).length,
+        '8-30 يوم': lags.filter((x) => x >= 8 && x <= 30).length,
+        'أكثر من 30 يوم': lags.filter((x) => x > 30).length,
+      },
+      lag_median_days: lags.length ? lags[Math.floor(lags.length / 2)] : null,
+      measures: 'الفارق بين الموعد المجدول وتاريخ الإغلاق في أودو',
+      top_late_partners: [...lateBy.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
+        .map(([name, n_]) => ({ name, n: n_ })),
+    };
+
+    /* ── العملاء ── */
+    const parts = await SR('res.partner', [['customer_rank', '>', 0]],
+      ['name', 'country_id', 'city', 'create_date']);
+    const noCountry = parts.filter((x) => !x.country_id);
+    const byCountry = new Map();
+    for (const x of parts) {
+      const k = flat(x.country_id) || 'غير محدّد';
+      byCountry.set(k, (byCountry.get(k) || 0) + 1);
+    }
+    const customers = {
+      source: 'res.partner (customer_rank > 0)',
+      total: parts.length,
+      missing_country: noCountry.length,
+      missing_country_pct: pct(noCountry.length, parts.length),
+      new_30d: parts.filter((x) => (x.create_date || '') >= d30).length,
+      by_country: [...byCountry.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
+        .map(([country, n_]) => ({ country, n: n_ })),
+    };
+
+    /* ── المنتجات والتسعير ── */
+    const b2bProds = allp.filter((x) => /^60/.test(x.default_code || ''));
+    const catalog = {
+      source: 'product.product (type != service)',
+      total: allp.length,
+      with_price: allp.filter((x) => num(x.list_price) > 0).length,
+      with_cost: allp.filter((x) => num(x.standard_price) > 0).length,
+      price_pct: pct(allp.filter((x) => num(x.list_price) > 0).length, allp.length),
+      cost_pct: pct(allp.filter((x) => num(x.standard_price) > 0).length, allp.length),
+      b2b_total: b2bProds.length,
+      b2b_no_cost: b2bProds.filter((x) => num(x.standard_price) <= 0).length,
+      retail_total: fg.length,
+      retail_no_price: fg.filter((x) => num(x.list_price) <= 0).length,
+    };
+
+    /* ── المالية — تفصيل ── */
+    const invs = await SR('account.move', [['move_type', 'in', ['out_invoice', 'in_invoice']]],
+      ['move_type', 'state', 'currency_id', 'amount_total']);
+    const custInv = invs.filter((x) => x.move_type === 'out_invoice');
+    const curMap = new Map();
+    for (const r of custInv) {
+      if (r.state !== 'posted') continue;
+      const k = flat(r.currency_id) || '?';
+      const e = curMap.get(k) || { currency: k, count: 0, total: 0 };
+      e.count++; e.total += num(r.amount_total);
+      curMap.set(k, e);
+    }
+    const finance_detail = {
+      source: 'account.move',
+      customer_invoices: custInv.length,
+      posted: custInv.filter((x) => x.state === 'posted').length,
+      draft: custInv.filter((x) => x.state === 'draft').length,
+      vendor_bills: invs.filter((x) => x.move_type === 'in_invoice').length,
+      // ⚠️ لا تُجمع عبر العملات — كل عملة سطر مستقل
+      by_currency: [...curMap.values()].sort((a, b) => b.total - a.total)
+        .map((x) => ({ ...x, total: Math.round(x.total * 100) / 100 })),
+    };
+
     /* ── المالية و CRM ── */
     const [amPosted, am30, leads] = await Promise.all([
       SC('account.move', [['state', '=', 'posted']]),
@@ -185,6 +282,7 @@ module.exports = async (req, res) => {
         misspelled: fg.filter((p) => !/alora/i.test(p.name || ''))
           .map((p) => ({ code: p.default_code, name: p.name })),
       },
+      logistics, customers, catalog, finance_detail,
       finance: { source: 'account.move', posted: amPosted, moves_30d: am30 },
       crm: { source: 'crm.lead', leads },
       integration: [

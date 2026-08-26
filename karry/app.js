@@ -18,6 +18,10 @@ const ICONS = {
   trend: '<path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/>',
   tag: '<path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="7.5" r="1.3"/>',
   chart: '<path d="M3 20h18M6 20V11M11 20V4M16 20v-6M21 20v-9"/>',
+  truck: '<path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7z"/><circle cx="6" cy="18.5" r="1.6"/><circle cx="17" cy="18.5" r="1.6"/>',
+  users: '<circle cx="9" cy="8" r="3.2"/><path d="M2.5 19a6.5 6.5 0 0 1 13 0"/><path d="M16 5.5a3.2 3.2 0 0 1 0 6M17.5 19a6.4 6.4 0 0 0-2-4.6"/>',
+  grid: '<rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/>',
+  coins: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
   alert: '<path d="M12 9v5M12 17.5v.01"/><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
   gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/>',
 };
@@ -25,11 +29,15 @@ const ic = (k, c = 'currentColor', s = 14) =>
   `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.9"
    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`;
 
-const NAV = [
-  ['overview', 'home', 'نظرة عامة'], ['intg', 'chart', 'عدّاد الربط'],
-  ['wh', 'box', 'المخازن'], ['pu', 'cart', 'المشتريات والإنتاج'],
-  ['b2b', 'trend', 'مبيعات B2B'], ['alora', 'tag', 'Alora — التجزئة'],
+const NAV_GROUPS = [
+  ['القيادة', [['overview', 'home', 'نظرة عامة'], ['intg', 'chart', 'عدّاد الربط']]],
+  ['التشغيل', [['wh', 'box', 'المخازن'], ['pu', 'cart', 'المشتريات والإنتاج'],
+               ['ship', 'truck', 'الشحن والتسليم']]],
+  ['التجارة', [['b2b', 'trend', 'مبيعات B2B'], ['alora', 'tag', 'Alora — التجزئة'],
+               ['cust', 'users', 'العملاء'], ['cat', 'grid', 'المنتجات والتسعير']]],
+  ['المال', [['fin', 'coins', 'المالية']]],
 ];
+const NAV = NAV_GROUPS.flatMap(([, g]) => g);
 
 const rows = (arr, lab, val, cls = '') => arr.map((x) =>
   `<div class="row"><span class="lab">${esc(lab(x))}</span>
@@ -47,7 +55,8 @@ function intgUnits(list) {
 }
 
 function render(d) {
-  const { warehouse: w, purchasing: p, production: pr, b2b: b, alora: a } = d;
+  const { warehouse: w, purchasing: p, production: pr, b2b: b, alora: a,
+          logistics: l, customers: cu, catalog: ca, finance_detail: fd } = d;
   const m = p.m08;
   const kg = w.stock_by_uom.find((r) => r.uom.toLowerCase() === 'kg') || { qty: 0, reserved: 0 };
   const pc = w.stock_by_uom.find((r) => r.uom.toUpperCase() === 'PC') || { qty: 0 };
@@ -218,6 +227,87 @@ function render(d) {
         (x) => `<span class="mono">${esc(x.code)}</span>`)}</div>
       <p class="say"><b>ضابط ربط أودو:</b> اللوحة تطابق على <b>كود الصنف</b> لا الاسم.</p></div></div>`;
 
+  V.ship = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
+    <div class="card danger" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">فارق التسجيل — الموعد مقابل الإغلاق</span>
+        <span class="sp pill p-bad"><span class="d"></span>الوسيط ${l.lag_median_days} يوماً</span></div>
+      <p class="big xl cbad">${l.on_time_pct?.toFixed(1)}<span class="u">% في الموعد</span></p>
+      <div class="rows">${rows(Object.entries(l.lag_buckets), (x) => x[0], (x) => n(x[1]))}</div>
+      <p class="say"><b>مراقب المخازن:</b> ⚠️ هذا فارق <b>التسجيل</b> لا التسليم. أوامر مجدولة على مدى
+        أسابيع أُغلقت دفعةً واحدة خلال دقائق — متى خرجت البضاعة فعلياً: <b>غير معروف</b>.</p></div>
+    <div class="card"><div class="ch">${ic('truck')}<span class="t">أوامر خروج مفتوحة</span></div>
+      <p class="big cwarn">${n(l.open)}</p>
+      <p class="sub">من ${n(l.total)} إجمالاً · ${n(l.done)} منجزة</p>
+      <div class="scroll">${rows(Object.entries(l.states).sort((x, y) => y[1] - x[1]), (x) => x[0], (x) => n(x[1]))}</div></div>
+    <div class="card"><div class="ch">${ic('alert', 'var(--warn)')}<span class="t">متأخرة الآن</span></div>
+      <p class="big cwarn">${n(l.late)}</p>
+      <p class="sub">تاريخها المجدول مضى ولم تُغلق</p></div>
+    <div class="card" style="grid-column:span 4">
+      <div class="ch">${ic('users')}<span class="t">أكثر العملاء تأخّراً</span></div>
+      <div class="scroll">${rows(l.top_late_partners, (x) => x.name, (x) => n(x.n), 'cwarn')}</div></div>
+  </div>`;
+
+  V.cust = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
+    <div class="card"><div class="ch">${ic('users')}<span class="t">عملاء مسجّلون</span></div>
+      <p class="big">${n(cu.total)}</p><p class="sub">${n(cu.new_30d)} جديداً خلال ٣٠ يوماً</p></div>
+    <div class="card danger" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">بلا بلد مسجَّل</span>
+        <span class="sp pill p-bad"><span class="d"></span>G-03</span></div>
+      <p class="big xl cbad">${cu.missing_country_pct?.toFixed(0)}<span class="u">%</span></p>
+      <p class="sub">${n(cu.missing_country)} من ${n(cu.total)} عميلاً بلا حقل بلد.</p>
+      <p class="say"><b>محلل B2B:</b> استراتيجية التوسع تُبنى على بيانات أسواق — أرخص فجوة إصلاحاً.</p></div>
+    <div class="card"><div class="ch">${ic('chart')}<span class="t">سجلات CRM</span></div>
+      <p class="big cbad">${n(d.crm.leads)}</p><p class="sub">صفر عميل محتمل مسجَّل</p></div>
+    <div class="card" style="grid-column:span 4">
+      <div class="ch">${ic('chart')}<span class="t">التوزيع الجغرافي — ما هو مسجَّل فعلاً</span></div>
+      <div class="scroll">${cu.by_country.map((x) =>
+        `<div class="row"><span class="lab">${esc(x.country)}</span>
+         <span class="n ${x.country === 'غير محدّد' ? 'cbad' : ''}">${n(x.n)}</span></div>`).join('')}</div></div>
+  </div>`;
+
+  V.cat = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
+    <div class="card"><div class="ch">${ic('grid')}<span class="t">أصناف في النظام</span></div>
+      <p class="big">${n(ca.total)}</p><p class="sub">تشمل المواد الخام والتغليف</p></div>
+    <div class="card"><div class="ch">${ic('coins')}<span class="t">لها تكلفة</span></div>
+      <p class="big cwarn">${ca.cost_pct?.toFixed(0)}<span class="u">%</span></p>
+      <p class="sub">${n(ca.with_cost)} من ${n(ca.total)}</p>
+      <div class="bar"><i style="width:${ca.cost_pct?.toFixed(0)}%"></i></div></div>
+    <div class="card danger" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">التجزئة — بلا سعر بيع</span></div>
+      <p class="big xl cbad">${ca.retail_no_price}<span class="u">من ${ca.retail_total}</span></p>
+      <p class="sub">كل صنف تجزئة (كود 701/702/703) بلا سعر بيع.</p>
+      <p class="say"><b>مدير Alora:</b> بلا سعر لا فاتورة، وبلا فاتورة لا إيراد مسجَّل.</p></div>
+    <div class="card" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--warn)')}<span class="t">B2B بلا تكلفة</span></div>
+      <p class="big cwarn">${ca.b2b_no_cost}<span class="u">من ${ca.b2b_total}</span></p>
+      <p class="sub">منتجات سائبة (كود 60xx) — ربحيتها غير معروفة.</p></div>
+    <div class="card" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--warn)')}<span class="t">أسماء تُسقط الصنف من التقارير</span></div>
+      <div class="scroll">${rows(a.misspelled, (x) => x.name.trim(),
+        (x) => `<span class="mono">${esc(x.code)}</span>`)}</div></div>
+  </div>`;
+
+  V.fin = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
+    <div class="card"><div class="ch">${ic('coins')}<span class="t">فواتير عملاء</span></div>
+      <p class="big">${n(fd.customer_invoices)}</p>
+      <p class="sub">${n(fd.posted)} مُرحَّلة · ${n(fd.draft)} مسودة</p></div>
+    <div class="card"><div class="ch">${ic('cart')}<span class="t">فواتير موردين</span></div>
+      <p class="big">${n(fd.vendor_bills)}</p>
+      <p class="sub">مقابل ${n(fd.customer_invoices)} فاتورة عميل</p></div>
+    <div class="card" style="grid-column:span 2">
+      <div class="ch">${ic('chart')}<span class="t">قيود محاسبية مُرحَّلة</span></div>
+      <p class="big">${n(d.finance.posted)}</p>
+      <p class="sub">${n(d.finance.moves_30d)} قيداً جديداً خلال ٣٠ يوماً</p>
+      <p class="say"><b>المحاسب:</b> ⚠️ المبالغ التفصيلية تحتاج debit/credit — price_subtotal صفر في 98.2%.</p></div>
+    <div class="card" style="grid-column:span 4">
+      <div class="ch">${ic('coins')}<span class="t">الفواتير المُرحَّلة بالعملة</span>
+        <span class="sp pill p-warn"><span class="d"></span>لا تُجمع</span></div>
+      <div class="scroll">${fd.by_currency.map((x) =>
+        `<div class="row"><span class="lab">${esc(x.currency)} — ${n(x.count)} فاتورة</span>
+         <span class="n">${n(x.total, 2)}</span></div>`).join('')}</div>
+      <p class="say"><b>المحاسب:</b> كل عملة سطر مستقل — جمعها بلا سعر صرف يعطي رقماً بلا معنى.</p></div>
+  </div>`;
+
   $('#views').innerHTML = NAV.map(([k], i) =>
     `<section class="view${i === 0 ? ' on' : ''}" data-v="${k}">${V[k]}</section>`).join('');
   wireNav();
@@ -249,11 +339,24 @@ async function load() {
   render(await r.json());
 }
 
+function skeleton() {
+  $('#stamp').innerHTML = '<span class="spin"></span> جارٍ السحب من أودو…';
+  $('#tb').innerHTML = '<span class="pill p-plain"><span class="spin"></span>لحظة</span>';
+  $('#views').innerHTML = `<section class="view on"><div class="grid"
+    style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
+    ${Array.from({ length: 8 }, () => `<div class="card"
+      style="opacity:.45;justify-content:center;align-items:center">
+      <span class="spin" style="color:var(--brand)"></span></div>`).join('')}
+  </div></section>`;
+}
+
 function showApp() {
   $('#gate').hidden = true; $('#app').hidden = false;
-  $('#nav').innerHTML = '<div class="nav-lbl">القيادة</div>' + NAV.map(([v, i, t], k) =>
-    `<button class="nav-item" data-v="${v}" aria-current="${k === 0 ? 'true' : 'false'}">
-     ${ic(i)}<span>${t}</span></button>`).join('');
+  skeleton();
+  $('#nav').innerHTML = NAV_GROUPS.map(([g, items]) =>
+    `<div class="nav-lbl">${g}</div>` + items.map(([v, i, t]) =>
+      `<button class="nav-item" data-v="${v}" aria-current="${v === NAV[0][0] ? 'true' : 'false'}">
+       ${ic(i)}<span>${t}</span></button>`).join('')).join('');
   load();
   clearInterval(timer);
   timer = setInterval(load, REFRESH_MS);

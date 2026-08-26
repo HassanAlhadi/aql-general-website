@@ -80,7 +80,23 @@ function noStore(res) {
 /* ── أودو: JSON-RPC، قراءة فقط ── */
 const READ_ONLY = new Set(['search_read', 'search_count', 'read', 'fields_get']);
 
+/* fetch في Node لا يقرأ HTTPS_PROXY تلقائياً. على Vercel لا يوجد بروكسي فلا أثر لهذا،
+   لكنه يجعل التشغيل المحلي يعمل خلف بروكسي شركة أو بيئة تطوير. */
+let proxyReady = false;
+async function ensureProxy() {
+  if (proxyReady) return;
+  proxyReady = true;
+  const url = process.env.HTTPS_PROXY || process.env.https_proxy
+           || process.env.HTTP_PROXY || process.env.http_proxy;
+  if (!url) return;
+  try {
+    const { ProxyAgent, setGlobalDispatcher } = await import('undici');
+    setGlobalDispatcher(new ProxyAgent(url));
+  } catch { /* undici غير متاح — تابع بلا بروكسي */ }
+}
+
 async function rpc(service, method, args) {
+  await ensureProxy();
   const base = (process.env.ODOO_URL || '').replace(/\/+$/, '');
   const r = await fetch(`${base}/jsonrpc`, {
     method: 'POST',
