@@ -31,7 +31,8 @@ node scripts/make-hash.mjs
 **كلمة المرور نفسها لا تُطبع ولا تُحفظ ولا تُرسل.**
 
 ### ٢. أضف متغيرات البيئة في Vercel
-Project `aql-general-website` ← Settings ← Environment Variables ← أضفها لـ **Production**:
+https://vercel.com/hassanalhadis-projects/aql-general-website/settings/environment-variables
+اختر **Production** لكل متغيّر:
 
 | المتغيّر | القيمة |
 |---|---|
@@ -46,7 +47,9 @@ Project `aql-general-website` ← Settings ← Environment Variables ← أضف�
 ⚠️ علّم `MIQWAD_PASS_HASH` و `MIQWAD_SECRET` و `ODOO_API_KEY` كـ **Sensitive**.
 
 ### ٣. أعد النشر
-أي push يُطلق نشراً جديداً. المتغيرات تُقرأ عند التشغيل.
+Deployments ← آخر نشر ← ⋯ ← **Redeploy**. المتغيرات تُقرأ عند التشغيل، فلا بد من نشر بعد إضافتها.
+
+الرابط بعدها: **`https://aql-tech.com/miqwad`**
 
 ## التشغيل محلياً — أمر واحد
 
