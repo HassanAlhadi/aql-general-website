@@ -48,13 +48,19 @@ Project `aql-general-website` ← Settings ← Environment Variables ← أضف�
 ### ٣. أعد النشر
 أي push يُطلق نشراً جديداً. المتغيرات تُقرأ عند التشغيل.
 
-## التشغيل محلياً — بلا Vercel
+## التشغيل محلياً — أمر واحد
 
 ```bash
-git clone https://github.com/HassanAlhadi/aql-general-website
-cd aql-general-website
-cp .env.local.example .env.local        # املأه (انظر الإعداد أعلاه)
-node scripts/dev-server.mjs             # → http://localhost:8899/karry
+node scripts/setup.mjs
+```
+
+يسألك ٣ أسئلة (كلمة مرور · بريد أودو · مفتاح API)، يكتب `.env.local` بنفسه،
+ثم يشغّل اللوحة على `http://localhost:8899/karry`. **لا تحتاج فتح أي ملف يدوياً.**
+
+بعد الإعداد الأول، للتشغيل فقط:
+
+```bash
+node scripts/dev-server.mjs
 ```
 
 خادم بلا أي حزمة خارجية: يقدّم الملفات الثابتة ويشغّل دوال `api/` معاً، ويحاكي `cleanUrls`.
@@ -75,6 +81,7 @@ api/logout.js        إنهاء الجلسة
 api/data.js          تجميع بيانات أودو — يتطلب جلسة
 scripts/make-hash.mjs مولّد الـhash (يُشغَّل محلياً)
 scripts/dev-server.mjs خادم التطوير المحلي
+scripts/setup.mjs     الإعداد التفاعلي (الأسهل)
 ```
 
 ## عند تغيّر اسم قاعدة أودو
