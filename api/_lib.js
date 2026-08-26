@@ -103,9 +103,13 @@ async function ensureProxy() {
   } catch { /* undici غير متاح — تابع بلا بروكسي */ }
 }
 
+/* اللصق من لوحة التحكم يجرّ مسافة أو سطراً جديداً كثيراً — وأودو يرفض المفتاح بصمت.
+   التنظيف هنا يمنع ساعةً من البحث عن خطأ غير موجود. */
+const env = (k) => String(process.env[k] || '').trim();
+
 async function rpc(service, method, args) {
   await ensureProxy();
-  const base = (process.env.ODOO_URL || '').replace(/\/+$/, '');
+  const base = env('ODOO_URL').replace(/\/+$/, '');
   const r = await fetch(`${base}/jsonrpc`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -119,13 +123,16 @@ async function rpc(service, method, args) {
 }
 
 async function odoo() {
-  const { ODOO_DB: db, ODOO_USER: user, ODOO_API_KEY: key } = process.env;
+  const [db, user, key] = ['ODOO_DB', 'ODOO_USER', 'ODOO_API_KEY'].map(env);
   // يسمّي الناقص بالاسم — «متغيّر ناقص» وحده لا يقول أيّها، وهذا يضيّع وقتاً.
-  const missing = ['ODOO_URL', 'ODOO_DB', 'ODOO_USER', 'ODOO_API_KEY']
-    .filter((k) => !process.env[k] || !String(process.env[k]).trim());
+  const missing = ['ODOO_URL', 'ODOO_DB', 'ODOO_USER', 'ODOO_API_KEY'].filter((k) => !env(k));
   if (missing.length) throw new Error(`متغيّرات ناقصة في Vercel: ${missing.join(' · ')}`);
   const uid = await rpc('common', 'authenticate', [db, user, key, {}]);
-  if (!uid) throw new Error('odoo_auth_failed');
+  if (!uid) {
+    // أودو يردّ false بلا سبب — الرسالة تذكر ما نعرفه لتضييق البحث.
+    throw new Error(`أودو رفض الدخول. المستخدم المُرسَل: «${user}» · قاعدة البيانات: «${db}» ` +
+      `· طول المفتاح: ${key.length} محرفاً. راجع ODOO_USER و ODOO_API_KEY في Vercel.`);
+  }
   return {
     async call(model, method, args, kw) {
       // حاجز صريح: هذه الواجهة لا تكتب على أودو مهما كان الطلب.
