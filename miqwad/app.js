@@ -334,6 +334,12 @@ async function load() {
   if (!r.ok) {
     const e = await r.json().catch(() => ({}));
     $('#stamp').innerHTML = `<span style="color:var(--bad)">تعذّر السحب من أودو — ${esc(e.message || r.status)}</span>`;
+    $('#views').innerHTML = `<section class="view on"><div style="height:100%;display:grid;
+      place-items:center;padding:2rem"><div class="card danger" style="max-width:34rem">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">لم تصل البيانات</span></div>
+      <p class="sub" style="font-size:.9rem;margin:.4rem 0 0">${esc(e.message || 'خطأ ' + r.status)}</p>
+      <p class="say"><b>ما العمل:</b> افتح إعدادات Vercel ← Environment Variables، وتأكد أن كل
+      متغيّر مذكور أعلاه موجود ومؤشَّر على <b>Production</b>، ثم أعد النشر.</p></div></div></section>`;
     return;
   }
   render(await r.json());

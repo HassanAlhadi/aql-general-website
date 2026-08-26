@@ -120,7 +120,10 @@ async function rpc(service, method, args) {
 
 async function odoo() {
   const { ODOO_DB: db, ODOO_USER: user, ODOO_API_KEY: key } = process.env;
-  if (!db || !user || !key || !process.env.ODOO_URL) throw new Error('odoo_env_missing');
+  // يسمّي الناقص بالاسم — «متغيّر ناقص» وحده لا يقول أيّها، وهذا يضيّع وقتاً.
+  const missing = ['ODOO_URL', 'ODOO_DB', 'ODOO_USER', 'ODOO_API_KEY']
+    .filter((k) => !process.env[k] || !String(process.env[k]).trim());
+  if (missing.length) throw new Error(`متغيّرات ناقصة في Vercel: ${missing.join(' · ')}`);
   const uid = await rpc('common', 'authenticate', [db, user, key, {}]);
   if (!uid) throw new Error('odoo_auth_failed');
   return {
