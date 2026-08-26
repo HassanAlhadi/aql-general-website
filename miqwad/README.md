@@ -1,6 +1,6 @@
 # مِقوَد — لوحة قيادة Karry / Alora
 
-صفحة محمية على `/karry` تعرض حالة الشركة من أودو **مباشرةً**، بصلاحية **قراءة فقط**.
+صفحة محمية على `/miqwad` تعرض حالة الشركة من أودو **مباشرةً**، بصلاحية **قراءة فقط**.
 
 ## نموذج الأمان
 
@@ -38,7 +38,7 @@ Project `aql-general-website` ← Settings ← Environment Variables ← أضف�
 | `MIQWAD_USER` | اسم المستخدم |
 | `MIQWAD_PASS_HASH` | السطر `scrypt$...` من الخطوة ١ |
 | `MIQWAD_SECRET` | السطر العشوائي الثاني من الخطوة ١ |
-| `ODOO_URL` | `https://karry-live.odoo.com` |
+| `ODOO_URL` | `https://miqwad-live.odoo.com` |
 | `ODOO_DB` | اسم قاعدة البيانات |
 | `ODOO_USER` | بريد المستخدم في أودو |
 | `ODOO_API_KEY` | مفتاح API — **قراءة فقط** |
@@ -55,7 +55,7 @@ node scripts/setup.mjs
 ```
 
 يسألك ٣ أسئلة (كلمة مرور · بريد أودو · مفتاح API)، يكتب `.env.local` بنفسه،
-ثم يشغّل اللوحة على `http://localhost:8899/karry`. **لا تحتاج فتح أي ملف يدوياً.**
+ثم يشغّل اللوحة على `http://localhost:8899/miqwad`. **لا تحتاج فتح أي ملف يدوياً.**
 
 بعد الإعداد الأول، للتشغيل فقط:
 

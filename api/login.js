@@ -1,5 +1,5 @@
 'use strict';
-const { checkPassword, setSession, noStore } = require('./_lib.js');
+const { checkPassword, setSession, noStore, sameOrigin } = require('./_lib.js');
 
 /* تأخير ثابت لكل محاولة — يبطئ التخمين الآلي.
    ⚠️ الدوال بلا حالة مشتركة، فلا يوجد عدّاد محاولات موثوق.
@@ -8,6 +8,7 @@ const MIN_MS = 700;
 
 module.exports = async (req, res) => {
   noStore(res);
+  if (!sameOrigin(req)) return res.status(403).json({ error: 'cross_site' });
   if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
 
   const started = Date.now();
@@ -20,7 +21,7 @@ module.exports = async (req, res) => {
   const { MIQWAD_USER, MIQWAD_PASS_HASH, MIQWAD_SECRET } = process.env;
   if (!MIQWAD_USER || !MIQWAD_PASS_HASH || !MIQWAD_SECRET) {
     return done(503, { error: 'not_configured',
-      message: 'لم تُضبط متغيرات البيئة بعد. راجع karry/README.md' });
+      message: 'لم تُضبط متغيرات البيئة بعد. راجع miqwad/README.md' });
   }
 
   let body = req.body;

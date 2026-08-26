@@ -1,5 +1,5 @@
 'use strict';
-const { readSession, noStore, odoo, flat } = require('./_lib.js');
+const { readSession, noStore, sameOrigin, odoo, flat } = require('./_lib.js');
 
 const pad = (n) => String(n).padStart(2, '0');
 const fmt = (d) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ` +
@@ -11,6 +11,7 @@ const num = (v) => Number(v) || 0;
 
 module.exports = async (req, res) => {
   noStore(res);
+  if (!sameOrigin(req)) return res.status(403).json({ error: 'cross_site' });
   if (!readSession(req, process.env.MIQWAD_SECRET)) {
     return res.status(401).json({ error: 'unauthorized' });
   }

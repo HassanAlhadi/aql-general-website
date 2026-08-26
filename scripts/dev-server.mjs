@@ -1,7 +1,7 @@
-/* خادم تطوير محلي لصفحة /karry — يشغّل الملفات الثابتة ودوال api/ معاً.
+/* خادم تطوير محلي لصفحة /miqwad — يشغّل الملفات الثابتة ودوال api/ معاً.
  *
  *   cp .env.local.example .env.local     # املأه ببياناتك
- *   node scripts/dev-server.mjs          # → http://localhost:8899/karry
+ *   node scripts/dev-server.mjs          # → http://localhost:8899/miqwad
  *
  * لا يحتاج Vercel CLI ولا أي حزمة خارجية. يحاكي بيئة Vercel:
  * يقرأ .env.local إلى process.env، ويلبس req/res بـ status()/json().
@@ -97,7 +97,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`\n  مِقوَد يعمل محلياً:\n  → http://localhost:${PORT}/karry\n`);
+  console.log(`\n  مِقوَد يعمل محلياً:\n  → http://localhost:${PORT}/miqwad\n`);
   const missing = ['MIQWAD_USER', 'MIQWAD_PASS_HASH', 'MIQWAD_SECRET',
                    'ODOO_URL', 'ODOO_DB', 'ODOO_USER', 'ODOO_API_KEY']
     .filter((k) => !process.env[k]);

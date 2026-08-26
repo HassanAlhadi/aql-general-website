@@ -69,6 +69,14 @@ function readSession(req, secret) {
   return null;
 }
 
+/* يرفض الطلبات القادمة من مواقع أخرى — حاجز CSRF وربط خارجي.
+   المتصفحات الحديثة ترسل Sec-Fetch-Site؛ غيابه يعني عميلاً غير متصفح (curl مثلاً)
+   وهو مقبول للتشخيص لكنه لا يحمل كوكي الجلسة أصلاً. */
+function sameOrigin(req) {
+  const s = req.headers['sec-fetch-site'];
+  return !s || s === 'same-origin' || s === 'none';
+}
+
 /* يمنع الاستجابة من الوصول لأي وسيط تخزين */
 function noStore(res) {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
@@ -127,4 +135,4 @@ async function odoo() {
 const flat = (v) => (Array.isArray(v) ? (v[1] ?? '') : (v === false ? '' : v));
 
 module.exports = { hashPassword, checkPassword, setSession, clearSession,
-                   readSession, noStore, odoo, flat, COOKIE };
+                   readSession, noStore, sameOrigin, odoo, flat, COOKIE };
