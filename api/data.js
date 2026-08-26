@@ -18,7 +18,17 @@ module.exports = async (req, res) => {
 
   let od;
   try { od = await odoo(); }
-  catch (e) { return res.status(502).json({ error: 'odoo_unreachable', message: String(e.message) }); }
+  catch (e) {
+    // يُسجَّل في Vercel Runtime Logs — بلا مفاتيح، فقط ما يكفي للتشخيص.
+    console.error('[miqwad] فشل الاتصال بأودو:', e.message, JSON.stringify({
+      url: String(process.env.ODOO_URL || '').trim(),
+      db: String(process.env.ODOO_DB || '').trim(),
+      user: String(process.env.ODOO_USER || '').trim(),
+      keyLen: String(process.env.ODOO_API_KEY || '').trim().length,
+      keyHadWhitespace: /^\s|\s$/.test(String(process.env.ODOO_API_KEY || '')),
+    }));
+    return res.status(502).json({ error: 'odoo_unreachable', message: String(e.message) });
+  }
 
   try {
     const now = new Date();

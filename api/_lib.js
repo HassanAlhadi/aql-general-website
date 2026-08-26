@@ -127,7 +127,13 @@ async function odoo() {
   // يسمّي الناقص بالاسم — «متغيّر ناقص» وحده لا يقول أيّها، وهذا يضيّع وقتاً.
   const missing = ['ODOO_URL', 'ODOO_DB', 'ODOO_USER', 'ODOO_API_KEY'].filter((k) => !env(k));
   if (missing.length) throw new Error(`متغيّرات ناقصة في Vercel: ${missing.join(' · ')}`);
-  const uid = await rpc('common', 'authenticate', [db, user, key, {}]);
+  let uid;
+  try {
+    uid = await rpc('common', 'authenticate', [db, user, key, {}]);
+  } catch (e) {
+    // أودو يميّز «قاعدة غير موجودة» عن «بيانات خاطئة» في نص الخطأ — انقله كما هو.
+    throw new Error(`أودو ردّ بخطأ: ${e.message}`);
+  }
   if (!uid) {
     // أودو يردّ false بلا سبب — الرسالة تذكر ما نعرفه لتضييق البحث.
     throw new Error(`أودو رفض الدخول. المستخدم المُرسَل: «${user}» · قاعدة البيانات: «${db}» ` +
