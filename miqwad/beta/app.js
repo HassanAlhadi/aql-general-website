@@ -24,6 +24,7 @@ const ICONS = {
   coins: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
   alert: '<path d="M12 9v5M12 17.5v.01"/><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
   gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/>',
+  file: '<path d="M6 2.5h8l4 4V21H6z"/><path d="M14 2.5V7h4"/>',
 };
 const ic = (k, c = 'currentColor', s = 14) =>
   `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.9"
@@ -34,7 +35,8 @@ const NAV_GROUPS = [
   ['التشغيل', [['wh', 'box', 'المخازن'], ['pu', 'cart', 'المشتريات والإنتاج'],
                ['ship', 'truck', 'الشحن والتسليم']]],
   ['التجارة', [['b2b', 'trend', 'مبيعات B2B'], ['alora', 'tag', 'Alora — التجزئة'],
-               ['cust', 'users', 'العملاء'], ['cat', 'grid', 'المنتجات والتسعير']]],
+               ['cust', 'users', 'العملاء'], ['cat', 'grid', 'المنتجات والتسعير'],
+               ['designs', 'file', 'التصميمات']]],
   ['المال', [['fin', 'coins', 'المالية']]],
 ];
 const NAV = NAV_GROUPS.flatMap(([, g]) => g);
@@ -525,6 +527,28 @@ function render(d) {
         `<div class="row"><span class="lab">${esc(x.currency)} — ${n(x.count)} فاتورة</span>
          <span class="n">${n(x.total, 2)}</span></div>`).join('')}</div>
       <p class="say"><b>المحاسب:</b> كل عملة سطر مستقل — جمعها بلا سعر صرف يعطي رقماً بلا معنى.</p></div>
+  </div>`;
+
+  const dz = d.designs || [];
+  V.designs = `<div class="grid" style="grid-template-columns:1fr;grid-template-rows:1fr">
+    <div class="card">
+      <div class="ch">${ic('file')}<span class="t">تصميمات قيد المراجعة</span>
+        <span class="sp pill p-warn"><span class="d"></span>${dz.length} بانتظار قرارك</span></div>
+      <div class="scroll">
+        ${dz.length ? dz.map((x) => `
+          <div class="dec-item sev-warn quiet" style="margin-bottom:.5rem">
+            <div class="dec-b">
+              <div class="dec-t">${esc(x.product)}</div>
+              <div class="dec-i">${esc(x.statusLabel)} · آخر تحديث ${esc(x.updated)}</div>
+              <div class="dec-a">${(x.facts || []).map((f) => esc(f)).join(' · ')}</div>
+              ${x.note ? `<p class="say" style="margin-top:.4rem">${esc(x.note)}</p>` : ''}
+            </div>
+          </div>`).join('') : '<p class="sub">لا تصميمات قيد المراجعة حالياً.</p>'}
+      </div>
+      <p class="say"><b>ملاحظة:</b> الملفات الأصلية لا تُنشر هنا — هذه لوحة عامة الاستضافة.
+        الملفات محفوظة في السجل الداخلي الخاص. حدّثني بالحالة الجديدة (مُعتمد / يحتاج تعديلاً)
+        وأنا أحدّثها هنا.</p>
+    </div>
   </div>`;
 
   $('#views').innerHTML = NAV.map(([k], i) =>

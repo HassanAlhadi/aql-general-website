@@ -294,6 +294,36 @@ module.exports = async (req, res) => {
           .map((p) => ({ code: p.default_code, name: p.name })),
       },
       logistics, customers, catalog, finance_detail,
+      /* بيانات مُدارة يدوياً — لا تأتي من أودو. تُحدَّث بالكود عند تغيّر الحالة.
+         الملفات الأصلية لا تُنشر هنا (المستودع عام) — الحقائق نصية فقط. */
+      designs: [
+        {
+          id: 'allora-tp-360',
+          product: 'Allora — معجون طماطم 360 جم',
+          status: 'review',
+          statusLabel: 'قيد المراجعة — بانتظار فيدباكك',
+          updated: '2026-09-02',
+          facts: [
+            'الوزن تغيّر من 380 إلى 360 جم',
+            'الملح المضاف تغيّر من 1% إلى 2%',
+            'باركود 6 224004 227223',
+          ],
+          note: 'Dina Ashraf طلبت فيدباكك صراحة قبل اعتماد ملفات الطباعة (إيميل 2 سبتمبر).',
+        },
+        {
+          id: 'pink-lemonade-250',
+          product: 'Pink Lemonade Nectar 250 مل',
+          status: 'review',
+          statusLabel: 'قيد المراجعة — التصنيف غير مؤكَّد',
+          updated: '2026-09-02',
+          facts: [
+            'اسم الملف يذكر "A-One" — غير ظاهر داخل التصميم نفسه',
+            '160 سعرة حرارية · 42 جم كربوهيدرات (33 جم منها سكر مضاف)',
+            'مطابق للمواصفة المصرية 7650/2024',
+          ],
+          note: 'غير مرتبط بخيط بريد معجون الطماطم — هل هو صنف Alora جديد أم تصميم عميل B2B؟',
+        },
+      ],
       finance: { source: 'account.move', posted: amPosted, moves_30d: am30 },
       crm: { source: 'crm.lead', leads },
       integration: [
