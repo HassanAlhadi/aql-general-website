@@ -300,15 +300,15 @@ module.exports = async (req, res) => {
         {
           id: 'allora-tp-360',
           product: 'Allora — معجون طماطم 360 جم',
-          status: 'review',
-          statusLabel: 'قيد المراجعة — بانتظار فيدباكك',
-          updated: '2026-09-02',
+          status: 'approved',
+          statusLabel: 'معتمد كبيانات — Approved as data',
+          updated: '2026-09-03',
           facts: [
             'الوزن تغيّر من 380 إلى 360 جم',
             'الملح المضاف تغيّر من 1% إلى 2%',
             'باركود 6 224004 227223',
           ],
-          note: 'Dina Ashraf طلبت فيدباكك صراحة قبل اعتماد ملفات الطباعة (إيميل 2 سبتمبر).',
+          note: 'اعتمدها Abdelrazek Omar 3 سبتمبر (Approved as data) — أنت اتحطيت CC بس بلا رد ظاهر منك. ⚠️ تناقض مرصود: طلب خامات لاحق من Wael Moustafa (3 سبتمبر) لإنتاج 10 آلاف وحدة لسه بيسمّيها "Jar 380gm"/"Tray 380gm" رغم اعتماد 360 جم — يستاهل سؤال تأكيد قبل الإنتاج.',
         },
         {
           id: 'pink-lemonade-250',

@@ -530,13 +530,14 @@ function render(d) {
   </div>`;
 
   const dz = d.designs || [];
+  const pendingDesigns = dz.filter((x) => x.status !== 'approved').length;
   V.designs = `<div class="grid" style="grid-template-columns:1fr;grid-template-rows:1fr">
     <div class="card">
-      <div class="ch">${ic('file')}<span class="t">تصميمات قيد المراجعة</span>
-        <span class="sp pill p-warn"><span class="d"></span>${dz.length} بانتظار قرارك</span></div>
+      <div class="ch">${ic('file')}<span class="t">التصميمات</span>
+        <span class="sp pill p-warn"><span class="d"></span>${pendingDesigns} بانتظار قرارك</span></div>
       <div class="scroll">
         ${dz.length ? dz.map((x) => `
-          <div class="dec-item sev-warn quiet" style="margin-bottom:.5rem">
+          <div class="dec-item ${x.status === 'approved' ? 'sev-ok' : 'sev-warn'}" style="margin-bottom:.5rem">
             <div class="dec-b">
               <div class="dec-t">${esc(x.product)}</div>
               <div class="dec-i">${esc(x.statusLabel)} · آخر تحديث ${esc(x.updated)}</div>
