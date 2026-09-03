@@ -537,7 +537,7 @@ function render(d) {
         <span class="sp pill p-warn"><span class="d"></span>${pendingDesigns} بانتظار قرارك</span></div>
       <div class="scroll">
         ${dz.length ? dz.map((x) => `
-          <div class="dec-item ${x.status === 'approved' ? 'sev-ok' : 'sev-warn'}" style="margin-bottom:.5rem">
+          <div class="dec-item ${x.status === 'approved' ? 'sev-ok' : x.status === 'blocked' ? 'sev-bad' : 'sev-warn'}" style="margin-bottom:.5rem">
             <div class="dec-b">
               <div class="dec-t">${esc(x.product)}</div>
               <div class="dec-i">${esc(x.statusLabel)} · آخر تحديث ${esc(x.updated)}</div>
