@@ -22,6 +22,8 @@
   --warn:oklch(0.665 0.145 68); --warn-tint:oklch(0.959 0.040 72);
   --bad:oklch(0.565 0.185 27); --bad-tint:oklch(0.956 0.030 27);
   --paper:oklch(0.585 0.018 88); --paper-tint:oklch(0.928 0.016 88);
+  --info:oklch(0.545 0.115 248); --info-tint:oklch(0.947 0.028 248);
+  --neutral:oklch(0.585 0.008 250); --neutral-tint:oklch(0.934 0.005 250);
   --r-sm:9px; --r-md:13px; --r-lg:18px; --r-full:999px;
   --sh-sm:0 1px 2px oklch(0.25 0.03 32/.05);
   --sh-md:0 4px 16px oklch(0.25 0.03 32/.07);
@@ -40,6 +42,8 @@
   --warn:oklch(0.795 0.135 72); --warn-tint:oklch(0.303 0.050 70);
   --bad:oklch(0.715 0.165 28); --bad-tint:oklch(0.298 0.055 28);
   --paper:oklch(0.700 0.020 88); --paper-tint:oklch(0.298 0.014 88);
+  --info:oklch(0.715 0.115 248); --info-tint:oklch(0.292 0.048 248);
+  --neutral:oklch(0.700 0.010 250); --neutral-tint:oklch(0.282 0.006 250);
   --sh-sm:0 1px 2px oklch(0.10 0.02 32/.4); --sh-md:0 4px 16px oklch(0.08 0.02 32/.5);
   color-scheme:dark;
 }
@@ -294,6 +298,56 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .wl .lab{color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .wl .n{margin-inline-start:auto;font-weight:700;font-variant-numeric:tabular-nums;flex:none}
 .wl .n.ok{color:var(--ok)} .wl .n.bad{color:var(--bad)}
+
+/* ══ سجل الحركة — لون لكل نوع ══ */
+.mv-legend{display:flex;gap:.35rem;flex-wrap:wrap;flex:none;margin:.15rem 0 .1rem}
+.mv-chip{display:flex;align-items:center;gap:.3rem;padding:.2rem .45rem;border-radius:var(--r-sm);
+  border:1px solid var(--line);background:var(--surface-2);font-size:.68rem;line-height:1.3}
+.mv-dot{width:8px;height:8px;border-radius:2px;flex:none}
+.mv-chip .mv-n{font-weight:800;font-variant-numeric:tabular-nums}
+.mv-chip .mv-t{color:var(--ink-soft)}
+
+.mv-row{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;font-size:.72rem;
+  border-bottom:1px solid var(--line-soft);line-height:1.35}
+.mv-row:last-child{border-bottom:0}
+.mv-bar{width:3px;align-self:stretch;border-radius:2px;flex:none;min-height:1.1rem}
+.mv-day{font-size:.66rem;color:var(--ink-faint);font-variant-numeric:tabular-nums;flex:none;
+  width:2.6rem;direction:ltr;text-align:start}
+/* plaintext: كل اسم يأخذ اتجاهه الطبيعي — فأسماء المنتجات الإنجليزية لا يُقصّ أولها */
+.mv-p{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  unicode-bidi:plaintext;text-align:start}
+.mv-code{font-size:.62rem;color:var(--ink-faint);margin-inline-start:.3rem;
+  font-family:ui-monospace,Menlo,monospace}
+.mv-q{font-weight:700;font-variant-numeric:tabular-nums;flex:none;white-space:nowrap}
+.mv-u{font-size:.62rem;color:var(--ink-faint);font-weight:500;margin-inline-start:.2rem}
+.mv-k{flex:none;font-size:.64rem;font-weight:700;padding:.08rem .4rem;border-radius:var(--r-full);
+  white-space:nowrap;width:5.4rem;text-align:center}
+
+/* ألوان الأنواع الأربعة — تُطبَّق على الشارة والشريط والنقطة معاً */
+.k-ok    .mv-bar,.k-ok    .mv-dot{background:var(--ok)}
+.k-grey  .mv-bar,.k-grey  .mv-dot{background:var(--neutral)}
+.k-blue  .mv-bar,.k-blue  .mv-dot{background:var(--info)}
+.k-bad   .mv-bar,.k-bad   .mv-dot{background:var(--bad)}
+.k-muted .mv-bar,.k-muted .mv-dot{background:var(--ink-faint);opacity:.45}
+.k-ok    .mv-k{background:var(--ok-tint);color:var(--ok)}
+.k-grey  .mv-k{background:var(--neutral-tint);color:var(--neutral)}
+.k-blue  .mv-k{background:var(--info-tint);color:var(--info)}
+.k-bad   .mv-k{background:var(--bad-tint);color:var(--bad)}
+.k-muted .mv-k{background:var(--surface-2);color:var(--ink-faint)}
+.mv-chip.k-ok{border-color:var(--ok)} .mv-chip.k-blue{border-color:var(--info)}
+.mv-chip.k-bad{border-color:var(--bad)} .mv-chip.k-grey{border-color:var(--neutral)}
+
+/* الترشيح بالنقر */
+.mv-f{cursor:pointer;font:inherit;transition:opacity .15s,transform .15s}
+.mv-f:hover{opacity:.75}
+.mv-f:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.mv-f[aria-pressed="true"]{box-shadow:0 0 0 2px var(--brand-line) inset}
+#movelog[data-f] .mv-row{display:none}
+#movelog[data-f="ok"]   .mv-row.k-ok{display:flex}
+#movelog[data-f="grey"] .mv-row.k-grey{display:flex}
+#movelog[data-f="blue"] .mv-row.k-blue{display:flex}
+#movelog[data-f="bad"]  .mv-row.k-bad{display:flex}
+#movelog[data-f] .mv-f:not([aria-pressed="true"]){opacity:.45}
 
 /* مسار العودة */
 .crumb{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-weight:700;

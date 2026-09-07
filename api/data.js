@@ -77,6 +77,51 @@ module.exports = async (req, res) => {
     const picking_states = {};
     for (const p of picks) picking_states[p.state] = (picking_states[p.state] || 0) + 1;
 
+    /* ── سجل الحركة المصنَّف ──
+       التصنيف يعتمد على usage الموقعين لا على اسميهما، وعلى origin_returned_move_id
+       للمرتجع — الاسم قد يتغيّر، وهذان الحقلان لا يتغيّران. */
+    const [mvRaw, locRows, codeRows] = await Promise.all([
+      SR('stock.move', [['date', '>=', d30], ['state', '=', 'done']],
+        ['date', 'product_id', 'product_uom_qty', 'product_uom',
+         'location_id', 'location_dest_id', 'origin_returned_move_id', 'reference'],
+        { order: 'date desc', limit: 3000 }),
+      SR('stock.location', [], ['usage']),
+      SR('product.product', [], ['default_code']),
+    ]);
+    const locUsage = new Map(locRows.map((l) => [l.id, l.usage]));
+    const codeOf = new Map(codeRows.map((p) => [p.id, p.default_code || '']));
+    const isRetail = (c) => /^(701|702|703)/.test(c || '');
+
+    const classify = (m) => {
+      const src = m.location_id ? locUsage.get(m.location_id[0]) : null;
+      const dst = m.location_dest_id ? locUsage.get(m.location_dest_id[0]) : null;
+      if (m.origin_returned_move_id || src === 'customer') return 'return';
+      if (dst === 'customer') return 'out';
+      if (src === 'supplier') {
+        return isRetail(codeOf.get(m.product_id && m.product_id[0])) ? 'in_allora' : 'in_karry';
+      }
+      return 'internal';
+    };
+
+    const mvCounts = { out: 0, in_allora: 0, in_karry: 0, return: 0, internal: 0 };
+    const mvLog = [];
+    for (const m of mvRaw) {
+      const k = classify(m);
+      mvCounts[k]++;
+      if (k !== 'internal' && mvLog.length < 60) {
+        mvLog.push({
+          kind: k,
+          date: (m.date || '').slice(0, 10),
+          product: flat(m.product_id) || '—',
+          code: codeOf.get(m.product_id && m.product_id[0]) || '',
+          qty: r0(num(m.product_uom_qty)),
+          uom: flat(m.product_uom) || '',
+          where: flat(k === 'out' ? m.location_dest_id : m.location_id) || '',
+          ref: m.reference || '',
+        });
+      }
+    }
+
     /* ── المشتريات ── */
     const m08Orders = await SR('purchase.order', [['name', 'in', ['P00668', 'P00670']]], ['id']);
     const m08Lines = await SR('purchase.order.line',
@@ -262,6 +307,7 @@ module.exports = async (req, res) => {
         reserved_no_stock_lines: resNo.length,
         reserved_no_stock_units: r0(resNo.reduce((s, q) => s + num(q.reserved_quantity), 0)),
         overdue_all, overdue_outgoing, picking_states, moves_done_30d: moves30, top_products,
+        move_log: mvLog, move_counts: mvCounts, move_total: mvRaw.length,
       },
       purchasing: {
         source: 'purchase.order · stock.picking',

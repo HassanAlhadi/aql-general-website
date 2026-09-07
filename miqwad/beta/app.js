@@ -219,6 +219,52 @@ function watchList(d) {
   ];
 }
 
+/* سجل الحركة — أربعة أنواع بلون لكل نوع، والداخلي محايد */
+const MV = {
+  out:       { t: 'خروج لعميل',        c: 'ok'    },
+  in_allora: { t: 'استلام ألورا',      c: 'grey'  },
+  in_karry:  { t: 'استلام كاري',       c: 'blue'  },
+  return:    { t: 'مرتجع',             c: 'bad'   },
+  internal:  { t: 'حركة داخلية',       c: 'muted' },
+};
+
+function moveLegend(counts) {
+  const c = counts || {};
+  return `<div class="mv-legend">${Object.entries(MV).map(([k, v]) => {
+    // الحركات الداخلية معدودة ولا تُسرد، فلا معنى لجعلها مرشِّحاً
+    const on = k !== 'internal';
+    return `<${on ? 'button' : 'div'} class="mv-chip k-${v.c}${on ? ' mv-f' : ''}"
+      ${on ? `type="button" data-f="${v.c}" onclick="window.__mvFilter('${v.c}')"` : ''}>
+      <span class="mv-dot"></span><span class="mv-n">${n(c[k] || 0)}</span>
+      <span class="mv-t">${v.t}</span></${on ? 'button' : 'div'}>`;
+  }).join('')}</div>`;
+}
+
+/* ترشيح السجل بالنقر على نوع — نقرة ثانية تُلغيه. لا إعادة بناء، فقط صنف على البطاقة. */
+window.__mvFilter = (kind) => {
+  const card = document.getElementById('movelog');
+  if (!card) return;
+  const cur = card.getAttribute('data-f');
+  if (cur === kind) card.removeAttribute('data-f');
+  else card.setAttribute('data-f', kind);
+  card.querySelectorAll('.mv-f').forEach((b) =>
+    b.setAttribute('aria-pressed', b.dataset.f === card.getAttribute('data-f') ? 'true' : 'false'));
+};
+
+function moveRows(log) {
+  if (!log || !log.length) return '<p class="sub">لا حركة مسجَّلة في هذه المدة.</p>';
+  return log.map((m) => {
+    const v = MV[m.kind] || MV.internal;
+    return `<div class="mv-row k-${v.c}">
+      <span class="mv-bar"></span>
+      <span class="mv-day">${esc((m.date || '').slice(5))}</span>
+      <span class="mv-p">${esc(m.product)}${m.code ? `<span class="mv-code">${esc(m.code)}</span>` : ''}</span>
+      <span class="mv-q">${n(m.qty)}<span class="mv-u">${esc(m.uom)}</span></span>
+      <span class="mv-k">${v.t}</span>
+    </div>`;
+  }).join('');
+}
+
 /* المرحلة ٣ — انتقال + وميض */
 function goTo(view, sel) {
   const btn = document.querySelector(`.nav-item[data-v="${view}"]`);
@@ -373,12 +419,14 @@ function render(d) {
     <div class="card" style="grid-column:span 2">
       <div class="ch">${ic('chart')}<span class="t">أعلى الأصناف رصيداً</span></div>
       <div class="scroll">${rows(w.top_products, (x) => x.name, (x) => n(x.qty))}</div></div>
-    <div class="card" style="grid-column:span 2">
-      <div class="ch">${ic('trend', 'var(--ok)')}<span class="t">نشاط مسجَّل — ٣٠ يوماً</span>
-        <span class="sp pill p-ok"><span class="d"></span>يعمل</span></div>
-      <p class="big cok">${n(w.moves_done_30d)}<span class="u">حركة مكتملة</span></p>
-      <p class="sub">المستودع يسجّل يومياً. مطابقة التقرير اليدوي: ١١ من ٢٠ بنداً تطابق حتى الكسر
-        العشري — <b>أودو دقيق فيما يُسجَّل فيه</b>.</p></div></div>`;
+    <div class="card" style="grid-column:span 2" id="movelog">
+      <div class="ch">${ic('trend', 'var(--ok)')}<span class="t">سجل الحركة — ٣٠ يوماً</span>
+        <span class="sp pill p-ok"><span class="d"></span>${n(w.move_total)} حركة</span></div>
+      ${moveLegend(w.move_counts)}
+      <div class="scroll">${moveRows(w.move_log)}</div>
+      <p class="say"><b>كيف تقرأه:</b> كل سطر حركة واحدة مكتملة. اللون يقول نوعها —
+        والحركات الداخلية (تصنيع وجرد ونقل بين المواقع) معدودة في الشريط ولا تُسرد هنا.</p>
+    </div></div>`;
 
   V.pu = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
     <div class="card danger" id="m08" style="grid-column:span 2">
