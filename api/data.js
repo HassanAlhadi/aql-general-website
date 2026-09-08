@@ -12,9 +12,8 @@ const num = (v) => Number(v) || 0;
 module.exports = async (req, res) => {
   noStore(res);
   if (!sameOrigin(req)) return res.status(403).json({ error: 'cross_site' });
-  if (!readSession(req, process.env.MIQWAD_SECRET)) {
-    return res.status(401).json({ error: 'unauthorized' });
-  }
+  const session = readSession(req, process.env.MIQWAD_SECRET);
+  if (!session) return res.status(401).json({ error: 'unauthorized' });
 
   let od;
   try { od = await odoo(); }
@@ -371,6 +370,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({
       generated_at: fmt(now),
       live: true,
+      viewer: session.u,               // من فتح اللوحة — يُعرض في الشريط الجانبي فقط
       source: { db: process.env.ODOO_DB, version: '17.0+e' },
       warehouse: {
         source: 'stock.quant · stock.picking · stock.move',

@@ -350,6 +350,8 @@ function render(d) {
   const nOut = d.integration.filter((r) => r.status === 'out').length;
 
   $('#stamp').innerHTML = `مباشر من أودو · <span class="mono">${esc(d.generated_at)}</span> UTC`;
+  const vw = $('#viewer');
+  if (vw) vw.textContent = d.viewer ? d.viewer : '';
   $('#tb').innerHTML =
     `<span class="pill p-ok"><span class="dot-live"></span>حيّ · يتحدّث كل دقيقة</span>
      <span class="pill p-paper"><span class="d"></span>${nOut} أقسام خارج النظام</span>`;

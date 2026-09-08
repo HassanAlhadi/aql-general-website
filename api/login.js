@@ -18,10 +18,18 @@ module.exports = async (req, res) => {
     return res.status(code).json(body);
   };
 
-  const { MIQWAD_USER, MIQWAD_PASS_HASH, MIQWAD_SECRET } = process.env;
+  const { MIQWAD_USER, MIQWAD_PASS_HASH, MIQWAD_USER_2, MIQWAD_PASS_HASH_2,
+          MIQWAD_SECRET } = process.env;
   if (!MIQWAD_USER || !MIQWAD_PASS_HASH || !MIQWAD_SECRET) {
     return done(503, { error: 'not_configured',
       message: 'لم تُضبط متغيرات البيئة بعد. راجع miqwad/README.md' });
+  }
+
+  // حساب ثانٍ اختياري — نفس البيانات، هوية منفصلة. حل مبدئي (طلب حسن
+  // 2026-09-08) حتى يُبنى نظام حسابات كامل لاحقاً.
+  const accounts = [{ user: MIQWAD_USER, hash: MIQWAD_PASS_HASH }];
+  if (MIQWAD_USER_2 && MIQWAD_PASS_HASH_2) {
+    accounts.push({ user: MIQWAD_USER_2, hash: MIQWAD_PASS_HASH_2 });
   }
 
   let body = req.body;
@@ -29,12 +37,16 @@ module.exports = async (req, res) => {
   const user = String(body?.user ?? '');
   const pass = String(body?.pass ?? '');
 
-  // يُتحقق من الاثنين دائماً — لا خروج مبكر يكشف أيّهما الخطأ.
-  const okUser = user.normalize('NFKC').toLowerCase() === MIQWAD_USER.normalize('NFKC').toLowerCase();
-  const okPass = checkPassword(pass, MIQWAD_PASS_HASH);
+  const norm = (s) => s.normalize('NFKC').toLowerCase();
+  const match = accounts.find((a) => norm(a.user) === norm(user));
+  // يُتحقق من كلمة المرور دائماً — حتى لو اسم المستخدم مجهولاً — لئلا يكشف
+  // فارق التوقيت وجود الحساب من عدمه.
+  const okPass = checkPassword(pass, match ? match.hash : MIQWAD_PASS_HASH);
 
-  if (!okUser || !okPass) return done(401, { error: 'bad_credentials' });
+  if (!match || !okPass) return done(401, { error: 'bad_credentials' });
 
-  setSession(res, MIQWAD_USER, MIQWAD_SECRET);
+  setSession(res, match.user, MIQWAD_SECRET);
+  // Vercel Runtime Logs فقط — بلا كلمة مرور — لمعرفة من دخل ومتى.
+  console.log('[miqwad] دخول ناجح:', match.user, new Date().toISOString());
   return done(200, { ok: true });
 };

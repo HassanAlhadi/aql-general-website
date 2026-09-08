@@ -76,6 +76,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .nav-item .cnt.bad{background:var(--bad-tint);color:var(--bad)}
 .side-foot{flex:none;border-top:1px solid var(--line);padding-top:.6rem;display:flex;
   align-items:center;gap:.5rem;font-size:.68rem;color:var(--ink-faint)}
+.viewer{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .tgl{margin-inline-start:auto;display:flex;align-items:center;gap:.3rem;padding:.24rem .5rem;
   border-radius:var(--r-full);border:1px solid var(--line);background:var(--surface);font-size:.7rem}
 .tgl:hover{border-color:var(--brand-line);color:var(--brand)}
@@ -417,6 +418,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
+      <span class="viewer" id="viewer"></span>
       <button class="tgl" id="tt">الثيم</button>
       <button class="tgl" id="lo">خروج</button>
     </div>
