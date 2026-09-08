@@ -194,10 +194,60 @@ module.exports = async (req, res) => {
 
     /* ── الشحن والتسليم ── */
     const outAll = await SR('stock.picking', [['picking_type_id.code', '=', 'outgoing']],
-      ['state', 'scheduled_date', 'date_done', 'partner_id']);
+      ['state', 'scheduled_date', 'date_done', 'partner_id', 'name', 'create_date', 'write_date']);
     const outOpen = outAll.filter((r) => !['done', 'cancel'].includes(r.state));
     const outDone = outAll.filter((r) => r.state === 'done');
     const lateP = outOpen.filter((r) => (r.scheduled_date || '') < midnight);
+
+    /* ── التقادم — ما لا يتحرك، لا ما يتحرك ──
+       السؤال «ماذا حدث؟» لا يمسك أمراً فُتح في يونيو ولم يُلمس منذها: هو لا «يحدث»
+       في أي يوم. فُقدت به فعلياً 89 طلبية تجزئة على مدى 3 أشهر (اكتُشفت بسؤال حسن
+       المباشر 2026-09-08، لا بأي روتين). هذا القسم هو الإصلاح.
+       التصنيف تجزئة/B2B عبر default_code (701/702/703) لا الاسم — نفس قاعدة alora أعلاه. */
+    const openIds = outOpen.map((r) => r.id);
+    const openMoves = openIds.length
+      ? await SR('stock.move', [['picking_id', 'in', openIds]], ['picking_id', 'product_id'])
+      : [];
+    const retailPickingIds = new Set();
+    for (const m of openMoves) {
+      const code = codeOf.get(m.product_id && m.product_id[0]) || '';
+      if (isRetail(code)) retailPickingIds.add(m.picking_id[0]);
+    }
+    const agingRetail = outOpen.filter((r) => retailPickingIds.has(r.id));
+    const agingB2B = outOpen.filter((r) => !retailPickingIds.has(r.id));
+    const untouched = (r) => (r.write_date || '').slice(0, 16) === (r.create_date || '').slice(0, 16);
+
+    const oldestOf = (list) => list.length
+      ? list.reduce((a, b) => ((a.scheduled_date || '') < (b.scheduled_date || '') ? a : b)) : null;
+
+    const byPartnerAging = (list) => {
+      const map = new Map();
+      for (const r of list) {
+        const k = flat(r.partner_id) || '—';
+        const e = map.get(k) || { name: k, n: 0, oldest: null };
+        e.n++;
+        if (!e.oldest || (r.scheduled_date || '') < e.oldest) e.oldest = (r.scheduled_date || '').slice(0, 10);
+        map.set(k, e);
+      }
+      return [...map.values()].sort((a, b) => b.n - a.n).slice(0, 8);
+    };
+
+    const retailOldest = oldestOf(agingRetail);
+    const aging = {
+      source: 'stock.picking (outgoing, غير منجز) × stock.move → default_code',
+      retail: {
+        open: agingRetail.length,
+        untouched: agingRetail.filter(untouched).length,
+        oldest: retailOldest ? retailOldest.scheduled_date.slice(0, 10) : null,
+        oldest_ref: retailOldest ? retailOldest.name : null,
+        top_partners: byPartnerAging(agingRetail),
+      },
+      b2b: {
+        open: agingB2B.length,
+        oldest: oldestOf(agingB2B)?.scheduled_date?.slice(0, 10) || null,
+        note: 'قد يعكس عقود تصدير تُسحب على دفعات — لا يُقرأ كمشكلة تلقائياً',
+      },
+    };
 
     // ⚠️ الفارق بالأيام لا بالطابع الزمني — تسليم أُنجز بعد ساعتين ليس متأخراً.
     const lagDays = (r) => {
@@ -229,6 +279,7 @@ module.exports = async (req, res) => {
       measures: 'الفارق بين الموعد المجدول وتاريخ الإغلاق في أودو',
       top_late_partners: [...lateBy.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
         .map(([name, n_]) => ({ name, n: n_ })),
+      aging,
     };
 
     /* ── العملاء ── */

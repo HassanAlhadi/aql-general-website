@@ -109,6 +109,20 @@ function decisions(d) {
     });
   }
 
+  if (d.logistics && d.logistics.aging && d.logistics.aging.retail.untouched > 0) {
+    const ar = d.logistics.aging.retail;
+    out.push({
+      sev: 'bad', score: 90,
+      t: `${n(ar.untouched)} أمر شحن Alora لم يُفتح منذ إنشائه`,
+      i: `من أصل ${n(ar.open)} أمراً مفتوحاً — أقدمها منذ ${esc(ar.oldest || '—')}`,
+      a: 'اسأل إسلام الشيخ برقم أمر واحد محدَّد: هل خرجت هذه البضاعة فعلاً؟',
+      why: 'ليست محاولة صرف فشلت — لا صرف جزئي ولا ملاحظة ولا تعديل منذ لحظة الإنشاء. '
+         + 'الاحتمال الأرجح: البضاعة تخرج فعلاً لكن لا أحد يُغلق الأمر في أودو، '
+         + 'فالنظام لا يعرف أنها خرجت.',
+      go: ['ship', '#aging-retail'],
+    });
+  }
+
   if (w && w.reserved_no_stock_units > 0) {
     out.push({
       sev: 'bad', score: 74,
@@ -174,6 +188,7 @@ function keyMetrics(d) {
     aloraDeliv: d.alora.customer_deliveries,
     priced: d.alora.with_price,
     customers: d.customers ? d.customers.total : null,
+    agingRetail: d.logistics.aging ? d.logistics.aging.retail.open : null,
   };
 }
 
@@ -199,6 +214,7 @@ function changesSince(d) {
   cmp('cancelled', 'الطلبات الملغاة', false);
   cmp('overdue', 'أوامر متأخرة', false);
   cmp('customers', 'عدد العملاء', true);
+  cmp('agingRetail', 'طلبيات Alora عالقة', false);
   return { first: false, since: prev.at, list };
 }
 
@@ -214,6 +230,7 @@ function watchList(d) {
       (m.priced || 0) > 0, 'cat', '#retail-price'],
     ['ترحيل الشحنتين', m.m08 == null ? 'غير معروف' : `${m.m08}٪`, (m.m08 || 0) > 0, 'pu', '#m08'],
     ['أوامر متأخرة', n(m.overdue), (m.overdue || 0) === 0, 'ship', '#overdue'],
+    ['طلبيات Alora عالقة', n(m.agingRetail), (m.agingRetail || 0) === 0, 'ship', '#aging-retail'],
     ['طلبات ملغاة', n(m.cancelled), (m.cancelled || 0) === 0, 'b2b', '#cancelled'],
     ['عملاء مسجّلون', n(m.customers), true, 'cust', '#country'],
   ];
@@ -496,14 +513,21 @@ function render(d) {
         (x) => `<span class="mono">${esc(x.code)}</span>`)}</div>
       <p class="say"><b>ضابط ربط أودو:</b> اللوحة تطابق على <b>كود الصنف</b> لا الاسم.</p></div></div>`;
 
-  V.ship = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
-    <div class="card danger" style="grid-column:span 2">
-      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">فارق التسجيل — الموعد مقابل الإغلاق</span>
-        <span class="sp pill p-bad"><span class="d"></span>الوسيط ${l.lag_median_days} يوماً</span></div>
-      <p class="big xl cbad">${l.on_time_pct?.toFixed(1)}<span class="u">% في الموعد</span></p>
-      <div class="rows">${rows(Object.entries(l.lag_buckets), (x) => x[0], (x) => n(x[1]))}</div>
-      <p class="say"><b>مراقب المخازن:</b> ⚠️ هذا فارق <b>التسجيل</b> لا التسليم. أوامر مجدولة على مدى
-        أسابيع أُغلقت دفعةً واحدة خلال دقائق — متى خرجت البضاعة فعلياً: <b>غير معروف</b>.</p></div>
+  const ag = l.aging || {};
+  const agR = ag.retail || {}; const agB = ag.b2b || {};
+  V.ship = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:auto 1fr 1fr">
+    <div class="card danger" id="aging-retail" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">أوامر شحن Alora عالقة — لا تتحرك، لا تُقفل</span>
+        ${agR.oldest ? `<span class="sp pill p-bad"><span class="d"></span>منذ ${esc(agR.oldest)}</span>` : ''}</div>
+      <p class="big xl cbad">${n(agR.open)}<span class="u">أمر مفتوح</span></p>
+      <p class="sub">${n(agR.untouched)} منها لم يُفتح ولم يُلمس منذ إنشائه — لا صرف جزئي، لا ملاحظة.
+        ${agR.oldest_ref ? `أقدمها <span class="mono">${esc(agR.oldest_ref)}</span>.` : ''}</p>
+      <p class="say"><b>مراقب المخازن:</b> التقرير اليومي يسأل «ماذا حدث؟» — وأمر فُتح في يونيو ولم
+        يُلمس منذها <b>لا يحدث في أي يوم</b>، فلا يظهر فيه. هذا القسم يسأل السؤال المعاكس: ما الذي
+        <b>لا</b> يتحرك.</p></div>
+    <div class="card" style="grid-column:span 2">
+      <div class="ch">${ic('users')}<span class="t">أكثر عملاء Alora عالقةً طلبياتهم</span></div>
+      <div class="scroll">${rows(agR.top_partners || [], (x) => `${x.name} · منذ ${x.oldest}`, (x) => n(x.n), 'cbad')}</div></div>
     <div class="card"><div class="ch">${ic('truck')}<span class="t">أوامر خروج مفتوحة</span></div>
       <p class="big cwarn">${n(l.open)}</p>
       <p class="sub">من ${n(l.total)} إجمالاً · ${n(l.done)} منجزة</p>
@@ -511,6 +535,16 @@ function render(d) {
     <div class="card" id="overdue"><div class="ch">${ic('alert', 'var(--warn)')}<span class="t">متأخرة الآن</span></div>
       <p class="big cwarn">${n(l.late)}</p>
       <p class="sub">تاريخها المجدول مضى ولم تُغلق</p></div>
+    <div class="card"><div class="ch">${ic('box')}<span class="t">B2B عالقة — للمقارنة</span></div>
+      <p class="big">${n(agB.open)}</p>
+      <p class="sub">${agB.oldest ? `أقدمها منذ ${esc(agB.oldest)}. ` : ''}${esc(agB.note || '')}</p></div>
+    <div class="card danger" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">فارق التسجيل — الموعد مقابل الإغلاق</span>
+        <span class="sp pill p-bad"><span class="d"></span>الوسيط ${l.lag_median_days} يوماً</span></div>
+      <p class="big xl cbad">${l.on_time_pct?.toFixed(1)}<span class="u">% في الموعد</span></p>
+      <div class="rows">${rows(Object.entries(l.lag_buckets), (x) => x[0], (x) => n(x[1]))}</div>
+      <p class="say"><b>مراقب المخازن:</b> ⚠️ هذا فارق <b>التسجيل</b> لا التسليم. أوامر مجدولة على مدى
+        أسابيع أُغلقت دفعةً واحدة خلال دقائق — متى خرجت البضاعة فعلياً: <b>غير معروف</b>.</p></div>
     <div class="card" style="grid-column:span 4">
       <div class="ch">${ic('users')}<span class="t">أكثر العملاء تأخّراً</span></div>
       <div class="scroll">${rows(l.top_late_partners, (x) => x.name, (x) => n(x.n), 'cwarn')}</div></div>
