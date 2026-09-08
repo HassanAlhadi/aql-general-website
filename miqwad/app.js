@@ -24,6 +24,8 @@ const ICONS = {
   coins: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
   alert: '<path d="M12 9v5M12 17.5v.01"/><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
   gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/>',
+  file: '<path d="M6 2.5h8l4 4V21H6z"/><path d="M14 2.5V7h4"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5"/>',
 };
 const ic = (k, c = 'currentColor', s = 14) =>
   `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.9"
@@ -34,7 +36,8 @@ const NAV_GROUPS = [
   ['التشغيل', [['wh', 'box', 'المخازن'], ['pu', 'cart', 'المشتريات والإنتاج'],
                ['ship', 'truck', 'الشحن والتسليم']]],
   ['التجارة', [['b2b', 'trend', 'مبيعات B2B'], ['alora', 'tag', 'Alora — التجزئة'],
-               ['cust', 'users', 'العملاء'], ['cat', 'grid', 'المنتجات والتسعير']]],
+               ['cust', 'users', 'العملاء'], ['cat', 'grid', 'المنتجات والتسعير'],
+               ['designs', 'file', 'التصميمات']]],
   ['المال', [['fin', 'coins', 'المالية']]],
 ];
 const NAV = NAV_GROUPS.flatMap(([, g]) => g);
@@ -54,6 +57,289 @@ function intgUnits(list) {
     <span class="v">${r.metric === null ? '—' : n(r.metric)}</span></div>`).join('');
 }
 
+
+/* ══════════════════════════════════════════════════════════════════
+   المرحلة ١ — اللغة
+   لا رمز يظهر للمستخدم. M-08 و G-03 نظام أرشفة داخلي في السجلات،
+   لا لغة شاشة. كل بند يجيب: ما الذي حدث؟ لماذا يهمّني؟ ما الذي أفعله؟
+
+   المرحلة ٢ — القرارات
+   الترتيب = الأثر × الإلحاح × القدرة على التصرّف.
+   البند الذي يُحسم برسالة واحدة يسبق ما يحتاج مشروعاً، حتى لو كان أكبر.
+   ══════════════════════════════════════════════════════════════════ */
+
+function decisions(d) {
+  const { purchasing: p, alora: a, warehouse: w, customers: cu, catalog: ca, b2b: b } = d;
+  const out = [];
+
+  if (p.m08 && p.m08.pct === 0 && p.m08.total_units > 0) {
+    out.push({
+      sev: 'bad', score: 100,
+      t: 'شحنتان وصلتا ولم تدخل النظام',
+      i: `${n(p.m08.total_units)} وحدة معلّقة — والنظام لا يعرف أنها في المخزن`,
+      a: 'كلمة واحدة لمدير المخازن: رحِّل استلام <b>P00668</b> و<b>P00670</b>',
+      why: 'ما دامت البضاعة خارج النظام، لا يمكن بيعها ولا تسليمها ولا فوترتها من أودو. '
+         + 'هذه أرخص خطوة وأعلاها أثراً: تفتح سلسلة Alora كاملة بلا مشروع ولا تكلفة.',
+      go: ['pu', '#m08'],
+    });
+  }
+
+  if (ca && ca.retail_no_price > 0) {
+    out.push({
+      sev: 'bad', score: 92,
+      t: `${ca.retail_no_price} صنف تجزئة بلا سعر بيع`,
+      i: 'كل منتج يُباع بالعلبة ليس له سعر في النظام',
+      a: 'من يحدّد الأسعار يدخلها في أودو — أو تعطيه القائمة',
+      why: 'بلا سعر لا تُصدَر فاتورة، وبلا فاتورة لا يوجد إيراد مسجَّل. '
+         + 'هذه الحلقة الأولى في السلسلة المقطوعة — قبلها لا يتحرّك شيء.',
+      go: ['cat', '#retail-price'],
+    });
+  }
+
+  if (a && a.retail_delivered_pct === 0 && a.retail_ordered > 0) {
+    out.push({
+      sev: 'bad', score: 88,
+      t: 'كل ما يُباع بالعلبة لم يخرج من المخزن ولا مرة',
+      i: `${n(a.retail_ordered)} وحدة تغليف مطلوبة، وصفر مُسلَّمة — مقابل `
+       + `${b.delivered_pct != null ? b.delivered_pct.toFixed(0) : '—'}٪ للسائب بالكيلو`,
+      a: 'اسأل المخازن: هل تخرج فعلاً ولا تُسجَّل، أم لا تخرج أصلاً؟',
+      why: 'نفس النظام ونفس الفترة ونفس الناس — السائب يخرج والتجزئة لا. '
+         + 'هذا يعني أن المشكلة ليست في أودو ولا في المخزن، بل أن قناة التجزئة '
+         + 'غير مُشغّلة داخل النظام أصلاً.',
+      go: ['alora', '#retail-deliv'],
+    });
+  }
+
+  if (d.logistics && d.logistics.aging && d.logistics.aging.retail.untouched > 0) {
+    const ar = d.logistics.aging.retail;
+    out.push({
+      sev: 'bad', score: 90,
+      t: `${n(ar.untouched)} أمر شحن Alora لم يُفتح منذ إنشائه`,
+      i: `من أصل ${n(ar.open)} أمراً مفتوحاً — أقدمها منذ ${esc(ar.oldest || '—')}`,
+      a: 'اسأل إسلام الشيخ برقم أمر واحد محدَّد: هل خرجت هذه البضاعة فعلاً؟',
+      why: 'ليست محاولة صرف فشلت — لا صرف جزئي ولا ملاحظة ولا تعديل منذ لحظة الإنشاء. '
+         + 'الاحتمال الأرجح: البضاعة تخرج فعلاً لكن لا أحد يُغلق الأمر في أودو، '
+         + 'فالنظام لا يعرف أنها خرجت.',
+      go: ['ship', '#aging-retail'],
+    });
+  }
+
+  if (w && w.reserved_no_stock_units > 0) {
+    out.push({
+      sev: 'bad', score: 74,
+      t: 'بضاعة محجوزة لعملاء والمخزن يقول رصيدها صفر',
+      i: `${n(w.reserved_no_stock_units)} وحدة على ${w.reserved_no_stock_lines} أسطر`,
+      a: 'المخازن تراجع: إنتاج لم يكتمل، أم حجز على وهم؟',
+      why: 'الحجز على رصيد صفر يعني وعداً بشيء غير موجود. '
+         + 'قد يكون طبيعياً (حجز مقابل أمر تصنيع جارٍ)، وقد يكون خطأً يمنع البيع لعميل آخر.',
+      go: ['wh', '#reserved'],
+    });
+  }
+
+  if (cu && cu.missing_country_pct >= 50) {
+    out.push({
+      sev: 'warn', score: 62,
+      t: 'ثلثا عملائك بلا بلد مسجَّل',
+      i: `${n(cu.missing_country)} من ${n(cu.total)} عميلاً`,
+      a: 'المبيعات تكمل الحقل — أرخص إصلاح في القائمة كلها',
+      why: 'قرارات التوسع تُبنى على «أين نبيع أكثر؟». '
+         + 'وبلا بلد لا يمكن الإجابة — ولا معرفة أي سوق ينمو وأيّه يتراجع.',
+      go: ['cust', '#country'],
+    });
+  }
+
+  if (w && w.overdue_all > 0) {
+    out.push({
+      sev: 'warn', score: 55,
+      t: `${n(w.overdue_all)} أمر مخزن فات موعده`,
+      i: `منها ${n(w.overdue_outgoing)} تسليم لعملاء`,
+      a: 'المخازن تغلق المنجز وتحدّث مواعيد الباقي',
+      why: 'الأمر المفتوح بعد موعده يجعل «المتاح للبيع» غير صحيح، '
+         + 'فيظهر مخزون محجوز لا يُباع. وأغلبه — غالباً — بضاعة خرجت ولم تُغلق في النظام.',
+      go: ['ship', '#overdue'],
+    });
+  }
+
+  if (b && b.cancelled_orders > 0) {
+    out.push({
+      sev: 'warn', score: 40,
+      t: `${n(b.cancelled_orders)} طلب بيع أُلغي`,
+      i: 'تراكمية — والسبب غير معروف',
+      a: 'اسأل المحاسبة عن سبب أحدث إلغاء',
+      why: 'الإلغاء المتكرّر إمّا عملاء يتراجعون — وهذه مشكلة تجارية، '
+         + 'أو النظام يرفض التأكيد لنقص مخزون — وهذه مشكلة تشغيلية. '
+         + 'الفرق كبير، والسبب لم يُحسم بعد.',
+      go: ['b2b', '#cancelled'],
+    });
+  }
+
+  return out.sort((x, y) => y.score - x.score);
+}
+
+/* المرحلة ٢ — ما تغيّر منذ آخر زيارة. تُحفَظ اللقطة في المتصفح فقط. */
+const SNAP_KEY = 'miqwad-last-seen';
+
+function keyMetrics(d) {
+  return {
+    at: d.generated_at,
+    m08: d.purchasing.m08 ? d.purchasing.m08.pct : null,
+    overdue: d.warehouse.overdue_all,
+    cancelled: d.b2b.cancelled_orders,
+    aloraInv: d.alora.posted_invoice_lines,
+    aloraDeliv: d.alora.customer_deliveries,
+    priced: d.alora.with_price,
+    customers: d.customers ? d.customers.total : null,
+    agingRetail: d.logistics.aging ? d.logistics.aging.retail.open : null,
+  };
+}
+
+function changesSince(d) {
+  let prev = null;
+  try { prev = JSON.parse(localStorage.getItem(SNAP_KEY) || 'null'); } catch { prev = null; }
+  const cur = keyMetrics(d);
+  try { localStorage.setItem(SNAP_KEY, JSON.stringify(cur)); } catch { /* وضع خاص */ }
+  if (!prev) return { first: true, since: null, list: [] };
+
+  const list = [];
+  const cmp = (k, label, goodUp, fmt = (v) => n(v)) => {
+    if (prev[k] == null || cur[k] == null || prev[k] === cur[k]) return;
+    const up = cur[k] > prev[k];
+    const good = goodUp ? up : !up;
+    list.push({ dir: good ? 'up' : 'down',
+      text: `<b>${label}</b>: ${fmt(prev[k])} ← ${fmt(cur[k])}` });
+  };
+  cmp('aloraInv', 'فواتير Alora', true);
+  cmp('aloraDeliv', 'تسليمات Alora', true);
+  cmp('priced', 'أصناف لها سعر', true);
+  cmp('m08', 'ترحيل الشحنتين', true, (v) => `${v}٪`);
+  cmp('cancelled', 'الطلبات الملغاة', false);
+  cmp('overdue', 'أوامر متأخرة', false);
+  cmp('customers', 'عدد العملاء', true);
+  cmp('agingRetail', 'طلبيات Alora عالقة', false);
+  return { first: false, since: prev.at, list };
+}
+
+/* المؤشرات السبعة التي أراقبها — تُعرض دائماً بقيمتها الحالية، حتى حين لا يتغيّر شيء.
+   بدونها تبدو البطاقة فارغة في أول زيارة وفي كل يوم هادئ. */
+function watchList(d) {
+  const m = keyMetrics(d);
+  const priced = d.catalog && d.catalog.retail_total ? d.catalog.retail_total : null;
+  return [
+    ['فواتير Alora مُرحَّلة', n(m.aloraInv), (m.aloraInv || 0) > 0, 'alora', '#paper'],
+    ['تسليمات Alora للعملاء', n(m.aloraDeliv), (m.aloraDeliv || 0) > 0, 'alora', '#retail-deliv'],
+    ['أصناف تجزئة لها سعر', priced ? `${m.priced} من ${priced}` : n(m.priced),
+      (m.priced || 0) > 0, 'cat', '#retail-price'],
+    ['ترحيل الشحنتين', m.m08 == null ? 'غير معروف' : `${m.m08}٪`, (m.m08 || 0) > 0, 'pu', '#m08'],
+    ['أوامر متأخرة', n(m.overdue), (m.overdue || 0) === 0, 'ship', '#overdue'],
+    ['طلبيات Alora عالقة', n(m.agingRetail), (m.agingRetail || 0) === 0, 'ship', '#aging-retail'],
+    ['طلبات ملغاة', n(m.cancelled), (m.cancelled || 0) === 0, 'b2b', '#cancelled'],
+    ['عملاء مسجّلون', n(m.customers), true, 'cust', '#country'],
+  ];
+}
+
+/* سجل الحركة — أربعة أنواع بلون لكل نوع، والداخلي محايد */
+const MV = {
+  out:       { t: 'خروج لعميل',        c: 'ok'    },
+  in_allora: { t: 'استلام ألورا',      c: 'grey'  },
+  in_karry:  { t: 'استلام كاري',       c: 'blue'  },
+  return:    { t: 'مرتجع',             c: 'bad'   },
+  internal:  { t: 'حركة داخلية',       c: 'muted' },
+};
+
+function moveLegend(counts) {
+  const c = counts || {};
+  return `<div class="mv-legend">${Object.entries(MV).map(([k, v]) => {
+    // الحركات الداخلية معدودة ولا تُسرد، فلا معنى لجعلها مرشِّحاً
+    const on = k !== 'internal';
+    return `<${on ? 'button' : 'div'} class="mv-chip k-${v.c}${on ? ' mv-f' : ''}"
+      ${on ? `type="button" data-f="${v.c}" onclick="window.__mvFilter('${v.c}')"` : ''}>
+      <span class="mv-dot"></span><span class="mv-n">${n(c[k] || 0)}</span>
+      <span class="mv-t">${v.t}</span></${on ? 'button' : 'div'}>`;
+  }).join('')}</div>`;
+}
+
+/* ترشيح السجل بالنقر على نوع — نقرة ثانية تُلغيه. لا إعادة بناء، فقط صنف على البطاقة. */
+window.__mvFilter = (kind) => {
+  const card = document.getElementById('movelog');
+  if (!card) return;
+  const cur = card.getAttribute('data-f');
+  if (cur === kind) card.removeAttribute('data-f');
+  else card.setAttribute('data-f', kind);
+  card.querySelectorAll('.mv-f').forEach((b) =>
+    b.setAttribute('aria-pressed', b.dataset.f === card.getAttribute('data-f') ? 'true' : 'false'));
+};
+
+function moveRows(log) {
+  if (!log || !log.length) return '<p class="sub">لا حركة مسجَّلة في هذه المدة.</p>';
+  return log.map((m) => {
+    const v = MV[m.kind] || MV.internal;
+    return `<div class="mv-row k-${v.c}">
+      <span class="mv-bar"></span>
+      <span class="mv-day">${esc((m.date || '').slice(5))}</span>
+      <span class="mv-p">${esc(m.product)}${m.code ? `<span class="mv-code">${esc(m.code)}</span>` : ''}</span>
+      <span class="mv-q">${n(m.qty)}<span class="mv-u">${esc(m.uom)}</span></span>
+      <span class="mv-k">${v.t}</span>
+    </div>`;
+  }).join('');
+}
+
+/* قاعدة بيانات قابلة للبحث — لطلبيات Alora العالقة تحديداً.
+   طلب حسن (2026-09-08): «داتا بيس واضح لهذي الأمور، أسهل من داتا بيس أودو».
+   كل سجل بذاته لا مجمَّع، وبحث فوري بلا إعادة طلب — كل الـ89 محمّلة أصلاً. */
+const AG_STATE = { confirmed: 'بانتظار بضاعة', assigned: 'جاهز للصرف — ينتظر الصرف',
+  waiting: 'بانتظار أمر سابق', draft: 'مسودة' };
+
+function agingTable(list) {
+  if (!list || !list.length) return '<p class="sub">لا سجل مطابق.</p>';
+  const row = (r) => {
+    const q = [r.ref, r.partner, ...(r.products || [])].join(' ').toLowerCase();
+    return `<div class="db-row${r.untouched ? ' db-u' : ''}" data-q="${esc(q)}">
+      <span class="db-ref mono">${esc(r.ref)}</span>
+      <span class="db-p">${esc(r.partner)}</span>
+      <span class="db-i">${esc((r.products || []).join(' · ')) || '—'}</span>
+      <span class="db-d">${esc(r.scheduled || '—')}</span>
+      <span class="db-s">${esc(AG_STATE[r.state] || r.state)}${r.untouched ? ' <b class="db-flag">لم يُلمس</b>' : ''}</span>
+    </div>`;
+  };
+  return list.map(row).join('');
+}
+
+window.__agSearch = (val) => {
+  const q = String(val || '').trim().toLowerCase();
+  document.querySelectorAll('#ag-table .db-row').forEach((r) => {
+    r.hidden = q.length > 0 && !r.dataset.q.includes(q);
+  });
+  const shown = document.querySelectorAll('#ag-table .db-row:not([hidden])').length;
+  const ctr = document.getElementById('ag-count');
+  if (ctr) ctr.textContent = q ? `${shown} من ${document.querySelectorAll('#ag-table .db-row').length}` : '';
+};
+
+/* المرحلة ٣ — انتقال + وميض */
+function goTo(view, sel) {
+  const btn = document.querySelector(`.nav-item[data-v="${view}"]`);
+  if (btn) btn.click();
+  requestAnimationFrame(() => {
+    const el = sel && document.querySelector(`.view.on ${sel}`);
+    if (!el) return;
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    el.classList.remove('flash');
+    void el.offsetWidth;              // يعيد تشغيل الحركة عند النقر المتكرر
+    el.classList.add('flash');
+    setTimeout(() => el.classList.remove('flash'), 2400);
+  });
+}
+
+/* زرّ «ليش يهمّني؟» — يظهر عند الطلب فقط، فلا يزحم من يعرف */
+const why = (text) => `<div class="why"><button class="why-btn" type="button"
+  onclick="this.parentElement.classList.toggle('open')">
+  ليش يهمّني؟</button><div class="why-body">${esc(text)}</div></div>`;
+
+/* رقم قابل للنقر */
+const goNum = (view, sel, inner) =>
+  `<button class="go" type="button" onclick="window.__go('${view}','${sel}')">${inner}
+   <span class="arrow">←</span></button>`;
+
+
 function render(d) {
   const { warehouse: w, purchasing: p, production: pr, b2b: b, alora: a,
           logistics: l, customers: cu, catalog: ca, finance_detail: fd } = d;
@@ -70,52 +356,82 @@ function render(d) {
 
   const V = {};
 
-  V.overview = `<div class="grid" style="grid-template-columns:repeat(4,1fr);
-    grid-template-rows:1.05fr .95fr auto;
-    grid-template-areas:'hero hero pend pend' 'm08 retail pend pend' 'intg intg intg intg'">
-    <div class="card acc" style="grid-area:hero">
-      <div class="ch">${ic('tag', 'var(--brand)')}<span class="t">أصناف أُنشئت اليوم</span>
-        ${a.created_today.length ? '<span class="sp pill p-brand"><span class="d"></span>جديد</span>' : ''}</div>
-      <p class="big xl cbrand">${a.created_today.length}</p>
-      <div class="scroll">${a.created_today.length
-        ? rows(a.created_today, (x) => x.name.trim(), (x) => `<span class="mono">${esc(x.code)}</span>`)
-        : '<p class="sub">لا شيء أُنشئ اليوم.</p>'}</div>
-      <p class="say"><b>مدير Alora:</b> كل صنف يُنشأ بسعر صفر يوسّع فجوة التسعير.</p>
-    </div>
-    <div class="card danger" style="grid-area:m08">
-      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">M-08 · الأعلى أثراً</span></div>
-      <p class="big xl cbad">${m.pct === null ? '—' : m.pct.toFixed(0)}<span class="u">%</span></p>
-      <p class="sub">${n(m.received_units)} من <b>${n(m.total_units)}</b> وحدة على
-        <b class="mono">P00668</b> · <b class="mono">P00670</b></p>
-      <p class="say"><b>ضابط المشتريات:</b> خطوة واحدة تفتح سلسلة Alora كاملة.</p>
-    </div>
-    <div class="card" style="grid-area:retail">
-      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">تغليف التجزئة — مُسلَّم</span></div>
-      <p class="big xl cbad">${a.retail_delivered_pct === null ? '—' : a.retail_delivered_pct.toFixed(0)}<span class="u">%</span></p>
-      <p class="sub">${n(a.retail_ordered)} وحدة مطلوبة مقابل
-        <b class="cok">${b.delivered_pct?.toFixed(0)}%</b> للسائب بالكيلو</p>
-      <p class="say"><b>محلل B2B:</b> القناة غير مُشغّلة داخل أودو.</p>
-    </div>
-    <div class="card" style="grid-area:pend">
-      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">ما ينتظر قرارك</span></div>
-      <div class="scroll">
-        <div class="row"><span class="lab">ترحيل الاستلامين (M-08)</span><span class="n cbad">${m.pct?.toFixed(0)}%</span></div>
-        <div class="row"><span class="lab">أصناف بلا سعر بيع</span><span class="n cbad">${a.skus - a.with_price} من ${a.skus}</span></div>
-        <div class="row"><span class="lab">أسماء أصناف مكتوبة خطأ</span><span class="n cwarn">${a.misspelled.length}</span></div>
-        <div class="row"><span class="lab">أوامر متأخرة</span><span class="n cwarn">${n(w.overdue_all)}</span></div>
-        <div class="row"><span class="lab">محجوز برصيد صفر</span><span class="n cbad">${n(w.reserved_no_stock_units)}</span></div>
-        <div class="row"><span class="lab">أوامر ملغاة (السبب غير معروف)</span><span class="n cwarn">${n(b.cancelled_orders)}</span></div>
-        <div class="row"><span class="lab">سجلات CRM</span><span class="n cbad">${n(d.crm.leads)}</span></div>
+  const DEC = decisions(d).slice(0, 3);
+  const CH = changesSince(d);
+  const hour = new Date().getUTCHours() + 3;              // توقيت مصر/السعودية صيفاً
+  const greet = hour < 12 ? 'صباح الخير' : hour < 17 ? 'مساء الخير' : 'مساء الخير';
+
+  const decCards = DEC.length ? DEC.map((x, i) => `
+    <div class="dec-item ${i === 0 ? 'sev-' + x.sev : 'sev-' + x.sev + ' quiet'}">
+      <span class="dec-rank">${i + 1}</span>
+      <div class="dec-b">
+        <div class="dec-t">${esc(x.t)}</div>
+        <div class="dec-i">${x.i}</div>
+        <div class="dec-a">${x.a}</div>
+        <div class="dec-btns">
+          <button class="dec-btn primary" type="button"
+            onclick="window.__go('${x.go[0]}','${x.go[1]}')">افتح التفاصيل</button>
+          <button class="dec-btn" type="button"
+            onclick="this.closest('.dec-item').style.display='none'">أجّل ليوم</button>
+        </div>
+        ${why(x.why)}
       </div>
-      <p class="say"><b>ضابط ربط أودو:</b> لا شيء هنا يُنفَّذ من اللوحة — كلها إجراءات بشرية.</p>
+    </div>`).join('') : '<p class="sub">لا شيء ينتظر قرارك اليوم.</p>';
+
+  const chgList = CH.first
+    ? '<p class="sub">هذه أول زيارة تُسجَّل. من المرة القادمة سأعرض لك ما تغيّر بينهما.</p>'
+    : CH.list.length
+      ? CH.list.map((c) => `<div class="chg ${c.dir}"><span class="dot"></span>
+          <span>${c.text}</span></div>`).join('')
+      : `<div class="chg flat"><span class="dot"></span><span>لا شيء تغيّر منذ آخر زيارتك
+         ${CH.since ? `(${esc(CH.since.slice(0, 16))})` : ''}.</span></div>`;
+
+  const inCount = d.integration.filter((r) => r.status === 'in').length;
+  const outCount = d.integration.filter((r) => r.status === 'out').length;
+  const needAttn = (w.overdue_all || 0) + (b.cancelled_orders || 0);
+
+  V.overview = `<div class="grid" style="grid-template-columns:5fr 4fr;
+    grid-template-rows:auto 1fr auto">
+    <div class="card" style="grid-column:1/-1;padding:.7rem .9rem">
+      <div class="hello">${greet} حسن — إليك ما يهمّ اليوم</div>
+      <div class="hello-sub">آخر قراءة من أودو:
+        <span class="mono">${esc(d.generated_at)}</span> UTC</div>
     </div>
-    <div class="card" style="grid-area:intg;padding:.5rem .6rem">
-      <div class="ch">${ic('chart', 'var(--brand)')}<span class="t">عدّاد الربط</span>
-        <span class="sp pill p-ok">${nIn} داخل</span>
-        <span class="pill p-paper" style="margin-inline-start:.3rem">${nOut} خارج</span></div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.35rem;overflow:hidden">
-        ${intgUnits(d.integration)}</div>
-    </div></div>`;
+
+    <div class="card" style="grid-row:2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">ينتظر قرارك</span>
+        <span class="sp pill p-plain">${DEC.length} من ${decisions(d).length}</span></div>
+      <div class="dec">${decCards}</div>
+    </div>
+
+    <div class="card" style="grid-row:2">
+      <div class="ch">${ic('trend', 'var(--brand)')}<span class="t">ما تغيّر منذ آخر زيارتك</span></div>
+      <div class="scroll">
+        ${chgList}
+        <div class="wl-h">المؤشرات التي أراقبها لك — قيمتها الآن</div>
+        ${watchList(d).map(([lab, val, ok, view, sel]) => goNum(view, sel,
+          `<div class="wl"><span class="lab">${esc(lab)}</span>
+             <span class="n ${ok ? 'ok' : 'bad'}">${val}</span></div>`)).join('')}
+      </div>
+      <p class="say"><b>ملاحظة:</b> «ما تغيّر» يُقاس من آخر مرة فتحت فيها اللوحة على هذا الجهاز،
+        لا من بداية اليوم. اضغط أي مؤشر ليفتح مصدره.</p>
+    </div>
+
+    <div class="card" style="grid-column:1/-1;padding:.6rem .8rem">
+      <div class="ch">${ic('chart', 'var(--brand)')}<span class="t">الشركة بنظرة واحدة</span></div>
+      <div class="glance">
+        ${goNum('intg', '.iu.s-in', `<div class="gl-cell ok"><span class="k">يعمل داخل النظام</span>
+          <span class="v">${inCount} أقسام</span>
+          <span class="d">المخازن · المشتريات · الإنتاج · مبيعات B2B</span></div>`)}
+        ${goNum('ship', '#overdue', `<div class="gl-cell warn"><span class="k">يحتاج انتباهك</span>
+          <span class="v">${n(needAttn)}</span>
+          <span class="d">أمر متأخر وطلب ملغى</span></div>`)}
+        ${goNum('alora', '#paper', `<div class="gl-cell paper"><span class="k">خارج النظام</span>
+          <span class="v">${outCount} أقسام</span>
+          <span class="d">التجزئة · التسويق · سجل العملاء المحتملين</span></div>`)}
+      </div>
+    </div>
+  </div>`;
 
   V.intg = `<div class="grid" style="grid-template-columns:1fr;grid-template-rows:1fr auto">
     <div class="card">
@@ -145,23 +461,25 @@ function render(d) {
       <p class="sub">منها <b>${n(w.overdue_outgoing)}</b> تسليم عملاء</p>
       <div class="scroll">${rows(Object.entries(w.picking_states).sort((x, y) => y[1] - x[1]),
         (x) => x[0], (x) => n(x[1]))}</div></div>
-    <div class="card"><div class="ch">${ic('alert', 'var(--bad)')}<span class="t">شذوذ الرصيد</span></div>
+    <div class="card" id="reserved"><div class="ch">${ic('alert', 'var(--bad)')}<span class="t">محجوز برصيد صفر</span></div>
       <p class="big cbad">${n(w.reserved_no_stock_units)}<span class="u">محجوز برصيد صفر</span></p>
       <p class="sub">على ${w.reserved_no_stock_lines} أسطر · و${w.negative_lines} برصيد سالب من ${n(w.lines)}</p>
       <p class="say"><b>مراقب المخازن:</b> نسبة منخفضة — الانضباط جيد عموماً.</p></div>
     <div class="card" style="grid-column:span 2">
       <div class="ch">${ic('chart')}<span class="t">أعلى الأصناف رصيداً</span></div>
       <div class="scroll">${rows(w.top_products, (x) => x.name, (x) => n(x.qty))}</div></div>
-    <div class="card" style="grid-column:span 2">
-      <div class="ch">${ic('trend', 'var(--ok)')}<span class="t">نشاط مسجَّل — ٣٠ يوماً</span>
-        <span class="sp pill p-ok"><span class="d"></span>يعمل</span></div>
-      <p class="big cok">${n(w.moves_done_30d)}<span class="u">حركة مكتملة</span></p>
-      <p class="sub">المستودع يسجّل يومياً. مطابقة التقرير اليدوي: ١١ من ٢٠ بنداً تطابق حتى الكسر
-        العشري — <b>أودو دقيق فيما يُسجَّل فيه</b>.</p></div></div>`;
+    <div class="card" style="grid-column:span 2" id="movelog">
+      <div class="ch">${ic('trend', 'var(--ok)')}<span class="t">سجل الحركة — ٣٠ يوماً</span>
+        <span class="sp pill p-ok"><span class="d"></span>${n(w.move_total)} حركة</span></div>
+      ${moveLegend(w.move_counts)}
+      <div class="scroll">${moveRows(w.move_log)}</div>
+      <p class="say"><b>كيف تقرأه:</b> كل سطر حركة واحدة مكتملة. اللون يقول نوعها —
+        والحركات الداخلية (تصنيع وجرد ونقل بين المواقع) معدودة في الشريط ولا تُسرد هنا.</p>
+    </div></div>`;
 
   V.pu = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
-    <div class="card danger" style="grid-column:span 2">
-      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">M-08 — الإجراء الأعلى أثراً</span></div>
+    <div class="card danger" id="m08" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">الشحنتان المعلّقتان — الأعلى أثراً</span></div>
       <p class="big xl cbad">${m.pct === null ? '—' : m.pct.toFixed(0)}<span class="u">%</span></p>
       <p class="sub">${n(m.received_units)} من ${n(m.total_units)} وحدة</p>
       <p class="say"><b>ضابط المشتريات:</b> أرخص إجراء متاح وأعلاها أثراً.</p></div>
@@ -196,7 +514,7 @@ function render(d) {
         `<div class="row"><span class="lab">${esc(c.name)}</span>
          <span class="n ${pctCls(c.pct || 0)}">${c.pct?.toFixed(0)}%</span></div>`).join('')}</div>
       <p class="say"><b>محلل B2B:</b> النِسب المنخفضة ليست تأخيراً بالضرورة — السحب على دفعات مؤكَّد.</p></div>
-    <div class="card"><div class="ch">${ic('alert', 'var(--warn)')}<span class="t">أوامر ملغاة</span></div>
+    <div class="card" id="cancelled"><div class="ch">${ic('alert', 'var(--warn)')}<span class="t">أوامر ملغاة</span></div>
       <p class="big cwarn">${n(b.cancelled_orders)}</p>
       <p class="sub">تراكمية · السبب <b>غير معروف</b></p></div>
     <div class="card"><div class="ch">${ic('trend')}<span class="t">أوامر جديدة — ٣٠ يوماً</span></div>
@@ -212,11 +530,11 @@ function render(d) {
       <p class="big cbad">${a.with_price}<span class="u">من ${a.skus}</span></p>
       <p class="sub">${a.with_cost} لها تكلفة</p>
       <div class="bar bad"><i style="width:${(a.with_price / a.skus * 100).toFixed(0)}%"></i></div></div>
-    <div class="card"><div class="ch">${ic('alert', 'var(--paper)')}<span class="t">على الورق فقط</span></div>
+    <div class="card" id="paper"><div class="ch">${ic('alert', 'var(--paper)')}<span class="t">على الورق فقط</span></div>
       <p class="big cpaper">${n(a.manual_report_units)}<span class="u">وحدة</span></p>
       <p class="sub">في التقرير اليدوي · <b>صفر</b> في أودو</p></div>
-    <div class="card danger" style="grid-column:span 2">
-      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">التغليف التجزئة — مُسلَّم صفر</span></div>
+    <div class="card danger" id="retail-deliv" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">ما يُباع بالعلبة — لم يخرج ولا مرة</span></div>
       <p class="big xl cbad">${a.retail_delivered_pct?.toFixed(1)}<span class="u">%</span></p>
       <p class="sub">${n(a.retail_ordered)} وحدة مطلوبة وصفر مُسلَّمة، مقابل
         ${b.delivered_pct?.toFixed(1)}% للسائب — نفس النظام ونفس الفترة.</p>
@@ -227,7 +545,35 @@ function render(d) {
         (x) => `<span class="mono">${esc(x.code)}</span>`)}</div>
       <p class="say"><b>ضابط ربط أودو:</b> اللوحة تطابق على <b>كود الصنف</b> لا الاسم.</p></div></div>`;
 
-  V.ship = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
+  const ag = l.aging || {};
+  const agR = ag.retail || {}; const agB = ag.b2b || {};
+  V.ship = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:auto 1fr 1fr">
+    <div class="card danger" id="aging-retail" style="grid-column:span 2">
+      <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">أوامر شحن Alora عالقة — لا تتحرك، لا تُقفل</span>
+        ${agR.oldest ? `<span class="sp pill p-bad"><span class="d"></span>منذ ${esc(agR.oldest)}</span>` : ''}</div>
+      <p class="big xl cbad">${n(agR.open)}<span class="u">أمر مفتوح</span></p>
+      <p class="sub">${n(agR.untouched)} منها لم يُفتح ولم يُلمس منذ إنشائه — لا صرف جزئي، لا ملاحظة.
+        ${agR.oldest_ref ? `أقدمها <span class="mono">${esc(agR.oldest_ref)}</span>.` : ''}</p>
+      <p class="say"><b>مراقب المخازن:</b> التقرير اليومي يسأل «ماذا حدث؟» — وأمر فُتح في يونيو ولم
+        يُلمس منذها <b>لا يحدث في أي يوم</b>، فلا يظهر فيه. هذا القسم يسأل السؤال المعاكس: ما الذي
+        <b>لا</b> يتحرك.</p></div>
+    <div class="card" style="grid-column:span 2" id="ag-db">
+      <div class="ch">${ic('grid')}<span class="t">كل طلبية بذاتها — بحث فوري</span>
+        <span class="sp mono" id="ag-count"></span></div>
+      <div class="db-search"><span class="db-ic">${ic('search')}</span>
+        <input type="text" placeholder="ابحث باسم العميل أو المنتج أو رقم الأمر…"
+          oninput="window.__agSearch(this.value)" autocomplete="off"></div>
+      <div class="scroll" id="ag-table">${agingTable(agR.list)}</div></div>
+    <div class="card"><div class="ch">${ic('truck')}<span class="t">أوامر خروج مفتوحة</span></div>
+      <p class="big cwarn">${n(l.open)}</p>
+      <p class="sub">من ${n(l.total)} إجمالاً · ${n(l.done)} منجزة</p>
+      <div class="scroll">${rows(Object.entries(l.states).sort((x, y) => y[1] - x[1]), (x) => x[0], (x) => n(x[1]))}</div></div>
+    <div class="card" id="overdue"><div class="ch">${ic('alert', 'var(--warn)')}<span class="t">متأخرة الآن</span></div>
+      <p class="big cwarn">${n(l.late)}</p>
+      <p class="sub">تاريخها المجدول مضى ولم تُغلق</p></div>
+    <div class="card"><div class="ch">${ic('box')}<span class="t">B2B عالقة — للمقارنة</span></div>
+      <p class="big">${n(agB.open)}</p>
+      <p class="sub">${agB.oldest ? `أقدمها منذ ${esc(agB.oldest)}. ` : ''}${esc(agB.note || '')}</p></div>
     <div class="card danger" style="grid-column:span 2">
       <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">فارق التسجيل — الموعد مقابل الإغلاق</span>
         <span class="sp pill p-bad"><span class="d"></span>الوسيط ${l.lag_median_days} يوماً</span></div>
@@ -235,13 +581,6 @@ function render(d) {
       <div class="rows">${rows(Object.entries(l.lag_buckets), (x) => x[0], (x) => n(x[1]))}</div>
       <p class="say"><b>مراقب المخازن:</b> ⚠️ هذا فارق <b>التسجيل</b> لا التسليم. أوامر مجدولة على مدى
         أسابيع أُغلقت دفعةً واحدة خلال دقائق — متى خرجت البضاعة فعلياً: <b>غير معروف</b>.</p></div>
-    <div class="card"><div class="ch">${ic('truck')}<span class="t">أوامر خروج مفتوحة</span></div>
-      <p class="big cwarn">${n(l.open)}</p>
-      <p class="sub">من ${n(l.total)} إجمالاً · ${n(l.done)} منجزة</p>
-      <div class="scroll">${rows(Object.entries(l.states).sort((x, y) => y[1] - x[1]), (x) => x[0], (x) => n(x[1]))}</div></div>
-    <div class="card"><div class="ch">${ic('alert', 'var(--warn)')}<span class="t">متأخرة الآن</span></div>
-      <p class="big cwarn">${n(l.late)}</p>
-      <p class="sub">تاريخها المجدول مضى ولم تُغلق</p></div>
     <div class="card" style="grid-column:span 4">
       <div class="ch">${ic('users')}<span class="t">أكثر العملاء تأخّراً</span></div>
       <div class="scroll">${rows(l.top_late_partners, (x) => x.name, (x) => n(x.n), 'cwarn')}</div></div>
@@ -250,9 +589,9 @@ function render(d) {
   V.cust = `<div class="grid" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr">
     <div class="card"><div class="ch">${ic('users')}<span class="t">عملاء مسجّلون</span></div>
       <p class="big">${n(cu.total)}</p><p class="sub">${n(cu.new_30d)} جديداً خلال ٣٠ يوماً</p></div>
-    <div class="card danger" style="grid-column:span 2">
+    <div class="card danger" id="country" style="grid-column:span 2">
       <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">بلا بلد مسجَّل</span>
-        <span class="sp pill p-bad"><span class="d"></span>G-03</span></div>
+        <span class="sp pill p-bad"><span class="d"></span>أرخص إصلاح</span></div>
       <p class="big xl cbad">${cu.missing_country_pct?.toFixed(0)}<span class="u">%</span></p>
       <p class="sub">${n(cu.missing_country)} من ${n(cu.total)} عميلاً بلا حقل بلد.</p>
       <p class="say"><b>محلل B2B:</b> استراتيجية التوسع تُبنى على بيانات أسواق — أرخص فجوة إصلاحاً.</p></div>
@@ -272,7 +611,7 @@ function render(d) {
       <p class="big cwarn">${ca.cost_pct?.toFixed(0)}<span class="u">%</span></p>
       <p class="sub">${n(ca.with_cost)} من ${n(ca.total)}</p>
       <div class="bar"><i style="width:${ca.cost_pct?.toFixed(0)}%"></i></div></div>
-    <div class="card danger" style="grid-column:span 2">
+    <div class="card danger" id="retail-price" style="grid-column:span 2">
       <div class="ch">${ic('alert', 'var(--bad)')}<span class="t">التجزئة — بلا سعر بيع</span></div>
       <p class="big xl cbad">${ca.retail_no_price}<span class="u">من ${ca.retail_total}</span></p>
       <p class="sub">كل صنف تجزئة (كود 701/702/703) بلا سعر بيع.</p>
@@ -308,10 +647,35 @@ function render(d) {
       <p class="say"><b>المحاسب:</b> كل عملة سطر مستقل — جمعها بلا سعر صرف يعطي رقماً بلا معنى.</p></div>
   </div>`;
 
+  const dz = d.designs || [];
+  const pendingDesigns = dz.filter((x) => x.status !== 'approved').length;
+  V.designs = `<div class="grid" style="grid-template-columns:1fr;grid-template-rows:1fr">
+    <div class="card">
+      <div class="ch">${ic('file')}<span class="t">التصميمات</span>
+        <span class="sp pill p-warn"><span class="d"></span>${pendingDesigns} بانتظار قرارك</span></div>
+      <div class="scroll">
+        ${dz.length ? dz.map((x) => `
+          <div class="dec-item ${x.status === 'approved' ? 'sev-ok' : x.status === 'blocked' ? 'sev-bad' : 'sev-warn'}" style="margin-bottom:.5rem">
+            <div class="dec-b">
+              <div class="dec-t">${esc(x.product)}</div>
+              <div class="dec-i">${esc(x.statusLabel)} · آخر تحديث ${esc(x.updated)}</div>
+              <div class="dec-a">${(x.facts || []).map((f) => esc(f)).join(' · ')}</div>
+              ${x.note ? `<p class="say" style="margin-top:.4rem">${esc(x.note)}</p>` : ''}
+            </div>
+          </div>`).join('') : '<p class="sub">لا تصميمات قيد المراجعة حالياً.</p>'}
+      </div>
+      <p class="say"><b>ملاحظة:</b> الملفات الأصلية لا تُنشر هنا — هذه لوحة عامة الاستضافة.
+        الملفات محفوظة في السجل الداخلي الخاص. حدّثني بالحالة الجديدة (مُعتمد / يحتاج تعديلاً)
+        وأنا أحدّثها هنا.</p>
+    </div>
+  </div>`;
+
   $('#views').innerHTML = NAV.map(([k], i) =>
     `<section class="view${i === 0 ? ' on' : ''}" data-v="${k}">${V[k]}</section>`).join('');
   wireNav();
 }
+
+window.__go = goTo;
 
 function wireNav() {
   const views = document.querySelectorAll('.view');

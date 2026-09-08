@@ -25,6 +25,7 @@ const ICONS = {
   alert: '<path d="M12 9v5M12 17.5v.01"/><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
   gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/>',
   file: '<path d="M6 2.5h8l4 4V21H6z"/><path d="M14 2.5V7h4"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5"/>',
 };
 const ic = (k, c = 'currentColor', s = 14) =>
   `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.9"
@@ -282,6 +283,37 @@ function moveRows(log) {
   }).join('');
 }
 
+/* قاعدة بيانات قابلة للبحث — لطلبيات Alora العالقة تحديداً.
+   طلب حسن (2026-09-08): «داتا بيس واضح لهذي الأمور، أسهل من داتا بيس أودو».
+   كل سجل بذاته لا مجمَّع، وبحث فوري بلا إعادة طلب — كل الـ89 محمّلة أصلاً. */
+const AG_STATE = { confirmed: 'بانتظار بضاعة', assigned: 'جاهز للصرف — ينتظر الصرف',
+  waiting: 'بانتظار أمر سابق', draft: 'مسودة' };
+
+function agingTable(list) {
+  if (!list || !list.length) return '<p class="sub">لا سجل مطابق.</p>';
+  const row = (r) => {
+    const q = [r.ref, r.partner, ...(r.products || [])].join(' ').toLowerCase();
+    return `<div class="db-row${r.untouched ? ' db-u' : ''}" data-q="${esc(q)}">
+      <span class="db-ref mono">${esc(r.ref)}</span>
+      <span class="db-p">${esc(r.partner)}</span>
+      <span class="db-i">${esc((r.products || []).join(' · ')) || '—'}</span>
+      <span class="db-d">${esc(r.scheduled || '—')}</span>
+      <span class="db-s">${esc(AG_STATE[r.state] || r.state)}${r.untouched ? ' <b class="db-flag">لم يُلمس</b>' : ''}</span>
+    </div>`;
+  };
+  return list.map(row).join('');
+}
+
+window.__agSearch = (val) => {
+  const q = String(val || '').trim().toLowerCase();
+  document.querySelectorAll('#ag-table .db-row').forEach((r) => {
+    r.hidden = q.length > 0 && !r.dataset.q.includes(q);
+  });
+  const shown = document.querySelectorAll('#ag-table .db-row:not([hidden])').length;
+  const ctr = document.getElementById('ag-count');
+  if (ctr) ctr.textContent = q ? `${shown} من ${document.querySelectorAll('#ag-table .db-row').length}` : '';
+};
+
 /* المرحلة ٣ — انتقال + وميض */
 function goTo(view, sel) {
   const btn = document.querySelector(`.nav-item[data-v="${view}"]`);
@@ -525,9 +557,13 @@ function render(d) {
       <p class="say"><b>مراقب المخازن:</b> التقرير اليومي يسأل «ماذا حدث؟» — وأمر فُتح في يونيو ولم
         يُلمس منذها <b>لا يحدث في أي يوم</b>، فلا يظهر فيه. هذا القسم يسأل السؤال المعاكس: ما الذي
         <b>لا</b> يتحرك.</p></div>
-    <div class="card" style="grid-column:span 2">
-      <div class="ch">${ic('users')}<span class="t">أكثر عملاء Alora عالقةً طلبياتهم</span></div>
-      <div class="scroll">${rows(agR.top_partners || [], (x) => `${x.name} · منذ ${x.oldest}`, (x) => n(x.n), 'cbad')}</div></div>
+    <div class="card" style="grid-column:span 2" id="ag-db">
+      <div class="ch">${ic('grid')}<span class="t">كل طلبية بذاتها — بحث فوري</span>
+        <span class="sp mono" id="ag-count"></span></div>
+      <div class="db-search"><span class="db-ic">${ic('search')}</span>
+        <input type="text" placeholder="ابحث باسم العميل أو المنتج أو رقم الأمر…"
+          oninput="window.__agSearch(this.value)" autocomplete="off"></div>
+      <div class="scroll" id="ag-table">${agingTable(agR.list)}</div></div>
     <div class="card"><div class="ch">${ic('truck')}<span class="t">أوامر خروج مفتوحة</span></div>
       <p class="big cwarn">${n(l.open)}</p>
       <p class="sub">من ${n(l.total)} إجمالاً · ${n(l.done)} منجزة</p>

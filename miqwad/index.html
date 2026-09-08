@@ -22,6 +22,8 @@
   --warn:oklch(0.665 0.145 68); --warn-tint:oklch(0.959 0.040 72);
   --bad:oklch(0.565 0.185 27); --bad-tint:oklch(0.956 0.030 27);
   --paper:oklch(0.585 0.018 88); --paper-tint:oklch(0.928 0.016 88);
+  --info:oklch(0.545 0.115 248); --info-tint:oklch(0.947 0.028 248);
+  --neutral:oklch(0.585 0.008 250); --neutral-tint:oklch(0.934 0.005 250);
   --r-sm:9px; --r-md:13px; --r-lg:18px; --r-full:999px;
   --sh-sm:0 1px 2px oklch(0.25 0.03 32/.05);
   --sh-md:0 4px 16px oklch(0.25 0.03 32/.07);
@@ -40,6 +42,8 @@
   --warn:oklch(0.795 0.135 72); --warn-tint:oklch(0.303 0.050 70);
   --bad:oklch(0.715 0.165 28); --bad-tint:oklch(0.298 0.055 28);
   --paper:oklch(0.700 0.020 88); --paper-tint:oklch(0.298 0.014 88);
+  --info:oklch(0.715 0.115 248); --info-tint:oklch(0.292 0.048 248);
+  --neutral:oklch(0.700 0.010 250); --neutral-tint:oklch(0.282 0.006 250);
   --sh-sm:0 1px 2px oklch(0.10 0.02 32/.4); --sh-md:0 4px 16px oklch(0.08 0.02 32/.5);
   color-scheme:dark;
 }
@@ -185,11 +189,189 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   border-top:1px solid var(--line-soft);padding-top:.7rem}
 [hidden]{display:none!important}
 
-/* زرّ التبديل بين النسختين */
-.beta-link{color:var(--brand);border-color:var(--brand-line);background:var(--brand-tint);
-  font-weight:700}
-.beta-link:hover{background:var(--surface)}
+.stable-link{color:var(--ink-soft);font-weight:700}
+.stable-link:hover{border-color:var(--brand-line);color:var(--brand)}
 .side-foot{flex-wrap:wrap;gap:.35rem}
+
+
+/* ══ المرحلة ٣: الوميض عند الانتقال ══ */
+@keyframes flashRow{
+  0%{background:var(--brand-tint);box-shadow:0 0 0 3px var(--brand-line)}
+  70%{background:var(--brand-tint);box-shadow:0 0 0 3px var(--brand-line)}
+  100%{background:transparent;box-shadow:0 0 0 0 transparent}
+}
+.flash{animation:flashRow 1.2s var(--ease) 1;border-radius:var(--r-sm)}
+@media (prefers-reduced-motion:reduce){
+  /* بلا حركة: إطار ثابت يختفي بعد ثانيتين بدل الوميض */
+  .flash{animation:none;outline:2px solid var(--brand);outline-offset:2px;border-radius:var(--r-sm)}
+}
+
+/* ══ المرحلة ٣: كل ما يُنقر يبدو منقوراً ══ */
+.go{cursor:pointer;border:0;background:none;font:inherit;color:inherit;text-align:inherit;
+  padding:0;display:block;width:100%;border-radius:var(--r-sm);
+  transition:background .15s var(--ease)}
+.go:hover{background:var(--surface-2)}
+.go:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.big.go:hover{background:none;opacity:.82}
+.row.go:hover{background:var(--surface-2)}
+.go .arrow{opacity:0;transition:opacity .15s;color:var(--brand);font-weight:700;
+  margin-inline-start:.25rem}
+.go:hover .arrow,.go:focus-visible .arrow{opacity:1}
+
+/* ══ المرحلة ١: «ليش يهمّني؟» ══ */
+.why{margin-top:.35rem;flex:none}
+.why-btn{font-size:.665rem;font-weight:700;color:var(--brand);background:var(--brand-tint);
+  border:1px solid var(--brand-line);border-radius:var(--r-full);padding:.12rem .5rem;
+  display:inline-flex;align-items:center;gap:.25rem;transition:background .15s}
+.why-btn:hover{background:var(--surface)}
+.why-btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.why-body{display:none;font-size:.7rem;line-height:1.6;color:var(--ink-soft);
+  margin-top:.4rem;padding:.5rem .6rem;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:var(--r-sm)}
+.why.open .why-body{display:block}
+.why.open .why-btn{background:var(--surface)}
+
+/* ══ المرحلة ٢: إحاطة الصباح ══ */
+.hello{font-weight:800;font-size:1.28rem;letter-spacing:-.03em;line-height:1.25;
+  margin-bottom:.12rem}
+.hello-sub{font-size:.75rem;color:var(--ink-faint);line-height:1.5}
+.dec{display:flex;flex-direction:column;gap:.5rem;overflow-y:auto;min-height:0;flex:1;
+  margin:.45rem -.2rem 0;padding:0 .2rem}
+.dec-item{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);
+  padding:.65rem .75rem;display:flex;gap:.6rem;align-items:flex-start}
+.dec-item.sev-bad{border-color:var(--bad);background:var(--bad-tint)}
+.dec-item.sev-warn{border-color:var(--warn);background:var(--warn-tint)}
+.dec-item.sev-ok{border-color:var(--ok);background:var(--ok-tint)}
+.dec-rank{width:1.5rem;height:1.5rem;border-radius:50%;flex:none;display:grid;
+  place-items:center;font-weight:800;font-size:.72rem;background:var(--surface);
+  border:1px solid var(--line);color:var(--ink-soft)}
+.dec-item.sev-bad .dec-rank{background:var(--bad);color:var(--surface);border-color:var(--bad)}
+.dec-item.sev-warn .dec-rank{background:var(--warn);color:var(--surface);border-color:var(--warn)}
+.dec-item.sev-ok .dec-rank{background:var(--ok);color:var(--surface);border-color:var(--ok)}
+.dec-b{min-width:0;flex:1}
+.dec-t{font-weight:700;font-size:.845rem;line-height:1.4;margin-bottom:.12rem}
+.dec-i{font-size:.735rem;color:var(--ink-soft);line-height:1.5}
+.dec-a{font-size:.72rem;color:var(--ink);line-height:1.5;margin-top:.2rem}
+.dec-a b{color:var(--brand)}
+.dec-btns{display:flex;gap:.35rem;margin-top:.45rem;flex-wrap:wrap}
+.dec-btn{font-size:.685rem;font-weight:700;padding:.22rem .6rem;border-radius:var(--r-full);
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+  transition:border-color .15s,color .15s}
+.dec-btn:hover{border-color:var(--brand-line);color:var(--brand)}
+.dec-btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.dec-btn.primary{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.dec-btn.primary:hover{opacity:.9;color:var(--on-brand)}
+/* البند الأول وحده يحمل اللون — ثلاث بطاقات حمراء جدار لا ترتيب.
+   الباقي يبقى محايداً وشارة الرقم وحدها تحمل الشدّة. */
+.dec-item.quiet{background:var(--surface);border-color:var(--line)}
+
+/* شريط «الشركة بنظرة واحدة» */
+.glance{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;flex:none;margin-top:.4rem}
+.gl-cell{border:1px solid var(--line);border-radius:var(--r-sm);padding:.5rem .6rem;
+  background:var(--surface);display:flex;flex-direction:column;gap:.1rem}
+.gl-cell .k{font-size:.66rem;font-weight:700;color:var(--ink-faint)}
+.gl-cell .v{font-weight:800;font-size:1.1rem;letter-spacing:-.03em}
+.gl-cell .d{font-size:.66rem;color:var(--ink-soft);line-height:1.4}
+.gl-cell.ok{background:var(--ok-tint);border-color:var(--ok)}
+.gl-cell.warn{background:var(--warn-tint);border-color:var(--warn)}
+.gl-cell.paper{background:var(--paper-tint);border-color:var(--paper)}
+
+/* «ما تغيّر منذ آخر زيارتك» */
+.chg{display:flex;gap:.45rem;padding:.4rem 0;border-bottom:1px solid var(--line-soft);
+  font-size:.735rem;line-height:1.5}
+.chg:last-child{border-bottom:0}
+.chg .dot{width:6px;height:6px;border-radius:50%;flex:none;margin-top:.4rem}
+.chg.up .dot{background:var(--ok)} .chg.down .dot{background:var(--bad)}
+.chg.flat .dot{background:var(--ink-faint)}
+.chg b{font-weight:700}
+
+/* المؤشرات المتابَعة — تُعرض دائماً، فلا تبقى البطاقة فارغة في يوم هادئ */
+.wl-h{font-size:.66rem;color:var(--ink-faint);font-weight:700;letter-spacing:.01em;
+  margin:.7rem 0 .15rem;padding-top:.5rem;border-top:1px solid var(--line-soft)}
+.wl{display:flex;align-items:baseline;gap:.5rem;font-size:.735rem;padding:.28rem .3rem;
+  border-bottom:1px solid var(--line-soft)}
+.go:last-child .wl{border-bottom:0}
+.wl .lab{color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.wl .n{margin-inline-start:auto;font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+.wl .n.ok{color:var(--ok)} .wl .n.bad{color:var(--bad)}
+
+/* ══ سجل الحركة — لون لكل نوع ══ */
+.mv-legend{display:flex;gap:.35rem;flex-wrap:wrap;flex:none;margin:.15rem 0 .1rem}
+.mv-chip{display:flex;align-items:center;gap:.3rem;padding:.2rem .45rem;border-radius:var(--r-sm);
+  border:1px solid var(--line);background:var(--surface-2);font-size:.68rem;line-height:1.3}
+.mv-dot{width:8px;height:8px;border-radius:2px;flex:none}
+.mv-chip .mv-n{font-weight:800;font-variant-numeric:tabular-nums}
+.mv-chip .mv-t{color:var(--ink-soft)}
+
+.mv-row{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;font-size:.72rem;
+  border-bottom:1px solid var(--line-soft);line-height:1.35}
+.mv-row:last-child{border-bottom:0}
+.mv-bar{width:3px;align-self:stretch;border-radius:2px;flex:none;min-height:1.1rem}
+.mv-day{font-size:.66rem;color:var(--ink-faint);font-variant-numeric:tabular-nums;flex:none;
+  width:2.6rem;direction:ltr;text-align:start}
+/* plaintext: كل اسم يأخذ اتجاهه الطبيعي — فأسماء المنتجات الإنجليزية لا يُقصّ أولها */
+.mv-p{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  unicode-bidi:plaintext;text-align:start}
+.mv-code{font-size:.62rem;color:var(--ink-faint);margin-inline-start:.3rem;
+  font-family:ui-monospace,Menlo,monospace}
+.mv-q{font-weight:700;font-variant-numeric:tabular-nums;flex:none;white-space:nowrap}
+.mv-u{font-size:.62rem;color:var(--ink-faint);font-weight:500;margin-inline-start:.2rem}
+.mv-k{flex:none;font-size:.64rem;font-weight:700;padding:.08rem .4rem;border-radius:var(--r-full);
+  white-space:nowrap;width:5.4rem;text-align:center}
+
+/* ألوان الأنواع الأربعة — تُطبَّق على الشارة والشريط والنقطة معاً */
+.k-ok    .mv-bar,.k-ok    .mv-dot{background:var(--ok)}
+.k-grey  .mv-bar,.k-grey  .mv-dot{background:var(--neutral)}
+.k-blue  .mv-bar,.k-blue  .mv-dot{background:var(--info)}
+.k-bad   .mv-bar,.k-bad   .mv-dot{background:var(--bad)}
+.k-muted .mv-bar,.k-muted .mv-dot{background:var(--ink-faint);opacity:.45}
+.k-ok    .mv-k{background:var(--ok-tint);color:var(--ok)}
+.k-grey  .mv-k{background:var(--neutral-tint);color:var(--neutral)}
+.k-blue  .mv-k{background:var(--info-tint);color:var(--info)}
+.k-bad   .mv-k{background:var(--bad-tint);color:var(--bad)}
+.k-muted .mv-k{background:var(--surface-2);color:var(--ink-faint)}
+.mv-chip.k-ok{border-color:var(--ok)} .mv-chip.k-blue{border-color:var(--info)}
+.mv-chip.k-bad{border-color:var(--bad)} .mv-chip.k-grey{border-color:var(--neutral)}
+
+/* الترشيح بالنقر */
+.mv-f{cursor:pointer;font:inherit;transition:opacity .15s,transform .15s}
+.mv-f:hover{opacity:.75}
+.mv-f:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.mv-f[aria-pressed="true"]{box-shadow:0 0 0 2px var(--brand-line) inset}
+#movelog[data-f] .mv-row{display:none}
+#movelog[data-f="ok"]   .mv-row.k-ok{display:flex}
+#movelog[data-f="grey"] .mv-row.k-grey{display:flex}
+#movelog[data-f="blue"] .mv-row.k-blue{display:flex}
+#movelog[data-f="bad"]  .mv-row.k-bad{display:flex}
+#movelog[data-f] .mv-f:not([aria-pressed="true"]){opacity:.45}
+
+/* قاعدة البيانات القابلة للبحث — سجل بسجل، لا مجمَّع */
+.db-search{position:relative;flex:none;margin:.15rem 0 .45rem}
+.db-search .db-ic{position:absolute;inset-inline-start:.6rem;top:50%;translate:0 -50%;
+  color:var(--ink-faint);pointer-events:none}
+.db-search input{width:100%;padding:.5rem .7rem .5rem 2rem;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font:inherit;
+  font-size:.78rem}
+.db-search input:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+.db-row{display:grid;grid-template-columns:5.6rem 1fr 1.4fr 4.2rem 6.4rem;gap:.5rem;
+  align-items:center;padding:.32rem .1rem;font-size:.72rem;border-bottom:1px solid var(--line-soft)}
+.db-row:last-child{border-bottom:0}
+.db-row.db-u{background:var(--bad-tint)}
+.db-ref{color:var(--ink-faint);font-size:.68rem}
+.db-p{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-i{color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  unicode-bidi:plaintext}
+.db-d{color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.db-s{color:var(--ink-soft);font-size:.68rem}
+.db-flag{color:var(--bad);font-weight:800}
+#ag-count{color:var(--ink-faint);font-weight:600;font-size:.7rem}
+
+/* مسار العودة */
+.crumb{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-weight:700;
+  color:var(--brand);background:var(--brand-tint);border:1px solid var(--brand-line);
+  border-radius:var(--r-full);padding:.15rem .55rem;margin-inline-end:.5rem}
+.crumb:hover{background:var(--surface)}
+.crumb:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 
 /* #views غلاف يُحقن فيه الأقسام — بلا هذا لا يرث .view ارتفاع الشاشة فتُقصَّر الشبكة */
 #views{flex:1;min-height:0;display:flex;flex-direction:column}
@@ -235,8 +417,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
-      <a class="tgl beta-link" href="/miqwad/beta" style="margin:0;text-decoration:none">
-        تجريبية</a>
       <button class="tgl" id="tt">الثيم</button>
       <button class="tgl" id="lo">خروج</button>
     </div>

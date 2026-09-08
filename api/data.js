@@ -206,12 +206,20 @@ module.exports = async (req, res) => {
        التصنيف تجزئة/B2B عبر default_code (701/702/703) لا الاسم — نفس قاعدة alora أعلاه. */
     const openIds = outOpen.map((r) => r.id);
     const openMoves = openIds.length
-      ? await SR('stock.move', [['picking_id', 'in', openIds]], ['picking_id', 'product_id'])
+      ? await SR('stock.move', [['picking_id', 'in', openIds]],
+          ['picking_id', 'product_id', 'product_uom_qty'])
       : [];
+    const productNameById = new Map(allp.map((x) => [x.id, (x.name || '').trim()]));
     const retailPickingIds = new Set();
+    const productsByPicking = new Map();          // pickingId → [{name, code, qty}]
     for (const m of openMoves) {
-      const code = codeOf.get(m.product_id && m.product_id[0]) || '';
+      const pid = m.product_id && m.product_id[0];
+      const code = codeOf.get(pid) || '';
       if (isRetail(code)) retailPickingIds.add(m.picking_id[0]);
+      const pkId = m.picking_id[0];
+      const arr = productsByPicking.get(pkId) || [];
+      arr.push({ name: productNameById.get(pid) || '?', code, qty: num(m.product_uom_qty) });
+      productsByPicking.set(pkId, arr);
     }
     const agingRetail = outOpen.filter((r) => retailPickingIds.has(r.id));
     const agingB2B = outOpen.filter((r) => !retailPickingIds.has(r.id));
@@ -241,6 +249,19 @@ module.exports = async (req, res) => {
         oldest: retailOldest ? retailOldest.scheduled_date.slice(0, 10) : null,
         oldest_ref: retailOldest ? retailOldest.name : null,
         top_partners: byPartnerAging(agingRetail),
+        // كل سجل بذاته — لا تجميع — عشان بحث وفهم مباشر بدل أودو
+        list: agingRetail
+          .sort((r1, r2) => (r1.scheduled_date || '') < (r2.scheduled_date || '') ? -1 : 1)
+          .slice(0, 300)
+          .map((r) => ({
+            ref: r.name,
+            partner: flat(r.partner_id) || '—',
+            products: (productsByPicking.get(r.id) || [])
+              .map((x) => `${x.name} ×${r0(x.qty)}`),
+            scheduled: (r.scheduled_date || '').slice(0, 10),
+            state: r.state,
+            untouched: untouched(r),
+          })),
       },
       b2b: {
         open: agingB2B.length,
