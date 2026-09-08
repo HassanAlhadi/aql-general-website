@@ -349,9 +349,12 @@ function render(d) {
   const nIn = d.integration.filter((r) => r.status === 'in').length;
   const nOut = d.integration.filter((r) => r.status === 'out').length;
 
+  // اسم من دخل — الحساب الثاني (da7m) اسمه عبدالرحمن؛ أي هوية أخرى تبقى حسن.
+  const viewerName = d.viewer === 'da7m' ? 'عبدالرحمن' : 'حسن';
+
   $('#stamp').innerHTML = `مباشر من أودو · <span class="mono">${esc(d.generated_at)}</span> UTC`;
   const vw = $('#viewer');
-  if (vw) vw.textContent = d.viewer ? d.viewer : '';
+  if (vw) vw.textContent = viewerName;
   $('#tb').innerHTML =
     `<span class="pill p-ok"><span class="dot-live"></span>حيّ · يتحدّث كل دقيقة</span>
      <span class="pill p-paper"><span class="d"></span>${nOut} أقسام خارج النظام</span>`;
@@ -395,7 +398,7 @@ function render(d) {
   V.overview = `<div class="grid" style="grid-template-columns:5fr 4fr;
     grid-template-rows:auto 1fr auto">
     <div class="card" style="grid-column:1/-1;padding:.7rem .9rem">
-      <div class="hello">${greet} حسن — إليك ما يهمّ اليوم</div>
+      <div class="hello">${greet} ${esc(viewerName)} — إليك ما يهمّ اليوم</div>
       <div class="hello-sub">آخر قراءة من أودو:
         <span class="mono">${esc(d.generated_at)}</span> UTC</div>
     </div>
