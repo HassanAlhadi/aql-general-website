@@ -17,6 +17,9 @@ const { buildGaps } = require('./_rules.js');
 const pad = (n) => String(n).padStart(2, '0');
 const fmt = (d) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ` +
                    `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+/* num() للكميات الرقمية الخام من نظام ERP فقط — تلك الحقول ترجع 0.0 لا false،
+   فالتحويل هنا لا يُخفي «غير معروف». ⚠️ لا تُستخدم على قيمة مقياس: هناك null
+   يجب أن يبقى null (انظر pct أدناه، ترجع null عند القسمة على صفر). */
 const num = (v) => Number(v) || 0;
 const r1 = (x) => Math.round(x * 10) / 10;
 
